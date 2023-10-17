@@ -125,18 +125,21 @@ void Model::update() {
   for (const auto& cell : m_livingCells) {
     auto survivingNeighboursCount{0};
     for (auto x = cell.first - 1; x <= cell.first + 1; x++) {
-      if (x < m_width) {
-        for (auto y = cell.second - 1; y <= cell.second + 1; y++) {
-          if (y < m_height) {
-            Cell neighbour{x, y};
-            if (neighbour != cell) {
-              if (m_livingCells.count(neighbour) == 0) {
-                deadCellsAndSurvivingNeighboursCount[neighbour]++;
-              } else {
-                survivingNeighboursCount++;
-              }
-            }
-          }
+      if (x >= m_width) {
+        continue;
+      }
+      for (auto y = cell.second - 1; y <= cell.second + 1; y++) {
+        if (y >= m_height) {
+          continue;
+        }
+        Cell neighbour{x, y};
+        if (neighbour == cell) {
+            continue;
+        }
+        if (m_livingCells.count(neighbour) == 0) {
+          deadCellsAndSurvivingNeighboursCount[neighbour]++;
+        } else {
+          survivingNeighboursCount++;
         }
       }
     }
