@@ -6,7 +6,7 @@
 
 namespace {
 constexpr auto f_windowTitle{"GameOfLife"};
-constexpr auto f_windowStyle{sf::Style::Default};
+constexpr auto f_windowStyle{sf::Style::Fullscreen};
 constexpr std::pair<std::size_t, std::size_t> f_modelSize{200, 100};
 }  // namespace
 
