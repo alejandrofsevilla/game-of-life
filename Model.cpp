@@ -118,6 +118,7 @@ void Model::reset() {
 }
 
 void Model::update() {
+  // see: https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
   std::lock_guard<std::mutex> guard{m_mutex};
   auto updatedSurvivingCells{m_livingCells};
   std::map<Cell, int> deadCellsAndSurvivingNeighboursCount;
