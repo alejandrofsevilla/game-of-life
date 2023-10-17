@@ -172,7 +172,7 @@ void View::drawZoomIndicator() {
 }
 
 void View::drawSpeedIndicator() {
-  sf::Text text{"Speed: " + std::to_string(m_model.speed()) + "/s", m_font};
+  sf::Text text{"Speed: " + std::to_string(m_model.speed()) + "gen/s", m_font};
   text.setPosition(static_cast<float>(m_window.getView().getSize().x) -
                        f_SpeedIndXPositionFromRight,
                    f_indicatorYPosition);
