@@ -17,6 +17,7 @@ class View {
   void zoomOut();
   void closeWindow();
   void dragView(sf::Vector2i offset);
+
   std::optional<Model::Cell> pixelToCell(sf::Vector2i pixel);
 
  private:

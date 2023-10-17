@@ -25,7 +25,6 @@ class Model {
   void pause();
   void reset();
   void stop();
-
   void increaseSpeed();
   void decreaseSpeed();
   void addLivingCell(Cell coord);
