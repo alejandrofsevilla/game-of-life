@@ -53,16 +53,21 @@ const std::set<Model::Cell>& Model::deadCells() {
 }
 
 void Model::run() {
-  if (m_status != Model::Status::Stopped) {
-    m_status = Model::Status::Running;
-    return;
-  }
-  m_status = Model::Status::Running;
-  while (m_status != Model::Status::Stopped) {
-    if (m_status == Model::Status::Running) {
-      update();
-    }
-    std::this_thread::sleep_for(f_modelUpdatePeriod / m_speed);
+  switch (m_status) {
+    default:
+      return;
+    case Model::Status::Paused:
+      m_status = Model::Status::Running;
+      return;
+    case Model::Status::Stopped:
+      m_status = Model::Status::Running;
+      while (m_status != Model::Status::Stopped) {
+        if (m_status == Model::Status::Running) {
+          update();
+        }
+        std::this_thread::sleep_for(f_modelUpdatePeriod / m_speed);
+      }
+      return;
   }
 }
 
@@ -102,9 +107,9 @@ void Model::generateLivingCells(std::size_t count) {
             m_livingCells.insert(cell);
             x = m_width;
             y = m_height;
-            break;
+          } else {
+            index++;
           }
-          index++;
         }
       }
     }
@@ -134,7 +139,7 @@ void Model::update() {
         }
         Cell neighbour{x, y};
         if (neighbour == cell) {
-            continue;
+          continue;
         }
         if (m_livingCells.count(neighbour) == 0) {
           deadCellsAndSurvivingNeighboursCount[neighbour]++;
@@ -150,15 +155,16 @@ void Model::update() {
     }
   }
   for (const auto& value : deadCellsAndSurvivingNeighboursCount) {
-    if (value.second == f_reproductionValue) {
-      updatedSurvivingCells.insert({value.first});
-      m_deadCells.erase(value.first);
+    if (value.second != f_reproductionValue) {
+      continue;
     }
+    updatedSurvivingCells.insert({value.first});
+    m_deadCells.erase(value.first);
   }
   if (m_livingCells == updatedSurvivingCells) {
     m_status = Status::Paused;
-    return;
+  } else {
+    m_livingCells = std::move(updatedSurvivingCells);
+    m_generation++;
   }
-  m_livingCells = std::move(updatedSurvivingCells);
-  m_generation++;
 }

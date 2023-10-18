@@ -10,23 +10,23 @@ Controller::Controller(View &view, Model &model)
 void Controller::onEvent(const sf::Event &event) {
   switch (event.type) {
     default:
-      break;
+      return;
     case sf::Event::Closed:
       m_model.stop();
       m_view.closeWindow();
-      break;
+      return;
     case sf::Event::MouseButtonPressed:
       onMouseButtonPressed(event.mouseButton);
-      break;
+      return;
     case sf::Event::MouseWheelScrolled:
       onMouseWheelScrolled(event.mouseWheelScroll);
-      break;
+      return;
     case sf::Event::MouseMoved:
       onMouseMoved(event.mouseMove);
-      break;
+      return;
     case sf::Event::KeyPressed:
       onKeyPressed(event.key);
-      break;
+      return;
   }
 }
 
@@ -34,20 +34,22 @@ void Controller::onMouseButtonPressed(
     const sf::Event::MouseButtonEvent &event) {
   switch (event.button) {
     default:
-      break;
+      return;
     case sf::Mouse::Button::Left: {
-      if (m_model.status() == Model::Status::Paused) {
-        auto cell{m_view.pixelToCell({event.x, event.y})};
-        if (cell) {
-          if (m_model.livingCells().count(cell.value()) == 0) {
-            m_model.addLivingCell(cell.value());
-          } else {
-            m_model.removeLivingCell(cell.value());
-          }
-        }
-      };
-
-    } break;
+      if (m_model.status() != Model::Status::Paused) {
+        return;
+      }
+      auto cell{m_view.pixelToCell({event.x, event.y})};
+      if (!cell) {
+        return;
+      }
+      if (m_model.livingCells().count(cell.value()) == 0) {
+        m_model.addLivingCell(cell.value());
+      } else {
+        m_model.removeLivingCell(cell.value());
+      }
+    }
+      return;
   }
 }
 
@@ -70,31 +72,34 @@ void Controller::onMouseMoved(const sf::Event::MouseMoveEvent &event) {
 void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
   switch (event.code) {
     default:
-      break;
+      return;
     case sf::Keyboard::Left:
       m_model.decreaseSpeed();
-      break;
+      return;
     case sf::Keyboard::Right:
       m_model.increaseSpeed();
-      break;
+      return;
     case sf::Keyboard::R:
       m_model.reset();
-      break;
+      return;
     case sf::Keyboard::G:
+      if (m_model.status() != Model::Status::Paused) {
+        return;
+      }
       m_model.generateLivingCells(static_cast<std::size_t>(
           static_cast<float>(m_model.width()) *
           static_cast<float>(m_model.height()) * f_populationGenerationRate));
-      break;
+      return;
     case sf::Keyboard::Escape:
       m_model.stop();
       m_view.closeWindow();
-      break;
+      return;
     case sf::Keyboard::Space:
       if (m_model.status() == Model::Status::Paused) {
         m_model.run();
       } else {
         m_model.pause();
       }
-      break;
+      return;
   }
 }
