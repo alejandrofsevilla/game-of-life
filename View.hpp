@@ -24,6 +24,8 @@ class View {
     Reset
   };
 
+  enum class TextBoxStyle { Simple, Display, Button };
+
   View(sf::RenderWindow &window, Model &model);
 
   void update();
@@ -42,8 +44,8 @@ class View {
   void drawBottomLeftMenu();
   void drawTopRightMenu();
   void drawTopLeftMenu();
-  bool drawButton(const std::string &content, const sf::Vector2f &position,
-                  float width, bool clickeable);
+  bool drawTextBox(const std::string &content, const sf::Vector2f &position,
+                   float width, TextBoxStyle style);
   void setViewOffset(const sf::Vector2f &offset);
   void setZoomLevel(float zoomLevel);
 

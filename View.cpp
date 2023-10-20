@@ -3,15 +3,17 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Mouse.hpp>
 
+#include "SFML/Graphics/Color.hpp"
+
 namespace {
 const auto f_frameColor{sf::Color::Black};
 const auto f_livingCellColor{sf::Color::White};
 const auto f_deadCellColor{sf::Color{80, 80, 80}};
 const auto f_emptyCellColor{sf::Color{40, 40, 40}};
-const auto f_unclickableButtonFillColor{sf::Color::Black};
-const auto f_unclickableButtonOutlineColor{sf::Color::Black};
-const auto f_unlickableButtonTextColor{sf::Color::White};
-const auto f_clickedButtonFillColor{sf::Color{40, 40, 40}};
+const auto f_simpleTextBoxFillColor{sf::Color::Black};
+const auto f_simpleTextBoxOutlineColor{sf::Color::Black};
+const auto f_simpleTextBoxTextColor{sf::Color::White};
+const auto f_clickedButtonFillColor{sf::Color::Black};
 const auto f_clickedButtonOutlineColor{sf::Color::White};
 const auto f_clickedButtonTextColor{sf::Color::White};
 const auto f_highlightedButtonFilledColor{sf::Color::White};
@@ -20,6 +22,9 @@ const auto f_highlightedButtonTextColor{sf::Color::Black};
 const auto f_unclickedButtonFillColor{sf::Color{40, 40, 40}};
 const auto f_unclickedButtonOutlineColor{sf::Color::Black};
 const auto f_unclickedButtonTextColor{sf::Color::White};
+const auto f_displayTextBoxFillColor{sf::Color::Black};
+const auto f_displayTextBoxOutlineColor{sf::Color::White};
+const auto f_displayTextBoxTextFillColor{sf::Color::White};
 constexpr auto f_fontPath{"../resources/font.ttf"};
 constexpr auto f_frameHorizontalThickness{50.f};
 constexpr auto f_frameVerticalThickness{5.f};
@@ -125,30 +130,32 @@ void View::drawBottomLeftMenu() {
          f_frameHorizontalThickness + f_buttonOutlineThickness};
   auto width{125.f};
   if (m_model.status() != Model::Status::Running) {
-    if (drawButton("Run(space)", {x, y}, width, true)) {
+    if (drawTextBox("Run(space)", {x, y}, width, TextBoxStyle::Button)) {
       m_highlightedButton = Button::Run;
     }
   } else {
-    if (drawButton("Pause(space)", {x, y}, width, true)) {
+    if (drawTextBox("Pause(space)", {x, y}, width, TextBoxStyle::Button)) {
       m_highlightedButton = Button::Pause;
     }
   }
   x += width;
   width = 240.f;
-  if (drawButton("Generate Population(G)", {x, y}, width, true)) {
+  if (drawTextBox("Generate Population(G)", {x, y}, width,
+                  TextBoxStyle::Button)) {
     m_highlightedButton = Button::GeneratePopulation;
   }
   x += width;
   width = 110.f;
-  if (drawButton("Reset(R)", {x, y}, width, true)) {
+  if (drawTextBox("Reset(R)", {x, y}, width, TextBoxStyle::Button)) {
     m_highlightedButton = Button::Reset;
   }
   x += width;
   width = 280.f;
-  drawButton("Add/RemoveCell(Mouse Left)", {x, y}, width, false);
+  drawTextBox("Add/RemoveCell(Mouse Left)", {x, y}, width,
+              TextBoxStyle::Simple);
   x += width;
   width = 240.f;
-  drawButton("DragView(Mouse Right)", {x, y}, width, false);
+  drawTextBox("DragView(Mouse Right)", {x, y}, width, TextBoxStyle::Simple);
 }
 
 void View::drawBottomRightMenu() {
@@ -157,55 +164,57 @@ void View::drawBottomRightMenu() {
          f_frameHorizontalThickness + f_buttonOutlineThickness};
   auto width{50.f};
   x -= width;
-  drawButton(std::to_string(m_model.livingCells().size()), {x, y}, width,
-             false);
+  drawTextBox(std::to_string(m_model.livingCells().size()), {x, y}, width,
+              TextBoxStyle::Display);
   width = 110.f;
   x -= width;
-  drawButton("Population:", {x, y}, width, false);
+  drawTextBox("Population", {x, y}, width, TextBoxStyle::Simple);
   width = 50.f;
   x -= width;
-  drawButton(std::to_string(m_model.generation()), {x, y}, width, false);
+  drawTextBox(std::to_string(m_model.generation()), {x, y}, width,
+              TextBoxStyle::Display);
   width = 110.f;
   x -= width;
-  drawButton("Generation:", {x, y}, width, false);
+  drawTextBox("Generation", {x, y}, width, TextBoxStyle::Simple);
 }
 
 void View::drawTopRightMenu() {
   auto x{m_window.getView().getSize().x - f_frameVerticalThickness};
   auto y{f_buttonOutlineThickness};
-  auto width{70.f};
+  auto width{75.f};
   x -= width;
-  drawButton(std::to_string(m_model.speed()) + "gen/s", {x, y}, width, false);
-  width = 200.f;
-  x -= width;
-  drawButton("Speed(Left/Right):", {x, y}, width, false);
+  drawTextBox(std::to_string(m_model.speed()) + "gen/s", {x, y}, width,
+              TextBoxStyle::Display);
   width = 50.f;
   x -= width;
-  if (drawButton("+", {x, y}, width, true)) {
+  if (drawTextBox("+", {x, y}, width, TextBoxStyle::Button)) {
     m_highlightedButton = Button::SpeedUp;
   }
   width = 50.f;
   x -= width;
-  if (drawButton("-", {x, y}, width, true)) {
+  if (drawTextBox("-", {x, y}, width, TextBoxStyle::Button)) {
     m_highlightedButton = Button::SlowDown;
   }
-  width = 50.f;
-  x -= width;
-  drawButton(std::to_string(static_cast<int>(m_zoomLevel)) + "x  ", {x, y},
-             width, false);
   width = 200.f;
   x -= width;
-  drawButton("Zoom(Mouse Wheel):", {x, y}, width, false);
+  drawTextBox("Speed(Left/Right)", {x, y}, width, TextBoxStyle::Simple);
   width = 50.f;
   x -= width;
-  if (drawButton("+", {x, y}, width, true)) {
+  drawTextBox(std::to_string(static_cast<int>(m_zoomLevel)) + "x", {x, y},
+              width, TextBoxStyle::Display);
+  width = 50.f;
+  x -= width;
+  if (drawTextBox("+", {x, y}, width, TextBoxStyle::Button)) {
     m_highlightedButton = Button::ZoomIn;
   }
   width = 50.f;
   x -= width;
-  if (drawButton("-", {x, y}, width, true)) {
+  if (drawTextBox("-", {x, y}, width, TextBoxStyle::Button)) {
     m_highlightedButton = Button::ZoomOut;
   }
+  width = 210.f;
+  x -= width;
+  drawTextBox("Zoom(Mouse Wheel)", {x, y}, width, TextBoxStyle::Simple);
   // TODO:
   // if (drawButton("Mesh Size(Up)", {x, y}, width, true)) {
   //   blabla;
@@ -220,7 +229,7 @@ void View::drawTopLeftMenu() {
   auto x{f_frameVerticalThickness};
   auto y{f_buttonOutlineThickness};
   auto width{110.f};
-  if (drawButton("Quit(Esc)", {x, y}, width, true)) {
+  if (drawTextBox("Quit(Esc)", {x, y}, width, TextBoxStyle::Button)) {
     m_highlightedButton = Button::Quit;
   }
   x += width;
@@ -235,8 +244,8 @@ void View::drawTopLeftMenu() {
   // }
 }
 
-bool View::drawButton(const std::string &content, const sf::Vector2f &position,
-                      float width, bool clickeable) {
+bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
+                       float width, TextBoxStyle style) {
   auto highlighted{false};
   auto height{f_frameHorizontalThickness};
   sf::RectangleShape rect{{width - 2 * f_buttonOutlineThickness,
@@ -249,26 +258,38 @@ bool View::drawButton(const std::string &content, const sf::Vector2f &position,
   text.setPosition(position.x + (width - text.getLocalBounds().width) * .5f,
                    position.y + (height - text.getLocalBounds().height) * .5f *
                                     textVerticalOffset);
-  if (!clickeable) {
-    rect.setFillColor(f_unclickableButtonFillColor);
-    rect.setOutlineColor(f_unclickableButtonOutlineColor);
-    text.setFillColor(f_unlickableButtonTextColor);
-  } else if (rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(
-                 m_window.mapPixelToCoords(sf::Mouse::getPosition())))) {
-    highlighted = true;
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      rect.setFillColor(f_clickedButtonFillColor);
-      rect.setOutlineColor(f_clickedButtonOutlineColor);
-      text.setFillColor(f_clickedButtonTextColor);
-    } else {
-      rect.setFillColor(f_highlightedButtonFilledColor);
-      rect.setOutlineColor(f_highlightedButtonOutlineColor);
-      text.setFillColor(f_highlightedButtonTextColor);
-    }
-  } else {
-    rect.setFillColor(f_unclickedButtonFillColor);
-    rect.setOutlineColor(f_unclickedButtonOutlineColor);
-    text.setFillColor(f_unclickedButtonTextColor);
+
+  switch (style) {
+    case TextBoxStyle::Button:
+      if (rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(
+              m_window.mapPixelToCoords(sf::Mouse::getPosition())))) {
+        highlighted = true;
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          rect.setFillColor(f_clickedButtonFillColor);
+          rect.setOutlineColor(f_clickedButtonOutlineColor);
+          text.setFillColor(f_clickedButtonTextColor);
+        } else {
+          rect.setFillColor(f_highlightedButtonFilledColor);
+          rect.setOutlineColor(f_highlightedButtonOutlineColor);
+          text.setFillColor(f_highlightedButtonTextColor);
+        }
+      } else {
+        rect.setFillColor(f_unclickedButtonFillColor);
+        rect.setOutlineColor(f_unclickedButtonOutlineColor);
+        text.setFillColor(f_unclickedButtonTextColor);
+      }
+      break;
+    case TextBoxStyle::Display:
+      rect.setFillColor(f_displayTextBoxFillColor);
+      rect.setOutlineColor(f_displayTextBoxOutlineColor);
+      text.setFillColor(f_displayTextBoxTextFillColor);
+      break;
+    case TextBoxStyle::Simple:
+    default:
+      rect.setFillColor(f_simpleTextBoxFillColor);
+      rect.setOutlineColor(f_unclickedButtonOutlineColor);
+      text.setFillColor(f_simpleTextBoxTextColor);
+      break;
   }
   m_window.draw(rect);
   m_window.draw(text);
