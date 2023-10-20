@@ -10,6 +10,20 @@
 
 class View {
  public:
+  enum class Button {
+    Quit,
+    LoadFile,
+    SaveFile,
+    ZoomOut,
+    ZoomIn,
+    SpeedUp,
+    SlowDown,
+    Run,
+    Pause,
+    GeneratePopulation,
+    Reset
+  };
+
   View(sf::RenderWindow &window, Model &model);
 
   void update();
@@ -18,31 +32,30 @@ class View {
   void closeWindow();
   void dragView(sf::Vector2i offset);
 
-  std::optional<Model::Cell> pixelToCell(sf::Vector2i pixel);
+  std::optional<View::Button> highlightedButton() const;
+  std::optional<Model::Cell> pixelToCell(sf::Vector2i pixel) const;
 
  private:
   void drawFrame();
   void drawCells();
-  void drawIcon();
-  void drawPauseIcon();
-  void drawPlayIcon();
-  void drawZoomIndicator();
-  void drawSpeedIndicator();
-  void drawGenerationIndicator();
-  void drawPopulationIndicator();
-  void drawTitle();
-  void drawLegend();
+  void drawBottomRightMenu();
+  void drawBottomLeftMenu();
+  void drawTopRightMenu();
+  void drawTopLeftMenu();
+  bool drawButton(const std::string &content, const sf::Vector2f &position,
+                  float width, bool clickeable);
   void setViewOffset(const sf::Vector2f &offset);
   void setZoomLevel(float zoomLevel);
 
-  sf::Vector2f calculateCellSize();
-  sf::Vector2f calculateCellPosition(Model::Cell cell);
+  sf::Vector2f calculateCellSize() const;
+  sf::Vector2f calculateCellPosition(Model::Cell cell) const;
 
   Model &m_model;
   sf::RenderWindow &m_window;
   sf::Vector2f m_viewOffset;
-  float m_zoomLevel;
   sf::Font m_font;
+  std::optional<View::Button> m_highlightedButton;
+  float m_zoomLevel;
 };
 
 #endif

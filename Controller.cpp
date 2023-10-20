@@ -36,6 +36,45 @@ void Controller::onMouseButtonPressed(
     default:
       return;
     case sf::Mouse::Button::Left: {
+      auto highlightedButton{m_view.highlightedButton()};
+      if (highlightedButton) {
+        switch (highlightedButton.value()) {
+          case View::Button::Quit:
+            m_model.stop();
+            m_view.closeWindow();
+            return;
+          case View::Button::LoadFile:
+            return;
+          case View::Button::SaveFile:
+            return;
+          case View::Button::ZoomOut:
+            m_view.zoomOut();
+            return;
+          case View::Button::ZoomIn:
+            m_view.zoomIn();
+            return;
+          case View::Button::SpeedUp:
+            m_model.speedUp();
+            return;
+          case View::Button::SlowDown:
+            m_model.slowDown();
+            return;
+          case View::Button::Run:
+            m_model.run();
+            return;
+          case View::Button::Pause:
+            m_model.pause();
+            return;
+          case View::Button::GeneratePopulation:
+            m_model.generatePopulation(f_populationGenerationRate);
+            return;
+          case View::Button::Reset:
+            m_model.reset();
+            return;
+          default:
+            return;
+        }
+      }
       if (m_model.status() != Model::Status::Paused) {
         return;
       }
@@ -49,7 +88,6 @@ void Controller::onMouseButtonPressed(
         m_model.removeLivingCell(cell.value());
       }
     }
-      return;
   }
 }
 
@@ -74,10 +112,10 @@ void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
     default:
       return;
     case sf::Keyboard::Left:
-      m_model.decreaseSpeed();
+      m_model.slowDown();
       return;
     case sf::Keyboard::Right:
-      m_model.increaseSpeed();
+      m_model.speedUp();
       return;
     case sf::Keyboard::R:
       m_model.reset();
@@ -86,9 +124,7 @@ void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
       if (m_model.status() != Model::Status::Paused) {
         return;
       }
-      m_model.generateLivingCells(static_cast<std::size_t>(
-          static_cast<float>(m_model.width()) *
-          static_cast<float>(m_model.height()) * f_populationGenerationRate));
+      m_model.generatePopulation(f_populationGenerationRate);
       return;
     case sf::Keyboard::Escape:
       m_model.stop();

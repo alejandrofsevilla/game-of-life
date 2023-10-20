@@ -25,11 +25,11 @@ class Model {
   void pause();
   void reset();
   void stop();
-  void increaseSpeed();
-  void decreaseSpeed();
+  void speedUp();
+  void slowDown();
   void addLivingCell(Cell coord);
   void removeLivingCell(Cell coord);
-  void generateLivingCells(std::size_t count);
+  void generatePopulation(double populationRate);
 
  private:
   void update();

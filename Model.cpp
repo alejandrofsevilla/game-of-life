@@ -75,9 +75,9 @@ void Model::pause() { m_status = Model::Status::Paused; }
 
 void Model::stop() { m_status = Model::Status::Stopped; }
 
-void Model::increaseSpeed() { m_speed = std::min(f_maxSpeed, m_speed + 1); }
+void Model::speedUp() { m_speed = std::min(f_maxSpeed, m_speed + 1); }
 
-void Model::decreaseSpeed() { m_speed = std::max(f_minSpeed, m_speed - 1); }
+void Model::slowDown() { m_speed = std::max(f_minSpeed, m_speed - 1); }
 
 void Model::addLivingCell(Cell position) {
   std::lock_guard<std::mutex> guard{m_mutex};
@@ -93,9 +93,12 @@ void Model::removeLivingCell(Cell position) {
   }
 }
 
-void Model::generateLivingCells(std::size_t count) {
+void Model::generatePopulation(double populationRate) {
   std::lock_guard<std::mutex> guard{m_mutex};
-  for (std::size_t i = 0; i < count; i++) {
+  auto population{static_cast<size_t>(static_cast<double>(m_width) *
+                                      static_cast<double>(m_height) *
+                                      populationRate)};
+  for (std::size_t i = 0; i < population; i++) {
     auto emptyPosCount{m_width * m_height - m_livingCells.size()};
     auto randomEmptyPosIndex{generateRandomValue(0, emptyPosCount)};
     std::size_t index{0};
