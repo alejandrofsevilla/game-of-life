@@ -9,9 +9,9 @@ class Model {
  public:
   using Cell = std::pair<std::size_t, std::size_t>;
 
-  enum class Status { Stopped, Paused, Running };
+  enum class Status { Uninitialized, Stopped, Running, Paused, Finished };
 
-  Model(std::size_t width, std::size_t height);
+  Model(std::size_t maxWidth, std::size_t maxHeight);
 
   Status status() const;
   std::size_t speed() const;
@@ -22,11 +22,14 @@ class Model {
   const std::set<Cell>& deadCells();
 
   void run();
-  void pause();
+  void clear();
   void reset();
-  void stop();
+  void pause();
+  void finish();
   void speedUp();
   void slowDown();
+  void increaseSize();
+  void reduceSize();
   void addLivingCell(Cell coord);
   void removeLivingCell(Cell coord);
   void generatePopulation(double populationRate);
@@ -34,12 +37,19 @@ class Model {
  private:
   void update();
 
-  const std::size_t m_width;
-  const std::size_t m_height;
+  std::size_t calculateWidth();
+  std::size_t calculateHeight();
+
+  const std::size_t m_maxWidth;
+  const std::size_t m_maxHeight;
 
   Status m_status;
+  std::size_t m_size;
+  std::size_t m_width;
+  std::size_t m_height;
   std::size_t m_speed;
   std::size_t m_generation;
+  std::set<Cell> m_pattern;
   std::set<Cell> m_livingCells;
   std::set<Cell> m_deadCells;
   std::mutex m_mutex;

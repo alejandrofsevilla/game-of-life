@@ -4,15 +4,15 @@ namespace {
 constexpr auto f_populationGenerationRate{.05};
 }  // namespace
 
-Controller::Controller(View &view, Model &model)
+Controller::Controller(View& view, Model& model)
     : m_view{view}, m_model{model}, m_mouseReferencePosition{} {}
 
-void Controller::onEvent(const sf::Event &event) {
+void Controller::onEvent(const sf::Event& event) {
   switch (event.type) {
     default:
       return;
     case sf::Event::Closed:
-      m_model.stop();
+      m_model.finish();
       m_view.closeWindow();
       return;
     case sf::Event::MouseButtonPressed:
@@ -31,7 +31,7 @@ void Controller::onEvent(const sf::Event &event) {
 }
 
 void Controller::onMouseButtonPressed(
-    const sf::Event::MouseButtonEvent &event) {
+    const sf::Event::MouseButtonEvent& event) {
   switch (event.button) {
     default:
       return;
@@ -40,7 +40,7 @@ void Controller::onMouseButtonPressed(
       if (highlightedButton) {
         switch (highlightedButton.value()) {
           case View::Button::Quit:
-            m_model.stop();
+            m_model.finish();
             m_view.closeWindow();
             return;
           case View::Button::LoadFile:
@@ -71,12 +71,18 @@ void Controller::onMouseButtonPressed(
           case View::Button::Reset:
             m_model.reset();
             return;
+          case View::Button::Clear:
+            m_model.clear();
+            return;
+          case View::Button::IncreaseSize:
+            m_model.increaseSize();
+            return;
+          case View::Button::ReduceSize:
+            m_model.reduceSize();
+            return;
           default:
             return;
         }
-      }
-      if (m_model.status() != Model::Status::Paused) {
-        return;
       }
       auto cell{m_view.pixelToCell({event.x, event.y})};
       if (!cell) {
@@ -92,7 +98,7 @@ void Controller::onMouseButtonPressed(
 }
 
 void Controller::onMouseWheelScrolled(
-    const sf::Event::MouseWheelScrollEvent &event) {
+    const sf::Event::MouseWheelScrollEvent& event) {
   if (event.delta > 0) {
     m_view.zoomIn();
   } else if (event.delta < 0) {
@@ -100,16 +106,22 @@ void Controller::onMouseWheelScrolled(
   }
 }
 
-void Controller::onMouseMoved(const sf::Event::MouseMoveEvent &event) {
+void Controller::onMouseMoved(const sf::Event::MouseMoveEvent& event) {
   if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
     m_view.dragView(sf::Vector2i{event.x, event.y} - m_mouseReferencePosition);
   }
   m_mouseReferencePosition = sf::Vector2i{event.x, event.y};
 }
 
-void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
+void Controller::onKeyPressed(const sf::Event::KeyEvent& event) {
   switch (event.code) {
     default:
+      return;
+    case sf::Keyboard::Up:
+      m_model.increaseSize();
+      return;
+    case sf::Keyboard::Down:
+      m_model.reduceSize();
       return;
     case sf::Keyboard::Left:
       m_model.slowDown();
@@ -120,21 +132,29 @@ void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
     case sf::Keyboard::R:
       m_model.reset();
       return;
+    case sf::Keyboard::C:
+      m_model.clear();
+      return;
     case sf::Keyboard::G:
-      if (m_model.status() != Model::Status::Paused) {
-        return;
-      }
       m_model.generatePopulation(f_populationGenerationRate);
       return;
     case sf::Keyboard::Escape:
-      m_model.stop();
+      m_model.finish();
       m_view.closeWindow();
       return;
     case sf::Keyboard::Space:
-      if (m_model.status() == Model::Status::Paused) {
-        m_model.run();
-      } else {
-        m_model.pause();
+      if (m_model.livingCells().empty()) {
+        return;
+      }
+      switch (m_model.status()) {
+        case Model::Status::Stopped:
+        case Model::Status::Paused:
+          m_model.run();
+          return;
+        case Model::Status::Running:
+          m_model.pause();
+        default:
+          return;
       }
       return;
   }

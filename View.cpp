@@ -25,9 +25,12 @@ const auto f_unclickedButtonTextColor{sf::Color::White};
 const auto f_displayTextBoxFillColor{sf::Color::Black};
 const auto f_displayTextBoxOutlineColor{sf::Color::White};
 const auto f_displayTextBoxTextFillColor{sf::Color::White};
+const auto f_hiddenTextBoxFillColor{sf::Color::Black};
+const auto f_hiddenTextBoxOutlineColor{sf::Color::Black};
+const auto f_hiddenTextBoxTextColor{sf::Color{80, 80, 80}};
 constexpr auto f_fontPath{"../resources/futura.ttf"};
 constexpr auto f_frameHorizontalThickness{50.f};
-constexpr auto f_frameVerticalThickness{5.f};
+constexpr auto f_frameVerticalThickness{1.f};
 constexpr auto f_fontSize{18};
 constexpr auto f_cellOutlineThickness{1.f};
 constexpr auto f_buttonOutlineThickness{1.f};
@@ -129,33 +132,54 @@ void View::drawBottomLeftMenu() {
   auto x{f_frameVerticalThickness};
   auto y{static_cast<float>(m_window.getView().getSize().y) -
          f_frameHorizontalThickness + f_buttonOutlineThickness};
-  auto width{140.f};
-  if (m_model.status() != Model::Status::Running) {
-    if (drawTextBox("Run(space)", {x, y}, width, TextBoxStyle::Button)) {
-      m_highlightedButton = Button::Run;
-    }
-  } else {
-    if (drawTextBox("Pause(space)", {x, y}, width, TextBoxStyle::Button)) {
-      m_highlightedButton = Button::Pause;
-    }
+  auto width{180.f};
+  auto style{m_model.livingCells().empty() ? TextBoxStyle::Hidden
+                                           : TextBoxStyle::Button};
+  switch (m_model.status()) {
+    case Model::Status::Stopped:
+      if (drawTextBox("Start(space)", {x, y}, width, style)) {
+        m_highlightedButton = Button::Run;
+      }
+      break;
+    case Model::Status::Running:
+      if (drawTextBox("Pause(space)", {x, y}, width, style)) {
+        m_highlightedButton = Button::Pause;
+      }
+      break;
+    case Model::Status::Paused:
+      if (drawTextBox("Continue(space)", {x, y}, width, style)) {
+        m_highlightedButton = Button::Run;
+      }
+      break;
+    default:
+      break;
   }
   x += width;
-  width = 260.f;
-  if (drawTextBox("Generate Population(G)", {x, y}, width,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::GeneratePopulation;
-  }
-  x += width;
-  width = 110.f;
-  if (drawTextBox("Reset(R)", {x, y}, width, TextBoxStyle::Button)) {
+  width = 120.f;
+  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Hidden
+                                                     : TextBoxStyle::Button;
+  if (drawTextBox("Reset(R)", {x, y}, width, style)) {
     m_highlightedButton = Button::Reset;
   }
   x += width;
-  width = 300.f;
-  drawTextBox("Add/RemoveCell(Mouse Left)", {x, y}, width,
-              TextBoxStyle::Simple);
+  width = 120.f;
+  if (drawTextBox("Clear(C)", {x, y}, width, TextBoxStyle::Button)) {
+    m_highlightedButton = Button::Clear;
+  }
   x += width;
-  width = 250.f;
+  width = 240.f;
+  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
+                                                     : TextBoxStyle::Hidden;
+  if (drawTextBox("Generate Population(G)", {x, y}, width, style)) {
+    m_highlightedButton = Button::GeneratePopulation;
+  }
+  x += width;
+  width = 280.f;
+  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Simple
+                                                     : TextBoxStyle::Hidden;
+  drawTextBox("Add/RemoveCell(Mouse Left)", {x, y}, width, style);
+  x += width;
+  width = 230.f;
   drawTextBox("Drag View(Mouse Right)", {x, y}, width, TextBoxStyle::Simple);
 }
 
@@ -216,14 +240,32 @@ void View::drawTopRightMenu() {
   width = 230.f;
   x -= width;
   drawTextBox("Zoom(Mouse Wheel)", {x, y}, width, TextBoxStyle::Simple);
-  // TODO:
-  // if (drawButton("Mesh Size(Up)", {x, y}, width, true)) {
-  //   blabla;
-  // }
-  // x += width;
-  // if (drawButton("Mesh Size(Down)", {x, y}, width, true)) {
-  //   blabla;
-  // }
+  width = 90.f;
+  x -= width;
+  drawTextBox(
+      std::to_string(m_model.width()) + "x" + std::to_string(m_model.height()),
+      {x, y}, width, TextBoxStyle::Display);
+  width = 50.f;
+  x -= width;
+  auto style{(m_model.status() == Model::Status::Stopped &&
+              m_model.livingCells().empty())
+                 ? TextBoxStyle::Button
+                 : TextBoxStyle::Hidden};
+  if (drawTextBox("+", {x, y}, width, style)) {
+    m_highlightedButton = Button::IncreaseSize;
+  }
+  width = 50.f;
+  x -= width;
+  if (drawTextBox("-", {x, y}, width, style)) {
+    m_highlightedButton = Button::ReduceSize;
+  }
+  width = 180.f;
+  x -= width;
+  style = (m_model.status() == Model::Status::Stopped &&
+           m_model.livingCells().empty())
+              ? TextBoxStyle::Simple
+              : TextBoxStyle::Hidden;
+  drawTextBox("Size(Up/Down)", {x, y}, width, style);
 }
 
 void View::drawTopLeftMenu() {
@@ -283,10 +325,15 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
       rect.setOutlineColor(f_displayTextBoxOutlineColor);
       text.setFillColor(f_displayTextBoxTextFillColor);
       break;
+    case TextBoxStyle::Hidden:
+      rect.setFillColor(f_hiddenTextBoxFillColor);
+      rect.setOutlineColor(f_hiddenTextBoxOutlineColor);
+      text.setFillColor(f_hiddenTextBoxTextColor);
+      break;
     case TextBoxStyle::Simple:
     default:
       rect.setFillColor(f_simpleTextBoxFillColor);
-      rect.setOutlineColor(f_unclickedButtonOutlineColor);
+      rect.setOutlineColor(f_simpleTextBoxOutlineColor);
       text.setFillColor(f_simpleTextBoxTextColor);
       break;
   }

@@ -20,11 +20,14 @@ class View {
     SlowDown,
     Run,
     Pause,
+    Reset,
+    Clear,
     GeneratePopulation,
-    Reset
+    IncreaseSize,
+    ReduceSize
   };
 
-  enum class TextBoxStyle { Simple, Display, Button };
+  enum class TextBoxStyle { Simple, Display, Button, Hidden };
 
   View(sf::RenderWindow &window, Model &model);
 
