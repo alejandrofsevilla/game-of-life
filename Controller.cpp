@@ -30,70 +30,123 @@ void Controller::onEvent(const sf::Event& event) {
   }
 }
 
-void Controller::onMouseButtonPressed(
+void Controller::onMainModeMouseButtonPressed(
     const sf::Event::MouseButtonEvent& event) {
-  switch (event.button) {
+  if (event.button != sf::Mouse::Button::Left) {
+    return;
+  }
+  auto cell{m_view.pixelToCell({event.x, event.y})};
+  if (cell) {
+    if (m_model.livingCells().count(cell.value()) == 0) {
+      m_model.addLivingCell(cell.value());
+    } else {
+      m_model.removeLivingCell(cell.value());
+    }
+    return;
+  }
+  auto highlightedButton{m_view.highlightedButton()};
+  if (!highlightedButton) {
+    return;
+  }
+  switch (highlightedButton.value()) {
+    case View::Button::Quit:
+      m_model.finish();
+      m_view.closeWindow();
+      return;
+    case View::Button::LoadFile:
+      m_view.setMode(View::Mode::LoadFile);
+      return;
+    case View::Button::SaveFile:
+      m_view.setMode(View::Mode::SaveFile);
+      return;
+    case View::Button::ZoomOut:
+      m_view.zoomOut();
+      return;
+    case View::Button::ZoomIn:
+      m_view.zoomIn();
+      return;
+    case View::Button::SpeedUp:
+      m_model.speedUp();
+      return;
+    case View::Button::SlowDown:
+      m_model.slowDown();
+      return;
+    case View::Button::Run:
+      m_model.run();
+      return;
+    case View::Button::Pause:
+      m_model.pause();
+      return;
+    case View::Button::GeneratePopulation:
+      m_model.generatePopulation(f_populationGenerationRate);
+      return;
+    case View::Button::Reset:
+      m_model.reset();
+      return;
+    case View::Button::Clear:
+      m_model.clear();
+      return;
+    case View::Button::IncreaseSize:
+      m_model.increaseSize();
+      return;
+    case View::Button::ReduceSize:
+      m_model.reduceSize();
+      return;
     default:
       return;
-    case sf::Mouse::Button::Left: {
-      auto highlightedButton{m_view.highlightedButton()};
-      if (highlightedButton) {
-        switch (highlightedButton.value()) {
-          case View::Button::Quit:
-            m_model.finish();
-            m_view.closeWindow();
-            return;
-          case View::Button::LoadFile:
-            return;
-          case View::Button::SaveFile:
-            return;
-          case View::Button::ZoomOut:
-            m_view.zoomOut();
-            return;
-          case View::Button::ZoomIn:
-            m_view.zoomIn();
-            return;
-          case View::Button::SpeedUp:
-            m_model.speedUp();
-            return;
-          case View::Button::SlowDown:
-            m_model.slowDown();
-            return;
-          case View::Button::Run:
-            m_model.run();
-            return;
-          case View::Button::Pause:
-            m_model.pause();
-            return;
-          case View::Button::GeneratePopulation:
-            m_model.generatePopulation(f_populationGenerationRate);
-            return;
-          case View::Button::Reset:
-            m_model.reset();
-            return;
-          case View::Button::Clear:
-            m_model.clear();
-            return;
-          case View::Button::IncreaseSize:
-            m_model.increaseSize();
-            return;
-          case View::Button::ReduceSize:
-            m_model.reduceSize();
-            return;
-          default:
-            return;
-        }
-      }
-      auto cell{m_view.pixelToCell({event.x, event.y})};
-      if (!cell) {
-        return;
-      }
-      if (m_model.livingCells().count(cell.value()) == 0) {
-        m_model.addLivingCell(cell.value());
-      } else {
-        m_model.removeLivingCell(cell.value());
-      }
-    }
+  }
+}
+
+void Controller::onLoadFileModeMouseButtonPressed(
+    const sf::Event::MouseButtonEvent& event) {
+  if (event.button != sf::Mouse::Button::Left) {
+    return;
+  }
+  auto highlightedButton{m_view.highlightedButton()};
+  if (!highlightedButton) {
+    return;
+  }
+  switch (highlightedButton.value()) {
+    case View::Button::Back:
+      m_view.setMode(View::Mode::Main);
+      return;
+    default:
+      return;
+  }
+}
+
+void Controller::onSaveFileModeMouseButtonPressed(
+    const sf::Event::MouseButtonEvent& event) {
+  if (event.button != sf::Mouse::Button::Left) {
+    return;
+  }
+  auto highlightedButton{m_view.highlightedButton()};
+  if (!highlightedButton) {
+    return;
+  }
+  switch (highlightedButton.value()) {
+    case View::Button::Back:
+      m_view.setMode(View::Mode::Main);
+      return;
+    default:
+      return;
+  }
+}
+
+void Controller::onMouseButtonPressed(
+    const sf::Event::MouseButtonEvent& event) {
+  switch (m_view.mode()) {
+    case View::Mode::Main:
+      onMainModeMouseButtonPressed(event);
+      return;
+    case View::Mode::LoadFile:
+      onLoadFileModeMouseButtonPressed(event);
+      return;
+    case View::Mode::SaveFile:
+      onSaveFileModeMouseButtonPressed(event);
+      return;
+    default:
+      return;
   }
 }
 
@@ -114,9 +167,23 @@ void Controller::onMouseMoved(const sf::Event::MouseMoveEvent& event) {
 }
 
 void Controller::onKeyPressed(const sf::Event::KeyEvent& event) {
-  switch (event.code) {
+  switch (m_view.mode()) {
+    case View::Mode::LoadFile:
+      onLoadFileModeKeyPressed(event);
+      return;
+    case View::Mode::SaveFile:
+      onSaveFileModeKeyPressed(event);
+      return;
+    case View::Mode::Main:
+      onMainModeKeyPressed(event);
+      break;
     default:
       return;
+  }
+}
+
+void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
+  switch (event.code) {
     case sf::Keyboard::Up:
       m_model.increaseSize();
       return;
@@ -156,6 +223,28 @@ void Controller::onKeyPressed(const sf::Event::KeyEvent& event) {
         default:
           return;
       }
+    default:
+      return;
+  }
+}
+
+void Controller::onLoadFileModeKeyPressed(const sf::Event::KeyEvent& event) {
+  switch (event.code) {
+    case sf::Keyboard::Escape:
+      m_view.setMode(View::Mode::Main);
+      return;
+    default:
+      return;
+  }
+  return;
+}
+
+void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent& event) {
+  switch (event.code) {
+    case sf::Keyboard::Escape:
+      m_view.setMode(View::Mode::Main);
+      return;
+    default:
       return;
   }
 }

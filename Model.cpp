@@ -142,19 +142,17 @@ void Model::generatePopulation(double populationRate) {
   if (m_status != Model::Status::Stopped) {
     return;
   }
-  std::lock_guard<std::mutex> guard{m_mutex};
   auto population{static_cast<size_t>(static_cast<double>(m_width) *
                                       static_cast<double>(m_height) *
                                       populationRate)};
   for (std::size_t i = 0; i < population; i++) {
-    auto isEmptyCell{ false };
-    auto pos{ generateRandomValue(0, m_width * m_height) };
-    Cell cell{ pos%m_width, pos / m_width };
+    auto pos{generateRandomValue(0, m_width * m_height)};
+    Cell cell{pos % m_width, pos / m_width};
+    std::lock_guard<std::mutex> guard{m_mutex};
     if (m_livingCells.count(cell) == 0) {
       m_livingCells.insert(cell);
-      isEmptyCell = true;
     }
-   }
+  }
 }
 
 void Model::update() {
