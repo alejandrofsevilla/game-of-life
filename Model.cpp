@@ -147,24 +147,14 @@ void Model::generatePopulation(double populationRate) {
                                       static_cast<double>(m_height) *
                                       populationRate)};
   for (std::size_t i = 0; i < population; i++) {
-    auto emptyPosCount{m_width * m_height - m_livingCells.size()};
-    auto randomEmptyPosIndex{generateRandomValue(0, emptyPosCount)};
-    std::size_t index{0};
-    for (std::size_t x = 0; x < m_width; x++) {
-      for (std::size_t y = 0; y < m_height; y++) {
-        Cell cell{x, y};
-        if (m_livingCells.count(cell) == 0) {
-          if (index == randomEmptyPosIndex) {
-            m_livingCells.insert(cell);
-            x = m_width;
-            y = m_height;
-          } else {
-            index++;
-          }
-        }
-      }
+    auto isEmptyCell{ false };
+    auto pos{ generateRandomValue(0, m_width * m_height) };
+    Cell cell{ pos%m_width, pos / m_width };
+    if (m_livingCells.count(cell) == 0) {
+      m_livingCells.insert(cell);
+      isEmptyCell = true;
     }
-  }
+   }
 }
 
 void Model::update() {
