@@ -123,8 +123,8 @@ std::optional<View::Button> View::highlightedButton() const {
   return m_highlightedButton;
 }
 
-std::optional<Model::Cell> View::pixelToCell(sf::Vector2i pixel) const {
-  Model::Cell cell{};
+std::optional<sf::Vector2i> View::pixelToCellPosition(
+    sf::Vector2i pixel) const {
   auto coord = m_window.mapPixelToCoords(pixel);
   auto windowSize{m_window.getView().getSize()};
   if (coord.x < f_frameVerticalThickness ||
@@ -134,8 +134,8 @@ std::optional<Model::Cell> View::pixelToCell(sf::Vector2i pixel) const {
     return {};
   }
   auto cellSize{calculateCellSize()};
-  return {{(coord.x - m_viewOffset.x) / cellSize.x,
-           (coord.y - m_viewOffset.y) / cellSize.y}};
+  return {{static_cast<int>((coord.x - m_viewOffset.x) / cellSize.x),
+           static_cast<int>(((coord.y - m_viewOffset.y) / cellSize.y))}};
 }
 
 void View::drawFrame() {
@@ -155,21 +155,23 @@ void View::drawFrame() {
 
 void View::drawCells() {
   auto cellSize{calculateCellSize()};
-  sf::RectangleShape cell{cellSize};
-  cell.setOutlineThickness(f_cellOutlineThickness);
-  cell.setOutlineColor(f_frameColor);
-  for (std::size_t x = 0; x < m_model.width(); x++) {
-    for (std::size_t y = 0; y < m_model.height(); y++) {
-      cell.setPosition(static_cast<float>(x) * cellSize.x + m_viewOffset.x,
+  sf::RectangleShape rect{cellSize};
+  rect.setOutlineThickness(f_cellOutlineThickness);
+  rect.setOutlineColor(f_frameColor);
+  auto cells{m_model.cells()};
+  for (auto x = 0; x < m_model.width(); x++) {
+    for (auto y = 0; y < m_model.height(); y++) {
+      rect.setPosition(static_cast<float>(x) * cellSize.x + m_viewOffset.x,
                        static_cast<float>(y) * cellSize.y + m_viewOffset.y);
-      if (m_model.livingCells().count({x, y}) > 0) {
-        cell.setFillColor(f_livingCellColor);
-      } else if (m_model.deadCells().count({x, y}) > 0) {
-        cell.setFillColor(f_deadCellColor);
+      auto cell{cells.find({x, y})};
+      if (cell == cells.end()) {
+        rect.setFillColor(f_emptyCellColor);
+      } else if (cell->status == Cell::Status::Dead) {
+        rect.setFillColor(f_deadCellColor);
       } else {
-        cell.setFillColor(f_emptyCellColor);
+        rect.setFillColor(f_livingCellColor);
       }
-      m_window.draw(cell);
+      m_window.draw(rect);
     }
   }
 }
@@ -179,8 +181,8 @@ void View::drawBottomLeftMenu() {
                         static_cast<float>(m_window.getView().getSize().y) -
                             f_frameHorizontalThickness +
                             f_textBoxOutlineThickness};
-  auto style{m_model.livingCells().empty() ? TextBoxStyle::Hidden
-                                           : TextBoxStyle::Button};
+  auto style{m_model.cells().empty() ? TextBoxStyle::Hidden
+                                     : TextBoxStyle::Button};
   switch (m_model.status()) {
     case Model::Status::Stopped:
       if (drawTextBox("Start(space)", position, f_startButtonWidth, style)) {
@@ -234,7 +236,7 @@ void View::drawBottomRightMenu() {
       static_cast<float>(m_window.getView().getSize().y) -
           f_frameHorizontalThickness + f_textBoxOutlineThickness};
   position.x -= f_displayBoxWidth;
-  drawTextBox(std::to_string(m_model.livingCells().size()), position,
+  drawTextBox(std::to_string(m_model.cells().size()), position,
               f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_populationButtonWidth;
   drawTextBox("Population", position, f_populationButtonWidth,
@@ -288,10 +290,10 @@ void View::drawTopRightMenu() {
       std::to_string(m_model.width()) + "x" + std::to_string(m_model.height()),
       position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
-  auto style{(m_model.status() == Model::Status::Stopped &&
-              m_model.livingCells().empty())
-                 ? TextBoxStyle::Button
-                 : TextBoxStyle::Hidden};
+  auto style{
+      (m_model.status() == Model::Status::Stopped && m_model.cells().empty())
+          ? TextBoxStyle::Button
+          : TextBoxStyle::Hidden};
   if (drawTextBox("+", position, f_plusMinusButtonWidth, style)) {
     m_highlightedButton = Button::IncreaseSize;
   }
@@ -300,10 +302,10 @@ void View::drawTopRightMenu() {
     m_highlightedButton = Button::ReduceSize;
   }
   position.x -= f_sizeButtonWidth;
-  style = (m_model.status() == Model::Status::Stopped &&
-           m_model.livingCells().empty())
-              ? TextBoxStyle::Simple
-              : TextBoxStyle::Hidden;
+  style =
+      (m_model.status() == Model::Status::Stopped && m_model.cells().empty())
+          ? TextBoxStyle::Simple
+          : TextBoxStyle::Hidden;
   drawTextBox("Size(Up/Down)", position, f_sizeButtonWidth, style);
 }
 
@@ -415,19 +417,19 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
 void View::setZoomLevel(float zoomLevel) {
   auto windowSize{m_window.getView().getSize()};
   auto cellAtCentre{
-      pixelToCell({(static_cast<int>(windowSize.x * .5)),
-                   static_cast<int>(f_frameHorizontalThickness +
-                                    (windowSize.y - f_frameHorizontalThickness -
-                                     f_frameHorizontalThickness) *
-                                        .5)})
+      pixelToCellPosition(
+          {static_cast<int>(windowSize.x * .5),
+           static_cast<int>(f_frameHorizontalThickness +
+                            (windowSize.y - f_frameHorizontalThickness -
+                             f_frameHorizontalThickness) *
+                                .5)})
           .value()};
   m_zoomLevel = std::min(f_maxZoomLevel, std::max(f_minZoomLevel, zoomLevel));
   auto cellSize{calculateCellSize()};
-  setViewOffset(
-      {-(static_cast<float>(cellAtCentre.first) + .5f) * cellSize.x +
-           static_cast<float>(windowSize.x) * .5f,
-       -(static_cast<float>(cellAtCentre.second) + 0.5f) * cellSize.y +
-           static_cast<float>(windowSize.y) * .5f});
+  setViewOffset({-(static_cast<float>(cellAtCentre.x) + .5f) * cellSize.x +
+                     static_cast<float>(windowSize.x) * .5f,
+                 -(static_cast<float>(cellAtCentre.y) + 0.5f) * cellSize.y +
+                     static_cast<float>(windowSize.y) * .5f});
 }
 
 void View::setViewOffset(const sf::Vector2f &position) {
@@ -457,12 +459,10 @@ sf::Vector2f View::calculateCellSize() const {
           static_cast<float>(m_model.height())};
 }
 
-sf::Vector2f View::calculateCellPosition(Model::Cell cell) const {
+sf::Vector2f View::calculateCellPosition(Cell cell) const {
   auto cellSize{calculateCellSize()};
-  return {static_cast<float>(cell.first) * cellSize.x +
-              f_frameHorizontalThickness  //
-              + m_viewOffset.x,
-          static_cast<float>(cell.second) * cellSize.y +
-              f_frameHorizontalThickness  //
-              + m_viewOffset.y};
+  return {static_cast<float>(cell.x) * cellSize.x + f_frameHorizontalThickness +
+              m_viewOffset.x,
+          static_cast<float>(cell.y) * cellSize.y + f_frameHorizontalThickness +
+              m_viewOffset.y};
 }

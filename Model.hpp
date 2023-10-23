@@ -3,26 +3,24 @@
 
 #include <mutex>
 #include <set>
-#include <utility>
+
+#include "Cell.hpp"
 
 class Model {
  public:
-  using Cell = std::pair<std::size_t, std::size_t>;
-
   enum class Status { Uninitialized, Stopped, Running, Paused, Finished };
 
-  Model(std::size_t maxWidth, std::size_t maxHeight);
+  Model(int maxWidth, int maxHeight);
 
   Status status() const;
-  std::size_t speed() const;
-  std::size_t width() const;
-  std::size_t height() const;
-  std::size_t maxWidth() const;
-  std::size_t maxHeight() const;
-  std::size_t generation() const;
+  int speed() const;
+  int width() const;
+  int height() const;
+  int maxWidth() const;
+  int maxHeight() const;
+  int generation() const;
 
-  const std::set<Cell>& livingCells();
-  const std::set<Cell>& deadCells();
+  const std::set<Cell>& cells();
 
   void run();
   void clear();
@@ -34,28 +32,26 @@ class Model {
   void increaseSize();
   void reduceSize();
   void generatePopulation(double density);
-
-  void insertCell(Cell coord);
-  void removeCell(Cell coord);
+  void insertCell(Cell cell);
+  void removeCell(Cell cell);
 
  private:
   void update();
 
-  std::size_t calculateWidth();
-  std::size_t calculateHeight();
+  int calculateWidth();
+  int calculateHeight();
 
-  const std::size_t m_maxWidth;
-  const std::size_t m_maxHeight;
+  const int m_maxWidth;
+  const int m_maxHeight;
 
   Status m_status;
-  std::size_t m_size;
-  std::size_t m_width;
-  std::size_t m_height;
-  std::size_t m_speed;
-  std::size_t m_generation;
-  std::set<Cell> m_pattern;
-  std::set<Cell> m_livingCells;
-  std::set<Cell> m_deadCells;
+  int m_size;
+  int m_width;
+  int m_height;
+  int m_speed;
+  int m_generation;
+  std::set<Cell> m_initialPattern;
+  std::set<Cell> m_cells;
   std::mutex m_mutex;
 };
 

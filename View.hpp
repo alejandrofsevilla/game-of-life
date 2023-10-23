@@ -43,7 +43,7 @@ class View {
   Mode mode() const;
   std::optional<View::Button> highlightedButton() const;
   std::optional<std::string> highlightedLoadFileMenuItem() const;
-  std::optional<Model::Cell> pixelToCell(sf::Vector2i pixel) const;
+  std::optional<sf::Vector2i> pixelToCellPosition(sf::Vector2i pixel) const;
 
  private:
   enum class TextBoxStyle { Simple, Display, Button, Hidden };
@@ -62,7 +62,7 @@ class View {
   void setZoomLevel(float zoomLevel);
 
   sf::Vector2f calculateCellSize() const;
-  sf::Vector2f calculateCellPosition(Model::Cell cell) const;
+  sf::Vector2f calculateCellPosition(Cell cell) const;
 
   const std::set<std::string> m_loadFileMenuItems;
 

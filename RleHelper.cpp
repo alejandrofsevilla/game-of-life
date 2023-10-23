@@ -15,10 +15,10 @@ const std::regex f_rleCommentRegex{"#.*"};
 const std::regex f_rleHeaderRegex{"x = [0-9]*, y = [0-9]*(, rule=.*)?"};
 const std::regex f_rleContentRegex("([0-9]*)(o|b)");
 
-std::set<Model::Cell> map(const std::string& pattern) {
-  std::set<Model::Cell> result;
+std::set<Cell> map(const std::string& pattern) {
+  std::set<Cell> result;
   std::smatch match;
-  Model::Cell cell;
+  Cell cell;
   auto it = pattern.cbegin();
   while (it != pattern.end()) {
     if (std::regex_search(it, pattern.cend(), match, f_rleContentRegex)) {
@@ -26,16 +26,16 @@ std::set<Model::Cell> map(const std::string& pattern) {
       if (match[2] == f_survivingCellSymbol) {
         for (auto i = 0; i < repetitions; i++) {
           result.insert(cell);
-          cell.first++;
+          cell.x++;
         }
       } else {
-        cell.first += repetitions;
+        cell.x += repetitions;
       }
     }
     it = match.suffix().first;
     if (*it == f_nextRowSymbol) {
-      cell.second++;
-      cell.first = 0;
+      cell.y++;
+      cell.x = 0;
       it++;
     }
   }
@@ -44,7 +44,7 @@ std::set<Model::Cell> map(const std::string& pattern) {
 }  // namespace
 
 namespace rle {
-std::set<Model::Cell> patternFromName(const std::string& fileName) {
+std::set<Cell> patternFromName(const std::string& fileName) {
   std::string pattern;
   std::string line;
   std::ifstream istrm;

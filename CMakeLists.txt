@@ -18,12 +18,13 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
   
 add_executable(${PROJECT_NAME}
-  RleHelper.hpp
-  RleHelper.cpp
+  Cell.hpp
   Controller.hpp
   Controller.cpp
   Model.hpp
   Model.cpp
+  RleHelper.hpp
+  RleHelper.cpp
   View.hpp
   View.cpp
   Main.cpp)

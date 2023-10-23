@@ -37,12 +37,14 @@ void Controller::onMainModeMouseButtonPressed(
   if (event.button != sf::Mouse::Button::Left) {
     return;
   }
-  auto cell{m_view.pixelToCell({event.x, event.y})};
-  if (cell) {
-    if (m_model.livingCells().count(cell.value()) == 0) {
-      m_model.insertCell(cell.value());
+  auto pos{m_view.pixelToCellPosition({event.x, event.y})};
+  if (pos) {
+    auto cell{Cell{pos->x, pos->y}};
+    auto match{m_model.cells().find(cell)};
+    if (match != m_model.cells().end()) {
+      m_model.removeCell(cell);
     } else {
-      m_model.removeCell(cell.value());
+      m_model.insertCell(cell);
     }
     return;
   }
@@ -106,6 +108,7 @@ void Controller::onLoadFileModeMouseButtonPressed(
   }
   auto highlightedLoadFileMenuItem{m_view.highlightedLoadFileMenuItem()};
   if (highlightedLoadFileMenuItem) {
+    m_model.clear();
     loadPattern(highlightedLoadFileMenuItem.value());
     m_view.setMode(View::Mode::Main);
     return;
@@ -124,14 +127,14 @@ void Controller::onLoadFileModeMouseButtonPressed(
 
 void Controller::loadPattern(const std::string& patternName) {
   auto pattern{rle::patternFromName(patternName)};
-  auto mostRightElement{std::max_element(
-      pattern.begin(), pattern.end(),
-      [](const auto& a, const auto& b) { return a.first < b.first; })};
-  auto mostBottomElement{std::max_element(
-      pattern.begin(), pattern.end(),
-      [](const auto& a, const auto& b) { return a.second < b.second; })};
-  auto width{mostRightElement->first};
-  auto height{mostBottomElement->second};
+  auto mostRightElement{
+      std::max_element(pattern.begin(), pattern.end(),
+                       [](const auto& a, const auto& b) { return a.x < b.x; })};
+  auto mostBottomElement{
+      std::max_element(pattern.begin(), pattern.end(),
+                       [](const auto& a, const auto& b) { return a.y < b.y; })};
+  auto width{mostRightElement->x};
+  auto height{mostBottomElement->y};
   while (width > m_model.width() || height > m_model.height()) {
     m_model.increaseSize();
     if (m_model.width() == m_model.maxWidth() ||
@@ -140,8 +143,8 @@ void Controller::loadPattern(const std::string& patternName) {
     }
   }
   for (const auto& cell : pattern) {
-    m_model.insertCell({cell.first + (m_model.width() - width) / 2,
-                        cell.second + (m_model.height() - height) / 2});
+    m_model.insertCell({cell.x + (m_model.width() - width) / 2,
+                        cell.y + (m_model.height() - height) / 2});
   }
 }
 
@@ -263,7 +266,7 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
       m_view.closeWindow();
       return;
     case sf::Keyboard::Space:
-      if (m_model.livingCells().empty()) {
+      if (m_model.cells().empty()) {
         return;
       }
       switch (m_model.status()) {
