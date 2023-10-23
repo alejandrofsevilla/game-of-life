@@ -34,12 +34,15 @@ class View {
   void update();
   void zoomIn();
   void zoomOut();
+  void scrollDown();
+  void scrollUp();
   void closeWindow();
   void setMode(View::Mode mode);
   void dragView(sf::Vector2i offset);
 
   Mode mode() const;
   std::optional<View::Button> highlightedButton() const;
+  std::optional<std::string> highlightedLoadFileMenuItem() const;
   std::optional<Model::Cell> pixelToCell(sf::Vector2i pixel) const;
 
  private:
@@ -61,14 +64,17 @@ class View {
   sf::Vector2f calculateCellSize() const;
   sf::Vector2f calculateCellPosition(Model::Cell cell) const;
 
+  const std::set<std::string> m_loadFileMenuItems;
+
   Model &m_model;
   View::Mode m_mode;
   sf::RenderWindow &m_window;
   sf::Vector2f m_viewOffset;
   sf::Font m_font;
   std::optional<View::Button> m_highlightedButton;
-  std::set<std::string> m_loadFileMenuItems;
+  std::optional<std::string> m_highlightedLoadFileMenuItem;
   float m_zoomLevel;
+  int m_scrollPos;
 };
 
 #endif

@@ -3,6 +3,8 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Mouse.hpp>
 
+#include "RleHelper.hpp"
+
 namespace {
 const auto f_frameColor{sf::Color::Black};
 const auto f_livingCellColor{sf::Color::White};
@@ -56,20 +58,23 @@ constexpr auto f_saveButtonWidth{140.f};
 }  // namespace
 
 View::View(sf::RenderWindow &window, Model &model)
-    : m_model{model},
+    : m_loadFileMenuItems{rle::listPatternNames()},
+      m_model{model},
       m_mode{Mode::Main},
       m_window{window},
       m_viewOffset{f_frameVerticalThickness, f_frameHorizontalThickness},
       m_font{},
       m_highlightedButton{},
-      m_loadFileMenuItems{},
-      m_zoomLevel{f_minZoomLevel} {
+      m_highlightedLoadFileMenuItem{},
+      m_zoomLevel{f_minZoomLevel},
+      m_scrollPos{} {
   m_font.loadFromFile(f_fontPath);
 }
 
 void View::update() {
   m_window.clear();
   m_highlightedButton.reset();
+  m_highlightedLoadFileMenuItem.reset();
   switch (m_mode) {
     case Mode::SaveFile:
       drawSaveFileMenu();
@@ -79,6 +84,7 @@ void View::update() {
       break;
     case Mode::Main:
     default:
+      m_scrollPos = 0;
       drawCells();
       drawFrame();
       drawBottomLeftMenu();
@@ -94,6 +100,10 @@ void View::zoomIn() { setZoomLevel(m_zoomLevel + f_zoomSensibility); }
 
 void View::zoomOut() { setZoomLevel(m_zoomLevel - f_zoomSensibility); }
 
+void View::scrollDown() { m_scrollPos++; }
+
+void View::scrollUp() { m_scrollPos = std::max(0, m_scrollPos - 1); }
+
 void View::closeWindow() { m_window.close(); }
 
 void View::setMode(View::Mode mode) { m_mode = mode; }
@@ -104,6 +114,10 @@ void View::dragView(sf::Vector2i offset) {
 }
 
 View::Mode View::mode() const { return m_mode; }
+
+std::optional<std::string> View::highlightedLoadFileMenuItem() const {
+  return m_highlightedLoadFileMenuItem;
+}
 
 std::optional<View::Button> View::highlightedButton() const {
   return m_highlightedButton;
@@ -302,11 +316,11 @@ void View::drawTopLeftMenu() {
   position.x += f_quitButtonWidth;
   auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
                                                         : TextBoxStyle::Hidden};
-  if (drawTextBox("load file(L)", position, f_loadButtonWidth, style)) {
+  if (drawTextBox("Load File(L)", position, f_loadButtonWidth, style)) {
     m_highlightedButton = Button::LoadFile;
   }
   position.x += f_loadButtonWidth;
-  if (drawTextBox("save file(S)", position, f_saveButtonWidth, style)) {
+  if (drawTextBox("Save File(S)", position, f_saveButtonWidth, style)) {
     m_highlightedButton = Button::SaveFile;
   }
 }
@@ -318,25 +332,21 @@ void View::drawLoadFileMenu() {
     m_highlightedButton = Button::Back;
   }
   auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
-  auto maxElementsPerCol{
-      static_cast<int>((windowSize.y - f_textBoxHeight) / f_textBoxHeight)};
-  auto numberOfItems{m_loadFileMenuItems.size()};
-  auto numberOfCol{static_cast<int>(static_cast<float>(numberOfItems) /
-                                    static_cast<float>(maxElementsPerCol)) +
-                   (numberOfItems % maxElementsPerCol == 0 ? 0 : 1)};
-  auto buttonWidth{(windowSize.x - f_textBoxHeight) /
-                   static_cast<float>(numberOfCol)};
-  for (auto it = m_loadFileMenuItems.begin(); it != m_loadFileMenuItems.end();
-       it++) {
-    auto pos{static_cast<int>(std::distance(m_loadFileMenuItems.begin(), it))};
-    drawTextBox(*it,
-                {f_textBoxOutlineThickness +
-                     buttonWidth * static_cast<float>(static_cast<int>(
-                                       static_cast<float>(pos) /
-                                       static_cast<float>(maxElementsPerCol))),
-                 (f_textBoxOutlineThickness + f_textBoxHeight) *
-                     static_cast<float>(1 + pos % maxElementsPerCol)},
-                buttonWidth, TextBoxStyle::Button);
+  auto maxNumberOfItems{static_cast<int>(
+      windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
+  auto maxScrollPos{static_cast<int>(m_loadFileMenuItems.size()) -
+                    maxNumberOfItems};
+  m_scrollPos = std::min(m_scrollPos, maxScrollPos);
+  auto topItem{m_loadFileMenuItems.begin()};
+  std::advance(topItem, m_scrollPos);
+  for (auto it = topItem; it != m_loadFileMenuItems.end(); it++) {
+    auto width{windowSize.x - 2 * f_frameVerticalThickness};
+    auto x{f_frameVerticalThickness};
+    auto y{f_frameHorizontalThickness + f_textBoxOutlineThickness +
+           static_cast<float>(std::distance(topItem, it)) * f_textBoxHeight};
+    if (drawTextBox(*it, {x, y}, width, TextBoxStyle::Button)) {
+      m_highlightedLoadFileMenuItem = *it;
+    }
   }
 }
 

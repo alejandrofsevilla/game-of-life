@@ -18,6 +18,8 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
   
 add_executable(${PROJECT_NAME}
+  RleHelper.hpp
+  RleHelper.cpp
   Controller.hpp
   Controller.cpp
   Model.hpp

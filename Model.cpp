@@ -46,6 +46,10 @@ std::size_t Model::width() const { return m_width; }
 
 std::size_t Model::height() const { return m_height; }
 
+std::size_t Model::maxWidth() const { return m_maxWidth; }
+
+std::size_t Model::maxHeight() const { return m_maxHeight; }
+
 std::size_t Model::generation() const { return m_generation; }
 
 const std::set<Model::Cell>& Model::livingCells() {
@@ -105,46 +109,39 @@ void Model::speedUp() { m_speed = std::min(f_maxSpeed, m_speed + 1); }
 void Model::slowDown() { m_speed = std::max(f_minSpeed, m_speed - 1); }
 
 void Model::increaseSize() {
-  if (m_status != Model::Status::Stopped || !m_livingCells.empty()) {
-    return;
-  }
   m_size = std::min(f_maxSize, m_size + 1);
   m_width = calculateWidth();
   m_height = calculateHeight();
 }
 
 void Model::reduceSize() {
-  if (m_status != Model::Status::Stopped || !m_livingCells.empty()) {
-    return;
-  }
   m_size = std::max(f_minSize, m_size - 1);
   m_width = calculateWidth();
   m_height = calculateHeight();
 }
 
-void Model::addLivingCell(Cell position) {
-  if (m_status != Model::Status::Stopped) {
+void Model::insertCell(Cell position) {
+  if (position > Cell{m_width, m_height}) {
     return;
   }
   std::lock_guard<std::mutex> guard{m_mutex};
   m_livingCells.insert(position);
 }
 
-void Model::removeLivingCell(Cell position) {
-  if (m_status != Model::Status::Stopped) {
+void Model::removeCell(Cell position) {
+  if (position > Cell{m_width, m_height}) {
     return;
   }
   std::lock_guard<std::mutex> guard{m_mutex};
   m_livingCells.erase(position);
 }
 
-void Model::generatePopulation(double populationRate) {
+void Model::generatePopulation(double density) {
   if (m_status != Model::Status::Stopped) {
     return;
   }
   auto population{static_cast<size_t>(static_cast<double>(m_width) *
-                                      static_cast<double>(m_height) *
-                                      populationRate)};
+                                      static_cast<double>(m_height) * density)};
   for (std::size_t i = 0; i < population; i++) {
     auto pos{generateRandomValue(0, m_width * m_height)};
     Cell cell{pos % m_width, pos / m_width};

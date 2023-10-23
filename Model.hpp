@@ -17,7 +17,10 @@ class Model {
   std::size_t speed() const;
   std::size_t width() const;
   std::size_t height() const;
+  std::size_t maxWidth() const;
+  std::size_t maxHeight() const;
   std::size_t generation() const;
+
   const std::set<Cell>& livingCells();
   const std::set<Cell>& deadCells();
 
@@ -30,9 +33,10 @@ class Model {
   void slowDown();
   void increaseSize();
   void reduceSize();
-  void addLivingCell(Cell coord);
-  void removeLivingCell(Cell coord);
-  void generatePopulation(double populationRate);
+  void generatePopulation(double density);
+
+  void insertCell(Cell coord);
+  void removeCell(Cell coord);
 
  private:
   void update();

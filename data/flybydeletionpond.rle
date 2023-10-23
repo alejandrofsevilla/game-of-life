@@ -1,0 +1,17 @@
+#N flybydeletionpond.rle
+#C https://conwaylife.com/wiki/Fly-by_deletion
+#C https://www.conwaylife.com/patterns/flybydeletionpond.rle
+x = 89, y = 53
+23boo16bo5bo18bo5bo5bo$22bobbo14b3o3b3o7b3o6b3o3b3o3b3o$22bobbo14boboo
+boobbo5bobbo6bobooboobbobobboo5bo$23boo6bo9bobo4b3o3b3obbo6bobobobboob
+obboo4b3o$30b3o8b3obobobo8b6obbo3bobobobobbo5boboo$bo15bo11bobboo3b8ob
+5obobbo4bobo3b3o5b3o3bo5b3o$3o6bo6b3o10bobboo3boboobbo5bobobbo9bo4boob
+o7bo5b3o$oboo4b3o5boboo11bobbobbobo4bobbo15bo7bo8b4obboo$b3o3bobboo5b
+3o7bo3bobbo9boo30bo3bo$b3obbobobbo5b3o11b4o$boo7bob3obboo12booboo$4boo
+6boo3boo14bobbo$bbobbo6bo3boo12bobbobbob3o$bo11bo17bo6boboo$bo35bobbob
+oo$40bobo$19bo12bo6booboboo$18b3o10b3o8boboo$18boboo8boobo8bobbo$19b3o
+8b3o9booboo$19b3o8b3o6booboobbo$19b3o9boo8boobbobo$19boo20boo$$42bobo$
+17bo23bob3o$16b3o21boobobbo$15boobo20bobo$15b3o21bo5bo$15b3o20bo4bobo$
+16boo19boo4bobo$37boo$38bobbo$$38b3o$37bobbo$37b5o$37boo$38boobbo$39bo
+5bo$38bo5b3o$37boo5boboo$38bo6b3o$38bo6boo$39boboo$40b3o$$43bo$44bo$
+44boo$44b3o$44b3o$44boo!

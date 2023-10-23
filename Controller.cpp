@@ -1,5 +1,7 @@
 #include "Controller.hpp"
 
+#include "RleHelper.hpp"
+
 namespace {
 constexpr auto f_populationGenerationRate{.05};
 }  // namespace
@@ -38,9 +40,9 @@ void Controller::onMainModeMouseButtonPressed(
   auto cell{m_view.pixelToCell({event.x, event.y})};
   if (cell) {
     if (m_model.livingCells().count(cell.value()) == 0) {
-      m_model.addLivingCell(cell.value());
+      m_model.insertCell(cell.value());
     } else {
-      m_model.removeLivingCell(cell.value());
+      m_model.removeCell(cell.value());
     }
     return;
   }
@@ -102,16 +104,44 @@ void Controller::onLoadFileModeMouseButtonPressed(
   if (event.button != sf::Mouse::Button::Left) {
     return;
   }
-  auto highlightedButton{m_view.highlightedButton()};
-  if (!highlightedButton) {
+  auto highlightedLoadFileMenuItem{m_view.highlightedLoadFileMenuItem()};
+  if (highlightedLoadFileMenuItem) {
+    loadPattern(highlightedLoadFileMenuItem.value());
+    m_view.setMode(View::Mode::Main);
     return;
   }
-  switch (highlightedButton.value()) {
-    case View::Button::Back:
-      m_view.setMode(View::Mode::Main);
-      return;
-    default:
-      return;
+  auto highlightedButton{m_view.highlightedButton()};
+  if (highlightedButton) {
+    switch (highlightedButton.value()) {
+      case View::Button::Back:
+        m_view.setMode(View::Mode::Main);
+        return;
+      default:
+        return;
+    }
+  }
+}
+
+void Controller::loadPattern(const std::string& patternName) {
+  auto pattern{rle::patternFromName(patternName)};
+  auto mostRightElement{std::max_element(
+      pattern.begin(), pattern.end(),
+      [](const auto& a, const auto& b) { return a.first < b.first; })};
+  auto mostBottomElement{std::max_element(
+      pattern.begin(), pattern.end(),
+      [](const auto& a, const auto& b) { return a.second < b.second; })};
+  auto width{mostRightElement->first};
+  auto height{mostBottomElement->second};
+  while (width > m_model.width() || height > m_model.height()) {
+    m_model.increaseSize();
+    if (m_model.width() == m_model.maxWidth() ||
+        m_model.height() == m_model.maxHeight()) {
+      break;
+    }
+  }
+  for (const auto& cell : pattern) {
+    m_model.insertCell({cell.first + (m_model.width() - width) / 2,
+                        cell.second + (m_model.height() - height) / 2});
   }
 }
 
@@ -152,10 +182,33 @@ void Controller::onMouseButtonPressed(
 
 void Controller::onMouseWheelScrolled(
     const sf::Event::MouseWheelScrollEvent& event) {
+  switch (m_view.mode()) {
+    case View::Mode::Main:
+      onMainModeMouseWheelScrolled(event);
+      return;
+    case View::Mode::LoadFile:
+      onLoadFileModeMouseWheelScrolled(event);
+      return;
+    default:
+      return;
+  }
+}
+
+void Controller::onMainModeMouseWheelScrolled(
+    const sf::Event::MouseWheelScrollEvent& event) {
   if (event.delta > 0) {
     m_view.zoomIn();
   } else if (event.delta < 0) {
     m_view.zoomOut();
+  }
+}
+
+void Controller::onLoadFileModeMouseWheelScrolled(
+    const sf::Event::MouseWheelScrollEvent& event) {
+  if (event.delta > 0) {
+    m_view.scrollUp();
+  } else if (event.delta < 0) {
+    m_view.scrollDown();
   }
 }
 
