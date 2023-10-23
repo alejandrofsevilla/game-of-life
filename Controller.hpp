@@ -12,7 +12,6 @@ class Controller {
   Controller(View &view, Model &model);
 
   void onEvent(const sf::Event &event);
-  void update();
 
  private:
   void onMouseButtonPressed(const sf::Event::MouseButtonEvent &event);

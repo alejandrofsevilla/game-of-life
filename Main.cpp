@@ -5,10 +5,10 @@
 #include "View.hpp"
 
 namespace {
-constexpr auto f_windowTitle{"GameOfLife"};
+constexpr auto f_windowTitle{"Game Of Life"};
 constexpr auto f_windowStyle{sf::Style::Fullscreen};
-constexpr auto f_modelMaxWidth{1000};
-constexpr auto f_modelMaxHeight{500};
+constexpr auto f_modelMaxWidth{600};
+constexpr auto f_modelMaxHeight{300};
 }  // namespace
 
 int main() {

@@ -4,8 +4,8 @@
 struct Cell {
   enum class Status { Dead, Alive };
 
-  int x;
-  int y;
+  int x{0};
+  int y{0};
   Status status{Status::Alive};
 
   bool operator==(const Cell& other) const {

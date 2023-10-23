@@ -128,10 +128,10 @@ void Controller::onLoadFileModeMouseButtonPressed(
 void Controller::loadPattern(const std::string& patternName) {
   auto pattern{rle::patternFromName(patternName)};
   auto mostRightElement{
-      std::max_element(pattern.begin(), pattern.end(),
+      std::max_element(pattern.cbegin(), pattern.cend(),
                        [](const auto& a, const auto& b) { return a.x < b.x; })};
   auto mostBottomElement{
-      std::max_element(pattern.begin(), pattern.end(),
+      std::max_element(pattern.cbegin(), pattern.cend(),
                        [](const auto& a, const auto& b) { return a.y < b.y; })};
   auto width{mostRightElement->x};
   auto height{mostBottomElement->y};

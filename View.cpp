@@ -339,9 +339,9 @@ void View::drawLoadFileMenu() {
   auto maxScrollPos{static_cast<int>(m_loadFileMenuItems.size()) -
                     maxNumberOfItems};
   m_scrollPos = std::min(m_scrollPos, maxScrollPos);
-  auto topItem{m_loadFileMenuItems.begin()};
+  auto topItem{m_loadFileMenuItems.cbegin()};
   std::advance(topItem, m_scrollPos);
-  for (auto it = topItem; it != m_loadFileMenuItems.end(); it++) {
+  for (auto it = topItem; it != m_loadFileMenuItems.cend(); it++) {
     auto width{windowSize.x - 2 * f_frameVerticalThickness};
     auto x{f_frameVerticalThickness};
     auto y{f_frameHorizontalThickness + f_textBoxOutlineThickness +

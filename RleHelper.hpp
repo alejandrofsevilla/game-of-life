@@ -5,13 +5,11 @@
 #include <set>
 #include <string>
 
-#include "Model.hpp"
+#include "Cell.hpp"
 
 namespace rle {
-
 std::set<std::string> listPatternNames();
 std::set<Cell> patternFromName(const std::string& fileName);
-
 }  // namespace rle
 
 #endif

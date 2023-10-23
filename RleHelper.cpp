@@ -2,7 +2,6 @@
 
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <regex>
 
 namespace {
@@ -20,7 +19,7 @@ std::set<Cell> map(const std::string& pattern) {
   std::smatch match;
   Cell cell;
   auto it = pattern.cbegin();
-  while (it != pattern.end()) {
+  while (it != pattern.cend()) {
     if (std::regex_search(it, pattern.cend(), match, f_rleContentRegex)) {
       auto repetitions{std::max(1, std::atoi(match[1].str().c_str()))};
       if (match[2] == f_survivingCellSymbol) {
@@ -36,6 +35,8 @@ std::set<Cell> map(const std::string& pattern) {
     if (*it == f_nextRowSymbol) {
       cell.y++;
       cell.x = 0;
+      it++;
+    } else if (*it == f_endOfPatternSymbol) {
       it++;
     }
   }
@@ -72,5 +73,4 @@ std::set<std::string> listPatternNames() {
   }
   return files;
 }
-
 }  // namespace rle
