@@ -13,7 +13,7 @@ constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{1000}};
 constexpr auto f_defaultSpeed{5};
 constexpr auto f_maxSpeed{20};
 constexpr auto f_minSpeed{1};
-constexpr auto f_defaultSize{4};
+constexpr auto f_defaultSize{5};
 constexpr auto f_maxSize{20};
 constexpr auto f_minSize{1};
 
@@ -99,12 +99,18 @@ void Model::speedUp() { m_speed = std::min(f_maxSpeed, m_speed + 1); }
 void Model::slowDown() { m_speed = std::max(f_minSpeed, m_speed - 1); }
 
 void Model::increaseSize() {
+  if (!m_cells.empty()) {
+    return;
+  }
   m_size = std::min(f_maxSize, m_size + 1);
   m_width = calculateWidth();
   m_height = calculateHeight();
 }
 
 void Model::reduceSize() {
+  if (!m_cells.empty()) {
+    return;
+  }
   m_size = std::max(f_minSize, m_size - 1);
   m_width = calculateWidth();
   m_height = calculateHeight();

@@ -36,12 +36,12 @@ constexpr auto f_cellOutlineThickness{1.f};
 constexpr auto f_textBoxOutlineThickness{1.f};
 constexpr auto f_textBoxHeight{f_frameHorizontalThickness};
 constexpr auto f_minZoomLevel{1.f};
-constexpr auto f_maxZoomLevel{5.f};
+constexpr auto f_maxZoomLevel{10.f};
 constexpr auto f_zoomSensibility{1.f};
 constexpr auto f_textBoxTextVerticalPosition{12.f};
 constexpr auto f_startButtonWidth{180.f};
-constexpr auto f_resetButtonWidth{180.f};
-constexpr auto f_clearButtonWidth{120.f};
+constexpr auto f_resetButtonWidth{130.f};
+constexpr auto f_clearButtonWidth{130.f};
 constexpr auto f_generatePopButtonWidth{240.f};
 constexpr auto f_addRemoveCellButtonWidth{280.f};
 constexpr auto f_dragViewButtonWidth{230.f};
@@ -55,9 +55,10 @@ constexpr auto f_sizeButtonWidth{190.f};
 constexpr auto f_quitButtonWidth{120.f};
 constexpr auto f_loadButtonWidth{140.f};
 constexpr auto f_saveButtonWidth{140.f};
-constexpr auto f_backButtonWidth{120.f};
-constexpr auto f_pageUpDownButtonWidth{260.f};
-constexpr auto f_scrollUpDownWidth{260.f};
+constexpr auto f_backButtonWidth{140.f};
+constexpr auto f_pageUpDownButtonWidth{280.f};
+constexpr auto f_scrollUpDownWidth{280.f};
+constexpr auto f_showHideGridButton{170.f};
 }  // namespace
 
 View::View(sf::RenderWindow &window, Model &model)
@@ -70,7 +71,8 @@ View::View(sf::RenderWindow &window, Model &model)
       m_highlightedButton{},
       m_highlightedLoadFileMenuItem{},
       m_zoomLevel{f_minZoomLevel},
-      m_scrollPos{} {
+      m_scrollPos{},
+      m_isGridVisible{true} {
   m_font.loadFromFile(f_fontPath);
 }
 
@@ -121,6 +123,10 @@ void View::pageUp() {
   m_scrollPos = std::max(0, m_scrollPos - maxNumberOfItems);
 }
 
+void View::showGrid() { m_isGridVisible = true; }
+
+void View::hideGrid() { m_isGridVisible = false; }
+
 void View::closeWindow() { m_window.close(); }
 
 void View::setMode(View::Mode mode) { m_mode = mode; }
@@ -131,6 +137,8 @@ void View::dragView(sf::Vector2i offset) {
 }
 
 View::Mode View::mode() const { return m_mode; }
+
+bool View::isGridVisible() const { return m_isGridVisible; }
 
 std::optional<std::string> View::highlightedLoadFileMenuItem() const {
   return m_highlightedLoadFileMenuItem;
@@ -178,16 +186,19 @@ void View::drawCells() {
   auto cells{m_model.cells()};
   for (auto x = 0; x < m_model.width(); x++) {
     for (auto y = 0; y < m_model.height(); y++) {
-      rect.setPosition(static_cast<float>(x) * cellSize.x + m_viewOffset.x,
-                       static_cast<float>(y) * cellSize.y + m_viewOffset.y);
       auto cell{cells.find({x, y})};
       if (cell == cells.end()) {
+        if (!m_isGridVisible) {
+          continue;
+        }
         rect.setFillColor(f_emptyCellColor);
       } else if (cell->status == Cell::Status::Dead) {
         rect.setFillColor(f_deadCellColor);
       } else {
         rect.setFillColor(f_livingCellColor);
       }
+      rect.setPosition(static_cast<float>(x) * cellSize.x + m_viewOffset.x,
+                       static_cast<float>(y) * cellSize.y + m_viewOffset.y);
       m_window.draw(rect);
     }
   }
@@ -233,11 +244,16 @@ void View::drawBottomLeftMenu() {
   position.x += f_clearButtonWidth;
   style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
                                                      : TextBoxStyle::Hidden;
-  if (drawTextBox("Generate Population(G)", position, f_generatePopButtonWidth,
+  if (drawTextBox("Generate Population(P)", position, f_generatePopButtonWidth,
                   style)) {
     m_highlightedButton = Button::GeneratePopulation;
   }
   position.x += f_generatePopButtonWidth;
+  if (drawTextBox(m_isGridVisible ? "Hide Grid(H)" : "Show Grid(H)", position,
+                  f_showHideGridButton, TextBoxStyle::Button)) {
+    m_highlightedButton = m_isGridVisible ? Button::HideGrid : Button::ShowGrid;
+  }
+  position.x += f_showHideGridButton;
   style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Simple
                                                      : TextBoxStyle::Hidden;
   drawTextBox("Add/RemoveCell(Mouse Left)", position,
@@ -271,7 +287,7 @@ void View::drawTopRightMenu() {
       m_window.getView().getSize().x - f_frameVerticalThickness,
       f_textBoxOutlineThickness};
   position.x -= f_displayBoxWidth;
-  drawTextBox(std::to_string(m_model.speed()) + "gen/s", position,
+  drawTextBox(std::to_string(m_model.speed()) + "x", position,
               f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
   if (drawTextBox("+", position, f_plusMinusButtonWidth,
@@ -353,7 +369,7 @@ void View::drawLoadFileMenu() {
   position.x += f_backButtonWidth;
   drawTextBox("Scroll Up/Down(Mouse Wheel)", position, f_scrollUpDownWidth,
               TextBoxStyle::Simple);
-  position.x += f_backButtonWidth;
+  position.x += f_scrollUpDownWidth;
   drawTextBox("Page Up/Down(Up/Down)", position, f_scrollUpDownWidth,
               TextBoxStyle::Simple);
 

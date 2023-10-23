@@ -26,6 +26,8 @@ class View {
     GeneratePopulation,
     IncreaseSize,
     ReduceSize,
+    ShowGrid,
+    HideGrid,
     Back
   };
 
@@ -36,13 +38,16 @@ class View {
   void zoomOut();
   void scrollDown();
   void scrollUp();
-  void pageUp();
   void pageDown();
+  void pageUp();
+  void showGrid();
+  void hideGrid();
   void closeWindow();
   void setMode(View::Mode mode);
   void dragView(sf::Vector2i offset);
 
   Mode mode() const;
+  bool isGridVisible() const;
   std::optional<View::Button> highlightedButton() const;
   std::optional<std::string> highlightedLoadFileMenuItem() const;
   std::optional<sf::Vector2i> pixelToCellPosition(sf::Vector2i pixel) const;
@@ -77,6 +82,7 @@ class View {
   std::optional<std::string> m_highlightedLoadFileMenuItem;
   float m_zoomLevel;
   int m_scrollPos;
+  bool m_isGridVisible;
 };
 
 #endif
