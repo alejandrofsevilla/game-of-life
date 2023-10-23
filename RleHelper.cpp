@@ -45,7 +45,7 @@ std::set<Cell> map(const std::string& pattern) {
 }  // namespace
 
 namespace rle {
-std::set<Cell> patternFromName(const std::string& fileName) {
+std::set<Cell> loadPattern(const std::string& fileName) {
   std::string pattern;
   std::string line;
   std::ifstream istrm;

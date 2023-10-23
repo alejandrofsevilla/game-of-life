@@ -30,7 +30,6 @@ class Controller {
   void onMainModeKeyPressed(const sf::Event::KeyEvent &event);
   void onLoadFileModeKeyPressed(const sf::Event::KeyEvent &event);
   void onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event);
-  void loadPattern(const std::string &patternName);
 
   View &m_view;
   Model &m_model;

@@ -109,7 +109,8 @@ void Controller::onLoadFileModeMouseButtonPressed(
   auto highlightedLoadFileMenuItem{m_view.highlightedLoadFileMenuItem()};
   if (highlightedLoadFileMenuItem) {
     m_model.clear();
-    loadPattern(highlightedLoadFileMenuItem.value());
+    m_model.insertPattern(
+      rle::loadPattern(highlightedLoadFileMenuItem.value()));
     m_view.setMode(View::Mode::Main);
     return;
   }
@@ -122,29 +123,6 @@ void Controller::onLoadFileModeMouseButtonPressed(
       default:
         return;
     }
-  }
-}
-
-void Controller::loadPattern(const std::string& patternName) {
-  auto pattern{rle::patternFromName(patternName)};
-  auto mostRightElement{
-      std::max_element(pattern.cbegin(), pattern.cend(),
-                       [](const auto& a, const auto& b) { return a.x < b.x; })};
-  auto mostBottomElement{
-      std::max_element(pattern.cbegin(), pattern.cend(),
-                       [](const auto& a, const auto& b) { return a.y < b.y; })};
-  auto width{mostRightElement->x};
-  auto height{mostBottomElement->y};
-  while (width > m_model.width() || height > m_model.height()) {
-    m_model.increaseSize();
-    if (m_model.width() == m_model.maxWidth() ||
-        m_model.height() == m_model.maxHeight()) {
-      break;
-    }
-  }
-  for (const auto& cell : pattern) {
-    m_model.insertCell({cell.x + (m_model.width() - width) / 2,
-                        cell.y + (m_model.height() - height) / 2});
   }
 }
 

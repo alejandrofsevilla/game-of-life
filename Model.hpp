@@ -16,8 +16,6 @@ class Model {
   int speed() const;
   int width() const;
   int height() const;
-  int maxWidth() const;
-  int maxHeight() const;
   int generation() const;
 
   const std::set<Cell>& cells();
@@ -32,8 +30,9 @@ class Model {
   void increaseSize();
   void reduceSize();
   void generatePopulation(double density);
-  void insertCell(Cell cell);
-  void removeCell(Cell cell);
+  void insertCell(const Cell& cell);
+  void removeCell(const Cell& cell);
+  void insertPattern(const std::set<Cell>& pattern);
 
  private:
   void update();

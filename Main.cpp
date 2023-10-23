@@ -7,8 +7,8 @@
 namespace {
 constexpr auto f_windowTitle{"Game Of Life"};
 constexpr auto f_windowStyle{sf::Style::Fullscreen};
-constexpr auto f_modelMaxWidth{600};
-constexpr auto f_modelMaxHeight{300};
+constexpr auto f_modelMaxWidth{800};
+constexpr auto f_modelMaxHeight{400};
 }  // namespace
 
 int main() {

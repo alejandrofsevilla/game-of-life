@@ -45,10 +45,6 @@ int Model::width() const { return m_width; }
 
 int Model::height() const { return m_height; }
 
-int Model::maxWidth() const { return m_maxWidth; }
-
-int Model::maxHeight() const { return m_maxHeight; }
-
 int Model::generation() const { return m_generation; }
 
 const std::set<Cell>& Model::cells() {
@@ -113,16 +109,37 @@ void Model::reduceSize() {
   m_height = calculateHeight();
 }
 
-void Model::insertCell(Cell cell) {
-  if (cell > Cell{m_width, m_height}) {
+void Model::insertPattern(const std::set<Cell>& pattern) {
+  auto mostRightElement{
+    std::max_element(pattern.cbegin(), pattern.cend(),
+    [](const auto& a, const auto& b) { return a.x < b.x; }) };
+  auto mostBottomElement{
+      std::max_element(pattern.cbegin(), pattern.cend(),
+      [](const auto& a, const auto& b) { return a.y < b.y; }) };
+  auto width{ mostRightElement->x };
+  auto height{ mostBottomElement->y };
+  while (width > m_width || height > m_height) {
+    increaseSize();
+    if (m_size >= f_maxSize) {
+      break;
+    }
+  }
+  for (const auto& cell : pattern) {
+    m_cells.insert({ cell.x + (m_width - width) / 2,
+      cell.y + (m_height - height) / 2 });
+  }
+}
+
+void Model::insertCell(const Cell& cell) {
+  if (cell.x > m_width || cell.y > m_height) {
     return;
   }
   std::lock_guard<std::mutex> guard{m_mutex};
   m_cells.insert(cell);
 }
 
-void Model::removeCell(Cell cell) {
-  if (cell > Cell{m_width, m_height}) {
+void Model::removeCell(const Cell& cell) {
+  if (cell.x > m_width || cell.y > m_height) {
     return;
   }
   std::lock_guard<std::mutex> guard{m_mutex};
