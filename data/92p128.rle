@@ -1,0 +1,8 @@
+#N 92p128.rle
+#C https://conwaylife.com/wiki/P8_glider_reflector
+#C https://www.conwaylife.com/patterns/92p128.rle
+x = 31, y = 36, rule = B3/S23
+5b2o8b2o$5b2o8bo$16bo$15b2o$5bo8bo$4b3o3b2o2b3o$2b2ob2o3b2o5bo$bo2bo
+11b2o$4bo2$o2bo$b2o3b2o$6b2o4$5b2o19b2o$4bobo19bo$4bo9bo9bobo$3b2o10bo
+8b2o$13b3o3$23b2o$23b2o3b2o$27bo2bo2$26bo$13b2o11bo2bo$13bo5b2o3b2ob2o
+$14b3o2b2o3b3o$16bo8bo$14b2o$14bo$15bo8b2o$14b2o8b2o!

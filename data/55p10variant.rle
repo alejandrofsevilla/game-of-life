@@ -1,0 +1,7 @@
+#N 55p10variant.rle
+#C https://conwaylife.com/wiki/55P10
+#C https://www.conwaylife.com/patterns/55p10variant.rle
+x = 23, y = 10, rule = B3/S23
+7bo7bo$5bo3bo3bo3bo2$b2obo5bobo5bob2o$bob2ob2o2bobo2b2ob2obo$6bo3bobo
+3bo$2b2ob2obobobobob2ob2o$2bo3bob2o3b2obo3bo$obo3bo9bo3bobo$2o3b2o9b2o
+3b2o!

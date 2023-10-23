@@ -1,0 +1,5 @@
+#N 29p3h1v0.rle
+#C https://conwaylife.com/wiki/29P3H1V0
+#C https://www.conwaylife.com/patterns/29p3h1v0.rle
+x = 19, y = 9, rule = B3/S23
+5bo$b3ob3o$o6b2o$b2o3bo2bo$11bo$11b3o$9bo3b2ob2o$10bo2bo2b2o$15bo2bo!

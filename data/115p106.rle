@@ -1,0 +1,10 @@
+#N 115p106.rle
+#O Nico Brown, 2022
+#C https://conwaylife.com/wiki/115P106
+#C https://www.conwaylife.com/patterns/115p106.rle
+x = 42, y = 29, rule = B3/S23
+18b2o$18bo$16bobo$11b2o3b2o$13bo8bo6bo$14bo5b3o4b3o$11bobo5bo6bo$12bo
+6b2o5b2o$39b2o$34b2o2bo2bo$34bobo2b2o$37b2o$38bo$2b2ob2o13bobobo13bob
+2o$o2bob2o14bo3b2o8b2obo2bo$2obo16bobobo10b2ob2o$3bo$3b2o$b2o2bobo$o2b
+o2b2o$b2o26b3o$14b2o5b2o$15bo6bo10bo$12b3o4b3o11bo$12bo6bo13bo$24b2o$
+23bobo3b3o$23bo$22b2o!

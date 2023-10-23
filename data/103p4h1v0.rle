@@ -1,0 +1,7 @@
+#N 103p4h1v0.rle
+#C https://conwaylife.com/wiki/C/4_orthogonal
+#C https://www.conwaylife.com/patterns/103p4h1v0.rle
+x = 27, y = 15, rule = B3/S23
+10b2o$5b3o2b3o$7bo2b2obobo4bo$5b2o5b3o6bo$b2o2bo2b3obo3b4obo4bo$2ob2o
+5bo4b2o3b3obobo$bo3bo9bo8bobo$2o3bo$bo3bo9bo8bobo$2ob2o5bo4b2o3b3obobo
+$b2o2bo2b3obo3b4obo4bo$5b2o5b3o6bo$7bo2b2obobo4bo$5b3o2b3o$10b2o!

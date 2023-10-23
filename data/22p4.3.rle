@@ -1,0 +1,6 @@
+#N 22p4.3.rle
+#O Dean Hickerson, 1990
+#C https://conwaylife.com/wiki/22P4.3
+#C https://www.conwaylife.com/patterns/22p4.3.rle
+x = 9, y = 9, rule = B3/S23
+2b2o$2bobo$6b2o$3bo2bo$6b2o$bobobo2bo$3b2o2b2o$ob2o$bo!

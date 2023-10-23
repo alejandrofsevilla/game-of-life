@@ -1,0 +1,8 @@
+#N 66p62.rle
+#O 83bismuth38, 2021
+#C https://conwaylife.com/wiki/66P62
+#C https://www.conwaylife.com/patterns/66p62.rle
+x = 24, y = 25, rule = B3/S23
+7bob2o2b2obo$6bo3b4o3bo$2o4bob2ob2ob2obo4b2o$2o5b2o6b2o5b2o8$2o5b2o6b2o5b2o$
+2o4bob2ob2ob2obo4b2o$6bo3b4o3bo$7bob2o2b2obo6$9b6o$9bo4bo$10bo2bo$8bobo2bobo$
+8b2o4b2o!

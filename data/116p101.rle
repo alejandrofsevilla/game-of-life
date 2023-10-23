@@ -1,0 +1,12 @@
+#N 116p101.rle
+#O iNoMed, 2023
+#C https://conwaylife.com/wiki/116P101
+#C https://www.conwaylife.com/patterns/116p101.rle
+#C [[116P101]]
+#C https://conwaylife.com/forums/viewtopic.php?p=159153#p159153
+x = 46, y = 39, rule = B3/S23
+23b2o$23bo2b2o$24b2ob3o$15b2o13bo$4b2o10bo7b2ob3o$5bo10bobo5b2obo$5bob
+o9b2o$6b2o6$32b2o$10b2o20b2o$9bo2bo31b2o$9bo34bo$9bo3bo18b3o7bobo$9bo
+4bo16bo3bo6b2o2$2b2o6bo3bo16bo4bo$bobo7b3o18bo3bo$bo34bo$2o31bo2bo$12b
+2o20b2o$12b2o6$38b2o$27b2o9bobo$18bob2o5bobo10bo$16b3ob2o7bo10b2o$15bo
+13b2o$16b3ob2o$18b2o2bo$21b2o!

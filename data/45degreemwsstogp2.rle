@@ -1,0 +1,6 @@
+#N 45degreemwsstogp2.rle
+#C https://conwaylife.com/wiki/45-degree_MWSS-to-G
+#C https://www.conwaylife.com/patterns/45degreemwsstogp2.rle
+x = 17, y = 22, rule = B3/S23
+4bo5bo$4b2o3b2o$4b2o3b2o$5bo3bo6bo$14b3o$13bo$o2bo9b2o$4bo$o3bo$b4o2$
+10b2o$9bo2bo$10b2o$2b2o$bobo$bo$2o$13b2o$13bo$14b3o$16bo!

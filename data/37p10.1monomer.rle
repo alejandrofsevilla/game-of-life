@@ -1,0 +1,5 @@
+#N 37p10.1monomer.rle
+#C https://conwaylife.com/wiki/37P10.1
+#C https://www.conwaylife.com/patterns/37p10.1monomer.rle
+x = 15, y = 10, rule = B3/S23
+b2o9b2o$o2bo7bo2bo$2obo7bob2o$bob2o5b2obo$bo11bo$2b11o$5bo3bo$4bo5bo$3bobo3bobo$3b2o5b2o!

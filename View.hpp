@@ -36,6 +36,8 @@ class View {
   void zoomOut();
   void scrollDown();
   void scrollUp();
+  void pageUp();
+  void pageDown();
   void closeWindow();
   void setMode(View::Mode mode);
   void dragView(sf::Vector2i offset);

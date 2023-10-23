@@ -1,0 +1,9 @@
+#N 138p7sparker.rle
+#C https://conwaylife.com/wiki/Period-7_sparkers
+#C https://www.conwaylife.com/patterns/138p7sparker.rle
+x = 29, y = 19, rule = B3/S23
+5b2o$6bo8b2o$5bo5b2o2bo2bo4bobo$5b2o4bobobob2o3bob2o$13bobo6bo$8b2o5bo
+b2o2b2ob4o$b3o11bobobo4bo3bo$6bob2o3bobobob2obo3bobo$5b2ob2o2bobob2o2b
+obob4o$o2bo4b2o7b3o$5b2ob2o2bobob2o2bobob4o$6bob2o3bobobob2obo3bobo$b
+3o11bobobo4bo3bo$8b2o5bob2o2b2ob4o$13bobo6bo$5b2o4bobobob2o3bob2o$5bo
+5b2o2bo2bo4bobo$6bo8b2o$5b2o!

@@ -1,0 +1,5 @@
+#N 14911m.rle
+#C https://conwaylife.com/wiki/One-cell-thick_pattern
+#C https://www.conwaylife.com/patterns/14911m.rle
+x = 38, y = 1, rule = B3/S23
+4o2b4o3b5o2b5o2b3o2b6o!

@@ -1,0 +1,7 @@
+#N 31p3onmerzenichsp64.rle
+#C https://conwaylife.com/wiki/Merzenich%27s_p64
+#C https://www.conwaylife.com/patterns/31p3onmerzenichsp64.rle
+x = 31, y = 21, rule = B3/S23
+5b2o$5b2o3$8b2o$9b2o8b2o$19b2o5b2ob2o$27bob2o$10bobo10b2o2bo$9bo3bo9b
+3obo$8bo3bo9bo2b2o$7bo3bo10bo$8bobo11bo$21bo$2o23bo$2o8b2o9b2obo2bo$
+11b2o10bo3bo$27bo$24bo$14b2o9b2o$14b2o!

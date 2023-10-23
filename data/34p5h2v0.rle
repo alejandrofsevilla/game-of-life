@@ -1,0 +1,7 @@
+#N 34p5h2v0.rle
+#O Matthias Merzenich, 2015
+#C https://conwaylife.com/wiki/34P5H2V0
+#C https://www.conwaylife.com/patterns/34p5h2v0.rle
+x = 15, y = 10, rule = B3/S23
+3bo$2b3o$bo3bo$b2ob2o5bo$11b2o$4obo5bob2o$bo2bo2b3o2bo$7b3o$11bo$11bob
+2o!

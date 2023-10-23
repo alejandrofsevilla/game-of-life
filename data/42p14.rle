@@ -1,0 +1,7 @@
+#N 42p14.rle
+#O Mitchell Riley, 2022
+#C https://conwaylife.com/wiki/42P14
+#C https://www.conwaylife.com/patterns/42p14.rle
+x = 32, y = 16, rule = B3/S23
+16bo$16bo3$25b2o$2o11b2ob3o5bobo$bo17bo4b2o$bobo15b2o7b2o$2b2o7b2o15bo
+bo$6b2o4bo17bo$5bobo5b3ob2o11b2o$5b2o3$15bo$15bo!

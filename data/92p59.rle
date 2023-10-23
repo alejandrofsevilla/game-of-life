@@ -1,0 +1,9 @@
+#N 92p59.rle
+#O Mitchell Riley, 2022
+#C https://conwaylife.com/wiki/92P59
+#C https://www.conwaylife.com/patterns/92p59.rle
+x = 43, y = 43, rule = B3/S23
+21b2o$22bo$22bobo$23b2o2b3o5$26bo$25bobo$25bobo$26bo$22b2o$3bo17bobo$
+3bo17bobo$3bo5b2o11bo$8bo2bo$9b2o$2b2o$3bo8b3o$3o9bo2bo$o12b2o13b2o12b
+o$27bo2bo9b3o$28b3o8bo$39b2o$32b2o$31bo2bo$20bo11b2o5bo$19bobo17bo$19b
+obo17bo$19b2o$16bo$15bobo$15bobo$16bo5$13b3o2b2o$18bobo$20bo$20b2o!

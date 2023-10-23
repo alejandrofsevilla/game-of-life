@@ -1,0 +1,6 @@
+#N 38p7alt.rle
+#C https://conwaylife.com/wiki/38P7.2
+#C https://www.conwaylife.com/patterns/38p7alt.rle
+x = 13, y = 13, rule = B3/S23
+4bo$o2bobo$obo2bo2bo$bo2b2obobo2bo$5bobo2bobo$2b2o3b2o2bo$2bo4bo$4bo4b
+2o$10bo$bo2bo3bo$2b2o$8bo2bo$9b2o!

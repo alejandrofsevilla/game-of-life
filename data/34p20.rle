@@ -1,0 +1,7 @@
+#N 34p20.rle
+#O Charity Engine, 2022
+#C https://conwaylife.com/wiki/34P20
+#C https://www.conwaylife.com/patterns/34p20.rle
+x = 14, y = 14, rule = B3/S23
+4b2o$4b2o3$2o3bo$2o2bobo2b3o$5bo3bo2bo$8bo3bo$7bobo3bo$5b2obobobo$5bo
+3bo$5bo$6b2obo$8bo!

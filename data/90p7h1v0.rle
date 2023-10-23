@@ -1,0 +1,9 @@
+#N 90p7h1v0.rle
+#O Frank Everdij, 2022
+#C https://conwaylife.com/wiki/Taco
+#C https://www.conwaylife.com/patterns/90p7h1v0.rle
+x = 29, y = 25, rule = B3/S23
+bo25bo$obo23bobo$o2bo21bo2bo$b2o23b2o2$o27bo$bo25bo$2o25b2o$o4bo17bo4b
+o$4bobo15bobo$3bo21bo$4b2o17b2o$3bo21bo$4b3o15b3o2$4b2obo13bob2o$4bobo
+bo11bobobo$6bo2b2o7b2o2bo$5bobo13bobo$7bo13bo$5b2o15b2o$9b2o7b2o$9b2ob
+o3bob2o$10bo7bo$11b3ob3o!

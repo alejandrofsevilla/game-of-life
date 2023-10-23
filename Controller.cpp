@@ -110,7 +110,7 @@ void Controller::onLoadFileModeMouseButtonPressed(
   if (highlightedLoadFileMenuItem) {
     m_model.clear();
     m_model.insertPattern(
-      rle::loadPattern(highlightedLoadFileMenuItem.value()));
+        rle::loadPattern(highlightedLoadFileMenuItem.value()));
     m_view.setMode(View::Mode::Main);
     return;
   }
@@ -236,6 +236,12 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
     case sf::Keyboard::C:
       m_model.clear();
       return;
+    case sf::Keyboard::L:
+      m_view.setMode(View::Mode::LoadFile);
+      return;
+    case sf::Keyboard::S:
+      m_view.setMode(View::Mode::SaveFile);
+      return;
     case sf::Keyboard::G:
       m_model.generatePopulation(f_populationGenerationRate);
       return;
@@ -266,6 +272,12 @@ void Controller::onLoadFileModeKeyPressed(const sf::Event::KeyEvent& event) {
   switch (event.code) {
     case sf::Keyboard::Escape:
       m_view.setMode(View::Mode::Main);
+      return;
+    case sf::Keyboard::Up:
+      m_view.pageUp();
+      return;
+    case sf::Keyboard::Down:
+      m_view.pageDown();
       return;
     default:
       return;

@@ -1,0 +1,7 @@
+#N 34p7onrattlesnake.rle
+#C https://conwaylife.com/wiki/34P7
+#C https://www.conwaylife.com/patterns/34p7onrattlesnake.rle
+x = 28, y = 16, rule = B3/S23
+18bo$16b3o$15bo3b2o$16b3o2bo$18bobobob2obo$19bo2bobob2o$18bo2b2o$7bo4b
+2o9bo$5bobo4bobo2bo$3bo2bo6b3o6bo$2b3obobo5b2o$b2o3b4o3b2o3b2o$2o5bob
+ob3o4bo$3o6bo2bo6bo$bobo4bobo7b2o$2b2o4bo!

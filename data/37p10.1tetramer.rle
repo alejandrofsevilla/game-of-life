@@ -1,0 +1,9 @@
+#N 37p10.1tetramer.rle
+#C https://conwaylife.com/wiki/37P10.1
+#C https://www.conwaylife.com/patterns/37p10.1tetramer.rle
+x = 27, y = 27, rule = B3/S23
+9b2o5b2o$9bo7bo$10b7o$11bo3bo$8b3o5b3o$7bo3bo3bo3bo$7bob2o5b2obo$5b2o
+2bo7bo2b2o$4bo4bo7bo4bo$2o2bob3o9b3obo2b2o$obobobo13bobobobo$2b2obo15b
+ob2o$2bo21bo$2bo21bo$2bo21bo$2b2obo15bob2o$obobobo13bobobobo$2o2bob3o
+9b3obo2b2o$4bo4bo7bo4bo$5b2o2bo7bo2b2o$7bob2o5b2obo$7bo3bo3bo3bo$8b3o
+5b3o$11bo3bo$10b7o$9bo7bo$9b2o5b2o!

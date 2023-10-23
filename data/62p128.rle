@@ -1,0 +1,8 @@
+#N 62p128.rle
+#O iNoMed, 2023
+#C https://conwaylife.com/wiki/62P128
+#C https://www.conwaylife.com/patterns/62p128.rle
+x = 30, y = 21, rule = B3/S23
+28b2o$28bo$11b2o13bobo$b2o8b2o13b2o$2bo$bo$b2o$3bo5b3o$b3o$o$2o2$16b2o
+10b2o$10b2obo2bo12bo$14bo11b3o$11b2o13bo$4b2o3bo2bo14b2o$4b2o3bo2bo15b
+o$11bo15bo$17b2o8b2o$17b2o!

@@ -1,0 +1,8 @@
+#N 48p9on30p25.rle
+#C https://conwaylife.com/wiki/30P25
+#C https://www.conwaylife.com/patterns/48p9on30p25.rle
+x = 31, y = 28, rule = B3/S23
+18b2o$18bo$16bobo$12bo3b2o$10b2o$10b2o$7bo3bo3bo$5b3o3bo3bobo$5b3o3b2o
+$4b3o4b2o$7b2o4b3o$7b2o3b3o$2bobo3bo3b3o$4bo3bo3bo5bo7bo$8b2o5bo13bo$
+8b2o5bo4bo3bo4bo$2b2o3bo12bo3bo$bobo10bob2obo5bob2obo$bo12b2o3b2o3b2o
+3b2o$2o18b5o$21b3o$22bo3$19b2o3b2o$20bo3bo$17b3o5b3o$17bo9bo!

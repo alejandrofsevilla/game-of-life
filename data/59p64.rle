@@ -1,0 +1,7 @@
+#N 59p64.rle
+#C https://conwaylife.com/wiki/51P384
+#C https://www.conwaylife.com/patterns/59p64.rle
+x = 30, y = 19, rule = B3/S23
+11b2o$b2o8b2o$2bo15bo$bo15bo2bo3b2o$b2o14bo2bo3b2o$3bo13b2o$b3o11bo$o
+12bo2bob2o$2o10b2o2$28b2o$29bo$26b3o$18b3o5bo$4b2o21b2o$4b2o22bo$27bo
+$17b2o8b2o$17b2o!

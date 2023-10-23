@@ -1,0 +1,9 @@
+#N 94p53.rle
+#O Mitchell Riley, 2023
+#C https://conwaylife.com/wiki/94P53
+#C https://www.conwaylife.com/patterns/94p53.rle
+x = 51, y = 36, rule = B3/S23
+24bo$24b3o$27bo$26b2o2$29b2o$28bobo$5b2o21b2o$5bo$6b3o$2o6bo$bo6bobo8b
+2o3bo$bobo5b2o8b2o2bobo$2b2o18bo$6b2o15bobo$5bobo$5b2o3$44b2o$43bobo$
+25bobo15b2o$28bo18b2o$25bobo2b2o8b2o5bobo$26bo3b2o8bobo6bo$42bo6b2o$
+42b3o$45bo$21b2o21b2o$20bobo$20b2o2$23b2o$23bo$24b3o$26bo!

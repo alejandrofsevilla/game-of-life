@@ -1,0 +1,8 @@
+#N 74p34.rle
+#O Mitchell Riley, 2022
+#C https://conwaylife.com/wiki/74P34
+#C https://www.conwaylife.com/patterns/74p34.rle
+x = 27, y = 31, rule = B3/S23
+15bo$13b3o$3b2o7bo$4bo7b2o$4bobo$5b2o2$2o$bo$bobo$2b2o$9b3o13b2o$8bo3b
+o12bo$8b2ob2o10bobo$23b2o2$2b2o$bobo10b2ob2o$bo12bo3bo$2o13b3o$23b2o$
+23bobo$25bo$25b2o2$20b2o$20bobo$13b2o7bo$14bo7b2o$11b3o$11bo!

@@ -1,0 +1,6 @@
+#N 11x11maxdensity.rle
+#C https://conwaylife.com/wiki/Density
+#C https://www.conwaylife.com/patterns/11x11maxdensity.rle
+x = 11, y = 11, rule = B3/S23
+2ob2ob2ob2o$2ob2ob2ob2o2$2ob2ob2ob2o$2ob2ob2ob2o2$2ob2ob2ob2o$2ob2ob2o
+b2o2$2ob2ob2ob2o$2ob2ob2ob2o!

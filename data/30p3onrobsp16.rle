@@ -1,0 +1,6 @@
+#N 30p3onrobsp16.rle
+#C https://conwaylife.com/wiki/Rob%27s_p16
+#C https://www.conwaylife.com/patterns/30p3onrobsp16.rle
+x = 15, y = 17, rule = B3/S23
+3b2o$3b2ob2o$8bo$3b2o$3bo$bo2bo3b2o$bo3b5o$bo2$11b2o$2bo9bo$o3b4obo$o
+3bo5b5o$o8bo4bo$3bo7bo$b2o7bobo$7b3obo!

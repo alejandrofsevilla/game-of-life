@@ -55,6 +55,9 @@ constexpr auto f_sizeButtonWidth{190.f};
 constexpr auto f_quitButtonWidth{120.f};
 constexpr auto f_loadButtonWidth{140.f};
 constexpr auto f_saveButtonWidth{140.f};
+constexpr auto f_backButtonWidth{120.f};
+constexpr auto f_pageUpDownButtonWidth{260.f};
+constexpr auto f_scrollUpDownWidth{260.f};
 }  // namespace
 
 View::View(sf::RenderWindow &window, Model &model)
@@ -103,6 +106,20 @@ void View::zoomOut() { setZoomLevel(m_zoomLevel - f_zoomSensibility); }
 void View::scrollDown() { m_scrollPos++; }
 
 void View::scrollUp() { m_scrollPos = std::max(0, m_scrollPos - 1); }
+
+void View::pageDown() {
+  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  auto maxNumberOfItems{static_cast<int>(
+      windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
+  m_scrollPos = std::max(0, m_scrollPos + maxNumberOfItems);
+}
+
+void View::pageUp() {
+  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  auto maxNumberOfItems{static_cast<int>(
+      windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
+  m_scrollPos = std::max(0, m_scrollPos - maxNumberOfItems);
+}
 
 void View::closeWindow() { m_window.close(); }
 
@@ -328,11 +345,18 @@ void View::drawTopLeftMenu() {
 }
 
 void View::drawLoadFileMenu() {
-  if (drawTextBox("Back(Esc)",
-                  {f_textBoxOutlineThickness, f_textBoxOutlineThickness}, 200.,
+  sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
+  if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
+  position.x += f_backButtonWidth;
+  drawTextBox("Scroll Up/Down(Mouse Wheel)", position, f_scrollUpDownWidth,
+              TextBoxStyle::Simple);
+  position.x += f_backButtonWidth;
+  drawTextBox("Page Up/Down(Up/Down)", position, f_scrollUpDownWidth,
+              TextBoxStyle::Simple);
+
   auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
   auto maxNumberOfItems{static_cast<int>(
       windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
@@ -341,7 +365,9 @@ void View::drawLoadFileMenu() {
   m_scrollPos = std::min(m_scrollPos, maxScrollPos);
   auto topItem{m_loadFileMenuItems.cbegin()};
   std::advance(topItem, m_scrollPos);
-  for (auto it = topItem; it != m_loadFileMenuItems.cend(); it++) {
+  auto maxItem{topItem};
+  std::advance(maxItem, maxNumberOfItems);
+  for (auto it = topItem; it != maxItem; it++) {
     auto width{windowSize.x - 2 * f_frameVerticalThickness};
     auto x{f_frameVerticalThickness};
     auto y{f_frameHorizontalThickness + f_textBoxOutlineThickness +

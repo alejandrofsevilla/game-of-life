@@ -1,0 +1,8 @@
+#N 55p10onbeluchenkosp13.rle
+#C https://conwaylife.com/wiki/Beluchenko%27s_p13
+#C https://www.conwaylife.com/patterns/55p10onbeluchenkosp13.rle
+x = 26, y = 27, rule = B3/S23
+6bo$5bobo$5bobo$ob2obob2o$2obobo2bo$5bobo$4bo2bo$4b2o$7bo$4b4o$3bo$4b
+4o6b3o$7bo6b2o$4b2o9bo$4bo2bo6bobo$5bobo5b3o$2obobo2bo4b5o$ob2obob2o5b
+2obo$5bobo7b2o$5bobo2b2o7b2o$6bo3b2o6bobobo2bo$18b4ob3o$19b4ob2o$20b2o
+2$16b2o$16b2o!

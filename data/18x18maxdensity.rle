@@ -1,0 +1,8 @@
+#N 18x18maxdensity.rle
+#C https://conwaylife.com/wiki/Density
+#C https://www.conwaylife.com/patterns/18x18maxdensity.rle
+x = 18, y = 18, rule = B3/S23
+ob2ob2ob2obob2ob2o$2obobob2ob3obob2o$3bobo8bo$2obob9ob3o$2obo4bo5bo2bo
+$3b4o3b3obobo$3o3b4o2bobob2o$o2b2o4bobo2bobo$bobob4o2b4o2bo$2obobo2bob
+o4b3o$bobobo2bob5o$o2bob2obo6b3o$4obo2b7o2bo$5bobo6bobo$6ob6obob2o$o5b
+o5bobo$bob2obob3obobob2o$2ob2ob2obob2ob2obo!

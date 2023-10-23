@@ -1,0 +1,7 @@
+#N 30p25.rle
+#O Charity Engine, 2022
+#C https://conwaylife.com/wiki/30P25
+#C https://www.conwaylife.com/patterns/30p25.rle
+x = 20, y = 20, rule = B3/S23
+o$3o$3bo$2bo$2bo2bo2$6b2o$7bo$5bobo$4b2o$14b2o$12bobo$12bo$12b2o2$14bo
+2bo$17bo$16bo$17b3o$19bo!

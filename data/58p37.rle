@@ -1,0 +1,8 @@
+#N 58p37.rle
+#O Luke Kiernan, 2022
+#C https://conwaylife.com/wiki/58P37
+#C https://www.conwaylife.com/patterns/58p37.rle
+x = 27, y = 24, rule = B3/S23
+8bo$8b3o14b2o$11bo13bo$10b2o11bobo$23b2o$15b2o$15b3o$14bo2bo$15b2o$2o
+$bo$bobo19b2o$2b2o19bobo$25bo$25b2o$10b2o$9bo2bo$9b3o$10b2o$2b2o$bobo
+11b2o$bo13bo$2o14b3o$18bo!

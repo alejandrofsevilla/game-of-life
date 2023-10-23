@@ -1,0 +1,8 @@
+#N 12x12maxdensity.rle
+#C https://conwaylife.com/wiki/Density
+#C https://www.conwaylife.com/patterns/12x12maxdensity.rle
+x = 28, y = 12, rule = B3/S23
+2ob2ob2o2b2o4b2obob2ob2obo$bob2obobo2bo4bob3obobob2o$o5bobobo11bobo$4o
+b2obob2o5b6obob2o$3bobo2bobo5bo6b2ob2o$2obobob2obo5b6o$2obobo2bob2o10b
+6o$3bob3o8b2ob2o6bo$4o4b4o4b2obob6o$o3b3obo2bo7bobo$bobo2bobobo5b2obob
+ob3obo$2ob2o2b2ob2o4bob2ob2obob2o!

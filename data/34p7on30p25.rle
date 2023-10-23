@@ -1,0 +1,8 @@
+#N 34p7on30p25.rle
+#C https://conwaylife.com/wiki/30P25
+#C https://www.conwaylife.com/patterns/34p7on30p25.rle
+x = 35, y = 20, rule = B3/S23
+15b2o$16bo$16bobo$17b2o3bo$23b2o$23b2o$7bo4b2o5bo3bo3bo$5bobo4bobo2bob
+o3bo3b3o$3bo2bo6b3o6b2o3b3o$2b3obobo5b2o6b2o4b3o$b2o3b4o3b2o4b3o4b2o$
+2o5bobob3o6b3o3b2o$3o6bo2bo7b3o3bo3bobo$bobo4bobo11bo3bo3bo$2b2o4bo16b
+2o$25b2o$27bo3b2o$31bobo$33bo$33b2o!

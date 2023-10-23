@@ -1,0 +1,8 @@
+#N 72p119.rle
+#O Mitchell Riley, 2023
+#C https://conwaylife.com/wiki/72P119
+#C https://www.conwaylife.com/patterns/72p119.rle
+x = 51, y = 32, rule = B3/S23
+24b2o$24b2o$19bo$17b3o$16bo25b2o$16b2o24b2o3$2b2o$2b2o$25bo$24b3o$23bo
+3bo$23b2ob2o19b2o$47bobo$2o47bo$bo47b2o$bobo$2b2o19b2ob2o$23bo3bo$24b
+3o$25bo$47b2o$47b2o3$7b2o24b2o$7b2o25bo$31b3o$31bo$25b2o$25b2o!

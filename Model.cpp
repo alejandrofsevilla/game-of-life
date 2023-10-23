@@ -1,5 +1,6 @@
 #include "Model.hpp"
 
+#include <algorithm>
 #include <map>
 #include <random>
 #include <thread>
@@ -111,13 +112,13 @@ void Model::reduceSize() {
 
 void Model::insertPattern(const std::set<Cell>& pattern) {
   auto mostRightElement{
-    std::max_element(pattern.cbegin(), pattern.cend(),
-    [](const auto& a, const auto& b) { return a.x < b.x; }) };
+      std::max_element(pattern.cbegin(), pattern.cend(),
+                       [](const auto& a, const auto& b) { return a.x < b.x; })};
   auto mostBottomElement{
       std::max_element(pattern.cbegin(), pattern.cend(),
-      [](const auto& a, const auto& b) { return a.y < b.y; }) };
-  auto width{ mostRightElement->x };
-  auto height{ mostBottomElement->y };
+                       [](const auto& a, const auto& b) { return a.y < b.y; })};
+  auto width{mostRightElement->x};
+  auto height{mostBottomElement->y};
   while (width > m_width || height > m_height) {
     increaseSize();
     if (m_size >= f_maxSize) {
@@ -125,8 +126,8 @@ void Model::insertPattern(const std::set<Cell>& pattern) {
     }
   }
   for (const auto& cell : pattern) {
-    m_cells.insert({ cell.x + (m_width - width) / 2,
-      cell.y + (m_height - height) / 2 });
+    m_cells.insert(
+        {cell.x + (m_width - width) / 2, cell.y + (m_height - height) / 2});
   }
 }
 

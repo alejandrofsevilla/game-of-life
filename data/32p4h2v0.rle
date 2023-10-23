@@ -1,0 +1,6 @@
+#N 32p4h2v0.rle
+#O wwei23, 2022
+#C https://conwaylife.com/wiki/32P4H2V0
+#C https://www.conwaylife.com/patterns/32p4h2v0.rle
+x = 14, y = 20, rule = B3/S23
+4$5o$o4bo$o$bo3bo$3bo$6b3o$4b2ob2o$3bo4bo$2b2obobo$b2o2bobo$2b2o$5b2o!

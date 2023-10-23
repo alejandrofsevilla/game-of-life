@@ -1,0 +1,10 @@
+#N 86p280.rle
+#O Christopher D'Agostino, 2023
+#C https://conwaylife.com/wiki/P280_U-turner_hassler
+#C https://www.conwaylife.com/patterns/86p280.rle
+x = 41, y = 41, rule = B3/S23
+15bo2$13b3obo$12bob2o9bo$12b2obo8bobo$10bob3o10bo2$12bo3$35b3o$35b3o$
+35b3o$38b3o$38b3o$5bo23bo8b3o$4bobo22bo$5bo22bo3$30b3o$30b3o$29bobo$3b
+o25b2o6bo$2b2o32bobo$bob2o32bo$3o2bo$2bobobo$3bobobo$4bo2b3o$5b2obo$6b
+2o$6bo$30bo$29b3o$17bo10bob3o$16bobo8bo3bo$17bo8bo3bo$25b3obo$26b3o$27b
+o!

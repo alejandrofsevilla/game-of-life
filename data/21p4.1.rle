@@ -1,0 +1,5 @@
+#N 21p4.1.rle
+#C https://conwaylife.com/wiki/21P4.1
+#C https://www.conwaylife.com/patterns/21p4.1.rle
+x = 12, y = 7, rule = B3/S23
+5bo$5bobo$4bo$2b3o3bo$6bob3o$o2b2o4bobo$2o8b2o!

@@ -1,0 +1,7 @@
+#N 50p9.rle
+#O Matthias Merzenich, 2014
+#C https://conwaylife.com/wiki/50P9
+#C https://www.conwaylife.com/patterns/50p9.rle
+x = 18, y = 8, rule = B3/S23
+6b2o2b2o$5bo2b2o2bo$3bobob4obobo$b3obobo2bobob3o$o3b2ob4ob2o3bo$b2o3bo
+4bo3b2o$3b2o2bo2bo2b2o$3bob2o4b2obo!

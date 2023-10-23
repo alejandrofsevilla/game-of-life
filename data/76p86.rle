@@ -1,0 +1,8 @@
+#N 76p86.rle
+#O Open Science Grid, 2022
+#C https://conwaylife.com/wiki/76P86
+#C https://www.conwaylife.com/patterns/76p86.rle
+x = 32, y = 40, rule = B3/S23
+12b2o4b2o$12b2o4b2o7$2o28b2o$bo28bo$bobo6b3o6b3o6bobo$2b2o6bobo6bobo6b2o$10b
+3o6b3o15$10b3o6b3o$2b2o6bobo6bobo6b2o$bobo6b3o6b3o6bobo$bo28bo$2o28b2o7$12b2o
+4b2o$12b2o4b2o!

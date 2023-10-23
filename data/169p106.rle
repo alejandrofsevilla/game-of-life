@@ -1,0 +1,12 @@
+#N 169p106.rle
+#C https://conwaylife.com/wiki/Rectifier
+#C https://www.conwaylife.com/patterns/169p106.rle
+x = 108, y = 86, rule = B3/S23
+8bo$7bobo$8bo2$6b5o$5bo4bo20b2o$4bo2bo23bo$bo2bob2o21bobo$obobo5bo18b
+2o$bo2bo4bobo8bo$4b2o2bo2bo7bobo$9b2o8bo2bo$18bo2bo18b2o$17b2o3b2o16bo
+$15b2o5b2o6bo7bobo$15bo6bo8b2o5b2o$16bo3bo9b2o$16bo3bo$17b3o4$29b2o$
+29b2o$30bo5$36b2o$36bobo$36bo$26b3ob3o$28b4o$28b3o$29bo6$56bobo$57b2o$
+57bo9$77bo$76bobo$76bobo$77bo$62b3o$62bo$63bo7$85b2o2$82b2o3bo$82bo4bo
+$82bo$68b2o13bo2bo$67bobo$67bo$66b2o$97b2o$96bo2bo2b2o$96bobo4bo2bo$
+77b2o18bo5bobobo$76bobo21b2obo2bo$76bo23bo2bo$75b2o20bo4bo$97b5o2$99bo
+$98bobo$99bo!

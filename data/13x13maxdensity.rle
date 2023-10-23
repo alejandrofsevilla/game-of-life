@@ -1,0 +1,5 @@
+#N 13x13maxdensity.rle
+#C https://conwaylife.com/wiki/Density
+#C https://www.conwaylife.com/patterns/13x13maxdensity.rle
+x = 0, y = 0, rule = B3/S23
+15b$b2ob2obob2ob2ob$b2obob3obob2ob$4bo5bo4b$b3ob5ob3ob$bo2bo5bo2bob$2bobo2b2obobo2b$b2obobobobob2ob$2bobobobobobo2b$bo2bobobobo2bob$b4obobob4ob$7bo7b$b5obob2ob2ob$bo2bob2ob2ob2ob$15b$!

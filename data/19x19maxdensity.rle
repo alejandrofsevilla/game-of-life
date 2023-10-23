@@ -1,0 +1,9 @@
+#N 19x19maxdensity.rle
+#C https://conwaylife.com/wiki/Density
+#C https://www.conwaylife.com/patterns/19x19maxdensity.rle
+x = 19, y = 19, rule = B3/S23
+2ob2ob2ob2obob2ob2o$2ob2ob2obob3obob2o$9bo5bo$2ob6ob5ob3o$2obo4bobo4bo
+2bo$3bob2obo2b3obobo$2obobo2b3o2bobob2o$2obo2b2o3b2o2bobo$3b3o2b3o2b3o
+2bo$3o3b2o3b2o3b3o$o2b3o2b3o2b3o$bobo2b2o3b2o2bob2o$2obobo2b3o2bobob2o
+$bobob2obo2b3obo$o2bo4bobo4bob2o$3ob5ob6ob2o$3bo5bo$2obob3obob2ob2ob2o
+$2ob2obob2ob2ob2ob2o!

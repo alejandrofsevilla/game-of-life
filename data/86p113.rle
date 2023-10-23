@@ -1,0 +1,8 @@
+#N 86p113.rle
+#C https://conwaylife.com/wiki/Period-113_glider_gun
+#C https://www.conwaylife.com/patterns/86p113.rle
+x = 49, y = 37, rule = B3/S23
+45b2o$45bo$43bobo$43b2o7$30b2o14b2o$12b2o4b2o10b2o8bobo3b2o$12b2o4b2o
+21b2o$41bo2$30b2o$28bo2bo13b2o$o27bo16bo$3o15b3o7b3o15b3o$3bo16bo27bo$
+2b2o13bo2bo$17b2o2$7bo$6b2o21b2o4b2o$b2o3bobo8b2o10b2o4b2o$b2o14b2o7$
+4b2o$3bobo$3bo$2b2o!

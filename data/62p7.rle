@@ -1,0 +1,8 @@
+#N 62p7.rle
+#O Dongook Lee, 2021
+#C https://conwaylife.com/wiki/62P7
+#C https://www.conwaylife.com/patterns/62p7.rle
+x = 18, y = 14, rule = B3/S23
+8b2o$6bo4bo$2b2obo6bob2o$bob4o4b4obo$bobob8obobo$2obo2b6o2bob2o$o2bo
+10bo2bo$2bo2bo6bo2bo$3b2o8b2o$5bo6bo$3b2o3b2o3b2o$3bo3bo2bo3bo$bobo4b
+2o4bobo$b2o12b2o!
