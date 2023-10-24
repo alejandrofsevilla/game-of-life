@@ -57,7 +57,7 @@ constexpr auto f_loadButtonWidth{140.f};
 constexpr auto f_saveButtonWidth{140.f};
 constexpr auto f_backButtonWidth{140.f};
 constexpr auto f_pageUpDownButtonWidth{280.f};
-constexpr auto f_scrollUpDownWidth{280.f};
+constexpr auto f_scrollUpDownButtonWidth{280.f};
 constexpr auto f_showHideGridButton{170.f};
 }  // namespace
 
@@ -367,10 +367,10 @@ void View::drawLoadFileMenu() {
     m_highlightedButton = Button::Back;
   }
   position.x += f_backButtonWidth;
-  drawTextBox("Scroll Up/Down(Mouse Wheel)", position, f_scrollUpDownWidth,
-              TextBoxStyle::Simple);
-  position.x += f_scrollUpDownWidth;
-  drawTextBox("Page Up/Down(Up/Down)", position, f_scrollUpDownWidth,
+  drawTextBox("Scroll Up/Down(Mouse Wheel)", position,
+              f_scrollUpDownButtonWidth, TextBoxStyle::Simple);
+  position.x += f_scrollUpDownButtonWidth;
+  drawTextBox("Page Up/Down(Up/Down)", position, f_pageUpDownButtonWidth,
               TextBoxStyle::Simple);
 
   auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
