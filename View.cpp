@@ -406,7 +406,7 @@ void View::drawTopRightMenu() {
   drawTextBox("Speed(Left/Right)", position, f_speedButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
-  drawTextBox(std::to_string(static_cast<int>(m_zoomLevel)) + "x", position,
+  drawTextBox(std::to_string(static_cast<int>(m_zoomLevel)) + "/" + std::to_string(static_cast<int>(f_maxZoomLevel)), position,
               f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
   if (drawTextBox("+", position, f_plusMinusButtonWidth,
