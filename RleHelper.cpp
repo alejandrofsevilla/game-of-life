@@ -2,10 +2,11 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <regex>
 
 namespace {
-constexpr auto f_patternsFolder{"../data/"};
+constexpr auto f_patternsFolder{"../patterns/"};
 constexpr auto f_nextRowSymbol{'$'};
 constexpr auto f_deadCellSymbol{'b'};
 constexpr auto f_aliveCellSymbol{'o'};
@@ -68,6 +69,9 @@ int calculatePatternHeight(const std::set<Cell>& pattern) {
 namespace rle {
 std::set<std::string> listPatternNames() {
   std::set<std::string> files;
+  if (!std::filesystem::exists(f_patternsFolder)) {
+    return {};
+  }
   for (const auto& file :
        std::filesystem::directory_iterator(f_patternsFolder)) {
     if (file.path().extension().string() == f_rleFileExtension) {

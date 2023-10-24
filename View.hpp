@@ -54,16 +54,17 @@ class View {
  private:
   enum class TextBoxStyle { Simple, Display, Button, Hidden };
 
+  void drawMainScreen();
+  void drawLoadFileScreen();
+  void drawSaveFileScreen();
   void drawFrame();
   void drawBackground();
   void drawCells();
   void drawGrid();
-  void drawBottomRightMenu();
   void drawBottomLeftMenu();
-  void drawTopRightMenu();
+  void drawBottomRightMenu();
   void drawTopLeftMenu();
-  void drawLoadFileScreen();
-  void drawSaveFileScreen();
+  void drawTopRightMenu();
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);
   void applyViewOffset(const sf::Vector2f &offset);

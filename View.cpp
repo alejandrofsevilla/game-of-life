@@ -90,14 +90,7 @@ void View::update() {
     case Mode::Main:
     default:
       m_scrollPos = 0;
-      drawBackground();
-      drawCells();
-      drawGrid();
-      drawFrame();
-      drawBottomLeftMenu();
-      drawBottomRightMenu();
-      drawTopLeftMenu();
-      drawTopRightMenu();
+      drawMainScreen();
       break;
   }
   m_window.display();
@@ -143,8 +136,6 @@ void View::setFileNameToSave(const std::string &name) {
 
 View::Mode View::mode() const { return m_mode; }
 
-const std::string &View::fileNameToSave() const { return m_fileNameToSave; }
-
 std::optional<std::string> View::highlightedLoadFileMenuItem() const {
   return m_highlightedLoadFileMenuItem;
 }
@@ -166,6 +157,80 @@ std::optional<sf::Vector2i> View::pixelToCellPosition(
   auto cellSize{calculateCellSize()};
   return {{static_cast<int>((coord.x - m_viewOffset.x) / cellSize.x),
            static_cast<int>(((coord.y - m_viewOffset.y) / cellSize.y))}};
+}
+
+const std::string &View::fileNameToSave() const { return m_fileNameToSave; }
+
+void View::drawMainScreen() {
+  drawBackground();
+  drawCells();
+  drawGrid();
+  drawFrame();
+  drawBottomLeftMenu();
+  drawBottomRightMenu();
+  drawTopLeftMenu();
+  drawTopRightMenu();
+}
+
+void View::drawLoadFileScreen() {
+  sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
+  if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
+                  TextBoxStyle::Button)) {
+    m_highlightedButton = Button::Back;
+  }
+  position.x += f_backButtonWidth;
+  drawTextBox("Scroll Up/Down(Mouse Wheel)", position,
+              f_scrollUpDownButtonWidth, TextBoxStyle::Simple);
+  position.x += f_scrollUpDownButtonWidth;
+  drawTextBox("Page Up/Down(PageUp/PageDown)", position,
+              f_pageUpDownButtonWidth, TextBoxStyle::Simple);
+
+  auto windowSize{m_window.getView().getSize()};
+  auto maxNumberOfItems{static_cast<int>(
+      windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
+  auto items{rle::listPatternNames()};
+  if (items.empty()) {
+    return;
+  }
+  auto maxScrollPos{static_cast<int>(items.size()) - maxNumberOfItems};
+  m_scrollPos = std::min(m_scrollPos, maxScrollPos);
+  auto topItem{items.cbegin()};
+  std::advance(topItem, m_scrollPos);
+  auto maxItem{topItem};
+  std::advance(maxItem, maxNumberOfItems);
+  for (auto it = topItem; it != maxItem; it++) {
+    auto width{windowSize.x - 2 * f_frameVerticalThickness};
+    auto x{f_frameVerticalThickness};
+    auto y{f_frameHorizontalThickness + f_textBoxOutlineThickness +
+           static_cast<float>(std::distance(topItem, it)) * f_textBoxHeight};
+    if (drawTextBox(*it, {x, y}, width, TextBoxStyle::Button)) {
+      m_highlightedLoadFileMenuItem = *it;
+    }
+  }
+}
+
+void View::drawSaveFileScreen() {
+  sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
+  if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
+                  TextBoxStyle::Button)) {
+    m_highlightedButton = Button::Back;
+  }
+  position.x += f_backButtonWidth;
+  if (drawTextBox("Save(Enter)", position, f_saveButtonWidth,
+                  TextBoxStyle::Button)) {
+    m_highlightedButton = Button::SaveFile;
+  }
+  auto windowSize{m_window.getView().getSize()};
+  auto screenMiddleHeight{windowSize.y * .5f};
+  position.x = f_frameVerticalThickness;
+  position.y = screenMiddleHeight;
+  drawTextBox(m_fileNameToSave, position,
+              windowSize.x - 2 * f_frameVerticalThickness,
+              TextBoxStyle::Display);
+
+  position.y -= f_textBoxHeight;
+  drawTextBox("Enter pattern name...", position, f_saveMenuInfoButtonWidth,
+              TextBoxStyle::Simple);
 }
 
 void View::drawFrame() {
@@ -191,6 +256,22 @@ void View::drawBackground() {
   m_window.draw(background);
 }
 
+void View::drawCells() {
+  sf::RectangleShape rect{calculateCellSize()};
+  auto size{calculateCellSize()};
+  auto cells{m_model.cells()};
+  for (const auto &cell : cells) {
+    rect.setPosition(static_cast<float>(cell.x) * size.x + m_viewOffset.x,
+                     static_cast<float>(cell.y) * size.y + m_viewOffset.y);
+    if (cell.status == Cell::Status::Dead) {
+      rect.setFillColor(f_deadCellColor);
+    } else {
+      rect.setFillColor(f_livingCellColor);
+    }
+    m_window.draw(rect);
+  }
+}
+
 void View::drawGrid() {
   auto windowSize{m_window.getView().getSize()};
   auto cellSize{calculateCellSize()};
@@ -208,22 +289,6 @@ void View::drawGrid() {
     line[0].position = sf::Vector2f(0, pos);
     line[1].position = sf::Vector2f(windowSize.x, pos);
     m_window.draw(line, 2, sf::Lines);
-  }
-}
-
-void View::drawCells() {
-  sf::RectangleShape rect{calculateCellSize()};
-  auto size{calculateCellSize()};
-  auto cells{m_model.cells()};
-  for (const auto &cell : cells) {
-    rect.setPosition(static_cast<float>(cell.x) * size.x + m_viewOffset.x,
-                     static_cast<float>(cell.y) * size.y + m_viewOffset.y);
-    if (cell.status == Cell::Status::Dead) {
-      rect.setFillColor(f_deadCellColor);
-    } else {
-      rect.setFillColor(f_livingCellColor);
-    }
-    m_window.draw(rect);
   }
 }
 
@@ -300,6 +365,24 @@ void View::drawBottomRightMenu() {
               TextBoxStyle::Simple);
 }
 
+void View::drawTopLeftMenu() {
+  sf::Vector2f position{f_frameVerticalThickness, f_textBoxOutlineThickness};
+  if (drawTextBox("Quit(Esc)", position, f_quitButtonWidth,
+                  TextBoxStyle::Button)) {
+    m_highlightedButton = Button::Quit;
+  }
+  position.x += f_quitButtonWidth;
+  auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
+                                                        : TextBoxStyle::Hidden};
+  if (drawTextBox("Load File(L)", position, f_loadButtonWidth, style)) {
+    m_highlightedButton = Button::LoadFileMenu;
+  }
+  position.x += f_loadButtonWidth;
+  if (drawTextBox("Save File(S)", position, f_saveFileButtonWidth, style)) {
+    m_highlightedButton = Button::SaveFileMenu;
+  }
+}
+
 void View::drawTopRightMenu() {
   sf::Vector2f position{
       m_window.getView().getSize().x - f_frameVerticalThickness,
@@ -358,82 +441,6 @@ void View::drawTopRightMenu() {
           ? TextBoxStyle::Simple
           : TextBoxStyle::Hidden;
   drawTextBox("Grid Size(Up/Down)", position, f_sizeButtonWidth, style);
-}
-
-void View::drawTopLeftMenu() {
-  sf::Vector2f position{f_frameVerticalThickness, f_textBoxOutlineThickness};
-  if (drawTextBox("Quit(Esc)", position, f_quitButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::Quit;
-  }
-  position.x += f_quitButtonWidth;
-  auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
-                                                        : TextBoxStyle::Hidden};
-  if (drawTextBox("Load File(L)", position, f_loadButtonWidth, style)) {
-    m_highlightedButton = Button::LoadFileMenu;
-  }
-  position.x += f_loadButtonWidth;
-  if (drawTextBox("Save File(S)", position, f_saveFileButtonWidth, style)) {
-    m_highlightedButton = Button::SaveFileMenu;
-  }
-}
-
-void View::drawLoadFileScreen() {
-  sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
-  if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::Back;
-  }
-  position.x += f_backButtonWidth;
-  drawTextBox("Scroll Up/Down(Mouse Wheel)", position,
-              f_scrollUpDownButtonWidth, TextBoxStyle::Simple);
-  position.x += f_scrollUpDownButtonWidth;
-  drawTextBox("Page Up/Down(PageUp/PageDown)", position,
-              f_pageUpDownButtonWidth, TextBoxStyle::Simple);
-
-  auto windowSize{m_window.getView().getSize()};
-  auto maxNumberOfItems{static_cast<int>(
-      windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
-  auto items{rle::listPatternNames()};
-  auto maxScrollPos{static_cast<int>(items.size()) - maxNumberOfItems};
-  m_scrollPos = std::min(m_scrollPos, maxScrollPos);
-  auto topItem{items.cbegin()};
-  std::advance(topItem, m_scrollPos);
-  auto maxItem{topItem};
-  std::advance(maxItem, maxNumberOfItems);
-  for (auto it = topItem; it != maxItem; it++) {
-    auto width{windowSize.x - 2 * f_frameVerticalThickness};
-    auto x{f_frameVerticalThickness};
-    auto y{f_frameHorizontalThickness + f_textBoxOutlineThickness +
-           static_cast<float>(std::distance(topItem, it)) * f_textBoxHeight};
-    if (drawTextBox(*it, {x, y}, width, TextBoxStyle::Button)) {
-      m_highlightedLoadFileMenuItem = *it;
-    }
-  }
-}
-
-void View::drawSaveFileScreen() {
-  sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
-  if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::Back;
-  }
-  position.x += f_backButtonWidth;
-  if (drawTextBox("Save(Enter)", position, f_saveButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::SaveFile;
-  }
-  auto windowSize{m_window.getView().getSize()};
-  auto screenMiddleHeight{windowSize.y * .5f};
-  position.x = f_frameVerticalThickness;
-  position.y = screenMiddleHeight;
-  drawTextBox(m_fileNameToSave, position,
-              windowSize.x - 2 * f_frameVerticalThickness,
-              TextBoxStyle::Display);
-
-  position.y -= f_textBoxHeight;
-  drawTextBox("Enter pattern name...", position, f_saveMenuInfoButtonWidth,
-              TextBoxStyle::Simple);
 }
 
 bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
