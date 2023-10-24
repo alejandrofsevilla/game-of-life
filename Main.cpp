@@ -7,13 +7,13 @@
 namespace {
 constexpr auto f_windowTitle{"Game Of Life"};
 constexpr auto f_windowStyle{sf::Style::Fullscreen};
-constexpr auto f_modelMaxWidth{958};
+constexpr auto f_modelMaxWidth{960};
 constexpr auto f_modelMaxHeight{490};
 }  // namespace
 
 int main() {
   auto desktopMode(sf::VideoMode::getDesktopMode());
-  sf::RenderWindow window{desktopMode, f_windowTitle, f_windowStyle};
+  sf::RenderWindow window{desktopMode, f_windowTitle, f_windowStyle };
   Model model{f_modelMaxWidth, f_modelMaxHeight};
   std::thread modelThread{[&model]() { model.run(); }};
   View view{window, model};

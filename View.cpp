@@ -30,7 +30,7 @@ const auto f_hiddenTextBoxOutlineColor{sf::Color::Black};
 const auto f_hiddenTextBoxTextColor{sf::Color{80, 80, 80}};
 constexpr auto f_fontPath{"../resources/futura.ttf"};
 constexpr auto f_frameHorizontalThickness{50.f};
-constexpr auto f_frameVerticalThickness{2.f};
+constexpr auto f_frameVerticalThickness{0.f};
 constexpr auto f_fontSize{18};
 constexpr auto f_textBoxOutlineThickness{1.f};
 constexpr auto f_textBoxHeight{f_frameHorizontalThickness};
@@ -173,7 +173,8 @@ void View::drawMainScreen() {
 }
 
 void View::drawLoadFileScreen() {
-  sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
+  sf::Vector2f position{ f_frameVerticalThickness 
+    + f_textBoxOutlineThickness, f_textBoxOutlineThickness};
   if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
@@ -210,7 +211,8 @@ void View::drawLoadFileScreen() {
 }
 
 void View::drawSaveFileScreen() {
-  sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
+  sf::Vector2f position{ f_frameVerticalThickness 
+    + f_textBoxOutlineThickness, f_textBoxOutlineThickness};
   if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
@@ -293,7 +295,7 @@ void View::drawGrid() {
 }
 
 void View::drawBottomLeftMenu() {
-  sf::Vector2f position{f_frameVerticalThickness,
+  sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
                         static_cast<float>(m_window.getView().getSize().y) -
                             f_frameHorizontalThickness +
                             f_textBoxOutlineThickness};
@@ -332,7 +334,7 @@ void View::drawBottomLeftMenu() {
   position.x += f_clearButtonWidth;
   style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
                                                      : TextBoxStyle::Hidden;
-  if (drawTextBox("Generate Population(P)", position, f_generatePopButtonWidth,
+  if (drawTextBox("Generate Population(G)", position, f_generatePopButtonWidth,
                   style)) {
     m_highlightedButton = Button::GeneratePopulation;
   }
@@ -497,6 +499,7 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
   return highlighted;
 }
 
+#include <iostream>
 void View::applyZoomLevel(float zoomLevel) {
   auto windowSize{m_window.getView().getSize()};
   auto cellAtCentre{

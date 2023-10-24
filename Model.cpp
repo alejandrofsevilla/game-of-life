@@ -13,8 +13,8 @@ constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{1000}};
 constexpr auto f_defaultSpeed{1};
 constexpr auto f_maxSpeed{20};
 constexpr auto f_minSpeed{1};
-constexpr auto f_defaultSize{10};
-constexpr auto f_maxSize{20};
+constexpr auto f_defaultSize{5};
+constexpr auto f_maxSize{10};
 constexpr auto f_minSize{1};
 
 inline int generateRandomValue(int min, int max) {
@@ -228,6 +228,6 @@ void Model::update() {
   }
 }
 
-int Model::calculateWidth() { return m_maxWidth * m_size / f_maxSize; }
+int Model::calculateWidth() { return m_maxWidth /(1 + f_maxSize - m_size); }
 
-int Model::calculateHeight() { return m_maxHeight * m_size / f_maxSize; }
+int Model::calculateHeight() { return m_maxHeight / (1 + f_maxSize - m_size); }
