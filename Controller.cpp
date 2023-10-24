@@ -1,5 +1,6 @@
-#include "Controller.hpp"
+#include <cwctype>
 
+#include "Controller.hpp"
 #include "RleHelper.hpp"
 
 namespace {
@@ -290,6 +291,7 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
           return;
         case Model::Status::Running:
           m_model.pause();
+          return;
         default:
           return;
       }
