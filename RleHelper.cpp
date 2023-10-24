@@ -8,12 +8,12 @@ namespace {
 constexpr auto f_patternsFolder{"../data/"};
 constexpr auto f_nextRowSymbol{'$'};
 constexpr auto f_deadCellSymbol{'b'};
-constexpr auto f_survivingCellSymbol{'o'};
+constexpr auto f_aliveCellSymbol{'o'};
 constexpr auto f_endOfPatternSymbol{'!'};
 constexpr auto f_rleFileExtension{".rle"};
 const std::regex f_rleCommentRegex{"#.*"};
 const std::regex f_rleHeaderRegex{"x = [0-9]*, y = [0-9]*(, rule=.*)?"};
-const std::regex f_rleContentRegex("([0-9]*)(o|b)(?:([0-9])*(\\$))?");
+const std::regex f_rleContentRegex("([0-9]*)(o|b)(?:([0-9]*)(\\$))?");
 
 std::set<Cell> map(const std::string& pattern) {
   std::set<Cell> result;
@@ -23,7 +23,7 @@ std::set<Cell> map(const std::string& pattern) {
   while (it != pattern.cend()) {
     if (std::regex_search(it, pattern.cend(), match, f_rleContentRegex)) {
       auto consecutiveCells{std::max(1, std::atoi(match[1].str().c_str()))};
-      if (match[2] == f_survivingCellSymbol) {
+      if (match[2] == f_aliveCellSymbol) {
         for (auto i = 0; i < consecutiveCells; i++) {
           result.insert(cell);
           cell.x++;
@@ -77,11 +77,11 @@ std::set<std::string> listPatternNames() {
   return files;
 }
 
-std::set<Cell> loadPattern(const std::string& fileName) {
+std::set<Cell> loadPattern(const std::string& name) {
   std::string pattern;
   std::string line;
   std::ifstream istrm;
-  istrm.open(f_patternsFolder + fileName + f_rleFileExtension);
+  istrm.open(f_patternsFolder + name + f_rleFileExtension);
   while (std::getline(istrm, line)) {
     if (!std::regex_search(line, f_rleCommentRegex) &&
         !std::regex_search(line, f_rleHeaderRegex)) {
@@ -102,47 +102,45 @@ void savePattern(const std::string& name, const std::set<Cell> pattern) {
   ostrm << "x = " << calculatePatternWidth(pattern);
   ostrm << ", y = " << calculatePatternHeight(pattern) << std::endl;
   auto prevCol{-1};
+  auto prevRow{-1};
   auto consecutiveCells{0};
   for (auto it = pattern.cbegin(); it != pattern.cend(); it++) {
-    auto columnsSkipped{it->x - prevCol - 1};
-    if (columnsSkipped > 0) {
+    auto col{it->x};
+    auto row{it->y};
+    auto columnsSkipped{col - prevCol};
+    auto next{it};
+    std::advance(next, 1);
+    if (next == pattern.cend() || row != prevRow || columnsSkipped > 1) {
+      if (next == pattern.cend()) {
+        consecutiveCells++;
+      }
       if (consecutiveCells > 0) {
         if (consecutiveCells > 1) {
           ostrm << consecutiveCells;
         }
-        ostrm << f_survivingCellSymbol;
-        prevCol++;
         consecutiveCells = 0;
+        ostrm << f_aliveCellSymbol;
+      }
+      if (row != prevRow) {
+        if (it != pattern.cbegin()) {
+          auto rowsSkipped{row - prevRow};
+          if (rowsSkipped > 1) {
+            ostrm << rowsSkipped;
+          }
+          ostrm << f_nextRowSymbol;
+        }
+        columnsSkipped = col + 1;
       }
       if (columnsSkipped > 1) {
-        ostrm << columnsSkipped << f_deadCellSymbol;
-      } else if (columnsSkipped == 1) {
+        if (columnsSkipped > 2) {
+          ostrm << columnsSkipped - 1;
+        }
         ostrm << f_deadCellSymbol;
       }
     }
     consecutiveCells++;
-    prevCol = it->x;
-    auto next{it};
-    std::advance(next, 1);
-    auto rowsSkipped = next->y - it->y;
-    if (next == pattern.end() || rowsSkipped > 0) {
-      if (consecutiveCells > 0) {
-        if (consecutiveCells > 0) {
-          if (consecutiveCells > 1) {
-            ostrm << consecutiveCells;
-          }
-          ostrm << f_survivingCellSymbol;
-        }
-      }
-      if (rowsSkipped > 0) {
-        if (rowsSkipped > 1) {
-          ostrm << rowsSkipped;
-        }
-        ostrm << f_nextRowSymbol;
-        consecutiveCells = 0;
-        prevCol = -1;
-      }
-    }
+    prevRow = row;
+    prevCol = col;
   }
   ostrm << f_endOfPatternSymbol << std::endl;
   ostrm.close();

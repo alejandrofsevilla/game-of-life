@@ -4,15 +4,12 @@
 #include <SFML/Window/Mouse.hpp>
 
 #include "RleHelper.hpp"
-#include "SFML/Graphics/Color.hpp"
-#include "SFML/Graphics/PrimitiveType.hpp"
 
 namespace {
 const auto f_frameColor{sf::Color::Black};
 const auto f_livingCellColor{sf::Color::White};
 const auto f_deadCellColor{sf::Color{80, 80, 80}};
-const auto f_emptyCellColor{sf::Color{40, 40, 40}};
-const auto f_cellOutlineColor{sf::Color::Black};
+const auto f_backgroundColor{sf::Color{40, 40, 40}};
 const auto f_simpleTextBoxFillColor{sf::Color::Black};
 const auto f_simpleTextBoxOutlineColor{sf::Color::Black};
 const auto f_simpleTextBoxTextColor{sf::Color::White};
@@ -35,9 +32,9 @@ constexpr auto f_fontPath{"../resources/futura.ttf"};
 constexpr auto f_frameHorizontalThickness{50.f};
 constexpr auto f_frameVerticalThickness{1.f};
 constexpr auto f_fontSize{18};
-constexpr auto f_cellOutlineThickness{1.f};
 constexpr auto f_textBoxOutlineThickness{1.f};
 constexpr auto f_textBoxHeight{f_frameHorizontalThickness};
+constexpr auto f_defaultZoomLevel{5.f};
 constexpr auto f_minZoomLevel{1.f};
 constexpr auto f_maxZoomLevel{10.f};
 constexpr auto f_zoomSensibility{1.f};
@@ -61,7 +58,6 @@ constexpr auto f_saveButtonWidth{140.f};
 constexpr auto f_backButtonWidth{140.f};
 constexpr auto f_pageUpDownButtonWidth{280.f};
 constexpr auto f_scrollUpDownButtonWidth{280.f};
-constexpr auto f_showHideGridButton{170.f};
 }  // namespace
 
 View::View(sf::RenderWindow &window, Model &model)
@@ -73,9 +69,8 @@ View::View(sf::RenderWindow &window, Model &model)
       m_font{},
       m_highlightedButton{},
       m_highlightedLoadFileMenuItem{},
-      m_zoomLevel{f_minZoomLevel},
-      m_scrollPos{},
-      m_isGridVisible{true} {
+      m_zoomLevel{f_defaultZoomLevel},
+      m_scrollPos{} {
   m_font.loadFromFile(f_fontPath);
 }
 
@@ -93,8 +88,9 @@ void View::update() {
     case Mode::Main:
     default:
       m_scrollPos = 0;
-      drawGrid();
+      drawBackground();
       drawCells();
+      drawGrid();
       drawFrame();
       drawBottomLeftMenu();
       drawBottomRightMenu();
@@ -127,10 +123,6 @@ void View::pageUp() {
   m_scrollPos = std::max(0, m_scrollPos - maxNumberOfItems);
 }
 
-void View::showGrid() { m_isGridVisible = true; }
-
-void View::hideGrid() { m_isGridVisible = false; }
-
 void View::closeWindow() { m_window.close(); }
 
 void View::setMode(View::Mode mode) { m_mode = mode; }
@@ -141,8 +133,6 @@ void View::dragView(sf::Vector2i offset) {
 }
 
 View::Mode View::mode() const { return m_mode; }
-
-bool View::isGridVisible() const { return m_isGridVisible; }
 
 std::optional<std::string> View::highlightedLoadFileMenuItem() const {
   return m_highlightedLoadFileMenuItem;
@@ -182,12 +172,16 @@ void View::drawFrame() {
   m_window.draw(rect);
 }
 
-void View::drawGrid() {
+void View::drawBackground() {
   auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
   sf::RectangleShape background{windowSize};
   background.setPosition(0, 0);
-  background.setFillColor(f_emptyCellColor);
+  background.setFillColor(f_backgroundColor);
   m_window.draw(background);
+}
+
+void View::drawGrid() {
+  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
   auto cellSize{calculateCellSize()};
   sf::Vertex line[2];
   line[0].color = sf::Color::Black;
@@ -210,8 +204,6 @@ void View::drawCells() {
   sf::RectangleShape rect{calculateCellSize()};
   auto size{calculateCellSize()};
   auto cells{m_model.cells()};
-  rect.setOutlineThickness(f_textBoxOutlineThickness);
-  rect.setOutlineColor(f_cellOutlineColor);
   for (const auto &cell : cells) {
     rect.setPosition(static_cast<float>(cell.x) * size.x + m_viewOffset.x,
                      static_cast<float>(cell.y) * size.y + m_viewOffset.y);
@@ -269,11 +261,6 @@ void View::drawBottomLeftMenu() {
     m_highlightedButton = Button::GeneratePopulation;
   }
   position.x += f_generatePopButtonWidth;
-  if (drawTextBox(m_isGridVisible ? "Hide Grid(H)" : "Show Grid(H)", position,
-                  f_showHideGridButton, TextBoxStyle::Button)) {
-    m_highlightedButton = m_isGridVisible ? Button::HideGrid : Button::ShowGrid;
-  }
-  position.x += f_showHideGridButton;
   style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Simple
                                                      : TextBoxStyle::Hidden;
   drawTextBox("Add/RemoveCell(Mouse Left)", position,

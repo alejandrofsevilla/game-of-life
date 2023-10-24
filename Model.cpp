@@ -13,7 +13,7 @@ constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{1000}};
 constexpr auto f_defaultSpeed{5};
 constexpr auto f_maxSpeed{20};
 constexpr auto f_minSpeed{1};
-constexpr auto f_defaultSize{5};
+constexpr auto f_defaultSize{10};
 constexpr auto f_maxSize{20};
 constexpr auto f_minSize{1};
 

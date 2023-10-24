@@ -63,12 +63,6 @@ void Controller::onMainModeMouseButtonPressed(
     case View::Button::SaveFile:
       m_view.setMode(View::Mode::SaveFile);
       return;
-    case View::Button::ShowGrid:
-      m_view.showGrid();
-      return;
-    case View::Button::HideGrid:
-      m_view.hideGrid();
-      return;
     case View::Button::ZoomOut:
       m_view.zoomOut();
       return;
@@ -115,8 +109,10 @@ void Controller::onLoadFileModeMouseButtonPressed(
   auto highlightedLoadFileMenuItem{m_view.highlightedLoadFileMenuItem()};
   if (highlightedLoadFileMenuItem) {
     m_model.clear();
+    auto p{rle::loadPattern(highlightedLoadFileMenuItem.value())};
     m_model.insertPattern(
         rle::loadPattern(highlightedLoadFileMenuItem.value()));
+    rle::savePattern("MIERDA", p);
     m_view.setMode(View::Mode::Main);
     return;
   }
@@ -247,13 +243,6 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
       return;
     case sf::Keyboard::S:
       m_view.setMode(View::Mode::SaveFile);
-      return;
-    case sf::Keyboard::H:
-      if (m_view.isGridVisible()) {
-        m_view.hideGrid();
-      } else {
-        m_view.showGrid();
-      }
       return;
     case sf::Keyboard::G:
       m_model.generatePopulation(f_populationGenerationRate);
