@@ -1,6 +1,7 @@
 #ifndef GAME_OF_LIFE_MODEL_HPP
 #define GAME_OF_LIFE_MODEL_HPP
 
+#include <map>
 #include <mutex>
 #include <set>
 
@@ -17,8 +18,8 @@ class Model {
   int width() const;
   int height() const;
   int generation() const;
-
   const std::set<Cell>& cells();
+  const std::set<Cell>& initialPattern() const;
 
   void run();
   void clear();

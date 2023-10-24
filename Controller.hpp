@@ -27,6 +27,7 @@ class Controller {
       const sf::Event::MouseWheelScrollEvent &event);
   void onMouseMoved(const sf::Event::MouseMoveEvent &event);
   void onKeyPressed(const sf::Event::KeyEvent &event);
+  void onTextEnteredEvent(const sf::Event::TextEvent &event);
   void onMainModeKeyPressed(const sf::Event::KeyEvent &event);
   void onLoadFileModeKeyPressed(const sf::Event::KeyEvent &event);
   void onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event);
@@ -34,6 +35,7 @@ class Controller {
   View &m_view;
   Model &m_model;
   sf::Vector2i m_mouseReferencePosition;
+  bool m_isSaveFileMenuReady;
 };
 
 #endif

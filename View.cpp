@@ -30,11 +30,11 @@ const auto f_hiddenTextBoxOutlineColor{sf::Color::Black};
 const auto f_hiddenTextBoxTextColor{sf::Color{80, 80, 80}};
 constexpr auto f_fontPath{"../resources/futura.ttf"};
 constexpr auto f_frameHorizontalThickness{50.f};
-constexpr auto f_frameVerticalThickness{1.f};
+constexpr auto f_frameVerticalThickness{2.f};
 constexpr auto f_fontSize{18};
 constexpr auto f_textBoxOutlineThickness{1.f};
 constexpr auto f_textBoxHeight{f_frameHorizontalThickness};
-constexpr auto f_defaultZoomLevel{5.f};
+constexpr auto f_defaultZoomLevel{1.f};
 constexpr auto f_minZoomLevel{1.f};
 constexpr auto f_maxZoomLevel{10.f};
 constexpr auto f_zoomSensibility{1.f};
@@ -51,18 +51,19 @@ constexpr auto f_populationButtonWidth{130.f};
 constexpr auto f_plusMinusButtonWidth{50.f};
 constexpr auto f_speedButtonWidth{200.f};
 constexpr auto f_zoomButtonWidth{230.f};
-constexpr auto f_sizeButtonWidth{190.f};
+constexpr auto f_sizeButtonWidth{230.f};
 constexpr auto f_quitButtonWidth{120.f};
 constexpr auto f_loadButtonWidth{140.f};
+constexpr auto f_saveFileButtonWidth{140.f};
 constexpr auto f_saveButtonWidth{140.f};
+constexpr auto f_saveMenuInfoButtonWidth{180.f};
 constexpr auto f_backButtonWidth{140.f};
-constexpr auto f_pageUpDownButtonWidth{280.f};
+constexpr auto f_pageUpDownButtonWidth{350.f};
 constexpr auto f_scrollUpDownButtonWidth{280.f};
 }  // namespace
 
 View::View(sf::RenderWindow &window, Model &model)
-    : m_loadFileMenuItems{rle::listPatternNames()},
-      m_model{model},
+    : m_model{model},
       m_mode{Mode::Main},
       m_window{window},
       m_viewOffset{f_frameVerticalThickness, f_frameHorizontalThickness},
@@ -70,7 +71,8 @@ View::View(sf::RenderWindow &window, Model &model)
       m_highlightedButton{},
       m_highlightedLoadFileMenuItem{},
       m_zoomLevel{f_defaultZoomLevel},
-      m_scrollPos{} {
+      m_scrollPos{},
+      m_fileNameToSave{} {
   m_font.loadFromFile(f_fontPath);
 }
 
@@ -80,10 +82,10 @@ void View::update() {
   m_highlightedLoadFileMenuItem.reset();
   switch (m_mode) {
     case Mode::SaveFile:
-      drawSaveFileMenu();
+      drawSaveFileScreen();
       break;
     case Mode::LoadFile:
-      drawLoadFileMenu();
+      drawLoadFileScreen();
       break;
     case Mode::Main:
     default:
@@ -101,23 +103,23 @@ void View::update() {
   m_window.display();
 }
 
-void View::zoomIn() { setZoomLevel(m_zoomLevel + f_zoomSensibility); }
+void View::zoomIn() { applyZoomLevel(m_zoomLevel + f_zoomSensibility); }
 
-void View::zoomOut() { setZoomLevel(m_zoomLevel - f_zoomSensibility); }
+void View::zoomOut() { applyZoomLevel(m_zoomLevel - f_zoomSensibility); }
 
 void View::scrollDown() { m_scrollPos++; }
 
 void View::scrollUp() { m_scrollPos = std::max(0, m_scrollPos - 1); }
 
 void View::pageDown() {
-  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  auto windowSize{m_window.getView().getSize()};
   auto maxNumberOfItems{static_cast<int>(
       windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
   m_scrollPos = std::max(0, m_scrollPos + maxNumberOfItems);
 }
 
 void View::pageUp() {
-  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  auto windowSize{m_window.getView().getSize()};
   auto maxNumberOfItems{static_cast<int>(
       windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
   m_scrollPos = std::max(0, m_scrollPos - maxNumberOfItems);
@@ -125,14 +127,23 @@ void View::pageUp() {
 
 void View::closeWindow() { m_window.close(); }
 
-void View::setMode(View::Mode mode) { m_mode = mode; }
+void View::setMode(View::Mode mode) {
+  m_fileNameToSave.clear();
+  m_mode = mode;
+}
 
 void View::dragView(sf::Vector2i offset) {
-  setViewOffset({m_viewOffset.x + static_cast<float>(offset.x),
-                 m_viewOffset.y + static_cast<float>(offset.y)});
+  applyViewOffset({m_viewOffset.x + static_cast<float>(offset.x),
+                   m_viewOffset.y + static_cast<float>(offset.y)});
+}
+
+void View::setFileNameToSave(const std::string &name) {
+  m_fileNameToSave = name;
 }
 
 View::Mode View::mode() const { return m_mode; }
+
+const std::string &View::fileNameToSave() const { return m_fileNameToSave; }
 
 std::optional<std::string> View::highlightedLoadFileMenuItem() const {
   return m_highlightedLoadFileMenuItem;
@@ -158,7 +169,7 @@ std::optional<sf::Vector2i> View::pixelToCellPosition(
 }
 
 void View::drawFrame() {
-  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  auto windowSize{m_window.getView().getSize()};
   sf::RectangleShape rect{{windowSize.x, f_frameHorizontalThickness}};
   rect.setFillColor(f_frameColor);
   m_window.draw(rect);
@@ -173,7 +184,7 @@ void View::drawFrame() {
 }
 
 void View::drawBackground() {
-  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  auto windowSize{m_window.getView().getSize()};
   sf::RectangleShape background{windowSize};
   background.setPosition(0, 0);
   background.setFillColor(f_backgroundColor);
@@ -181,7 +192,7 @@ void View::drawBackground() {
 }
 
 void View::drawGrid() {
-  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  auto windowSize{m_window.getView().getSize()};
   auto cellSize{calculateCellSize()};
   sf::Vertex line[2];
   line[0].color = sf::Color::Black;
@@ -346,7 +357,7 @@ void View::drawTopRightMenu() {
       (m_model.status() == Model::Status::Stopped && m_model.cells().empty())
           ? TextBoxStyle::Simple
           : TextBoxStyle::Hidden;
-  drawTextBox("Size(Up/Down)", position, f_sizeButtonWidth, style);
+  drawTextBox("Grid Size(Up/Down)", position, f_sizeButtonWidth, style);
 }
 
 void View::drawTopLeftMenu() {
@@ -359,15 +370,15 @@ void View::drawTopLeftMenu() {
   auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
                                                         : TextBoxStyle::Hidden};
   if (drawTextBox("Load File(L)", position, f_loadButtonWidth, style)) {
-    m_highlightedButton = Button::LoadFile;
+    m_highlightedButton = Button::LoadFileMenu;
   }
   position.x += f_loadButtonWidth;
-  if (drawTextBox("Save File(S)", position, f_saveButtonWidth, style)) {
-    m_highlightedButton = Button::SaveFile;
+  if (drawTextBox("Save File(S)", position, f_saveFileButtonWidth, style)) {
+    m_highlightedButton = Button::SaveFileMenu;
   }
 }
 
-void View::drawLoadFileMenu() {
+void View::drawLoadFileScreen() {
   sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
   if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
@@ -377,16 +388,16 @@ void View::drawLoadFileMenu() {
   drawTextBox("Scroll Up/Down(Mouse Wheel)", position,
               f_scrollUpDownButtonWidth, TextBoxStyle::Simple);
   position.x += f_scrollUpDownButtonWidth;
-  drawTextBox("Page Up/Down(Up/Down)", position, f_pageUpDownButtonWidth,
-              TextBoxStyle::Simple);
+  drawTextBox("Page Up/Down(PageUp/PageDown)", position,
+              f_pageUpDownButtonWidth, TextBoxStyle::Simple);
 
-  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  auto windowSize{m_window.getView().getSize()};
   auto maxNumberOfItems{static_cast<int>(
       windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
-  auto maxScrollPos{static_cast<int>(m_loadFileMenuItems.size()) -
-                    maxNumberOfItems};
+  auto items{rle::listPatternNames()};
+  auto maxScrollPos{static_cast<int>(items.size()) - maxNumberOfItems};
   m_scrollPos = std::min(m_scrollPos, maxScrollPos);
-  auto topItem{m_loadFileMenuItems.cbegin()};
+  auto topItem{items.cbegin()};
   std::advance(topItem, m_scrollPos);
   auto maxItem{topItem};
   std::advance(maxItem, maxNumberOfItems);
@@ -401,12 +412,28 @@ void View::drawLoadFileMenu() {
   }
 }
 
-void View::drawSaveFileMenu() {
-  if (drawTextBox("Back(Esc)",
-                  {f_textBoxOutlineThickness, f_textBoxOutlineThickness}, 200.,
+void View::drawSaveFileScreen() {
+  sf::Vector2f position{f_textBoxOutlineThickness, f_textBoxOutlineThickness};
+  if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
+  position.x += f_backButtonWidth;
+  if (drawTextBox("Save(Enter)", position, f_saveButtonWidth,
+                  TextBoxStyle::Button)) {
+    m_highlightedButton = Button::SaveFile;
+  }
+  auto windowSize{m_window.getView().getSize()};
+  auto screenMiddleHeight{windowSize.y * .5f};
+  position.x = f_frameVerticalThickness;
+  position.y = screenMiddleHeight;
+  drawTextBox(m_fileNameToSave, position,
+              windowSize.x - 2 * f_frameVerticalThickness,
+              TextBoxStyle::Display);
+
+  position.y -= f_textBoxHeight;
+  drawTextBox("Enter pattern name...", position, f_saveMenuInfoButtonWidth,
+              TextBoxStyle::Simple);
 }
 
 bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
@@ -423,8 +450,8 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
 
   switch (style) {
     case TextBoxStyle::Button:
-      if (rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(
-              m_window.mapPixelToCoords(sf::Mouse::getPosition())))) {
+      if (rect.getGlobalBounds().contains(
+              m_window.mapPixelToCoords(sf::Mouse::getPosition()))) {
         highlighted = true;
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
           rect.setFillColor(f_clickedButtonFillColor);
@@ -463,7 +490,7 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
   return highlighted;
 }
 
-void View::setZoomLevel(float zoomLevel) {
+void View::applyZoomLevel(float zoomLevel) {
   auto windowSize{m_window.getView().getSize()};
   auto cellAtCentre{
       pixelToCellPosition(
@@ -475,13 +502,13 @@ void View::setZoomLevel(float zoomLevel) {
           .value()};
   m_zoomLevel = std::min(f_maxZoomLevel, std::max(f_minZoomLevel, zoomLevel));
   auto cellSize{calculateCellSize()};
-  setViewOffset({-(static_cast<float>(cellAtCentre.x) + .5f) * cellSize.x +
-                     static_cast<float>(windowSize.x) * .5f,
-                 -(static_cast<float>(cellAtCentre.y) + 0.5f) * cellSize.y +
-                     static_cast<float>(windowSize.y) * .5f});
+  applyViewOffset({-(static_cast<float>(cellAtCentre.x) + .5f) * cellSize.x +
+                       static_cast<float>(windowSize.x) * .5f,
+                   -(static_cast<float>(cellAtCentre.y) + 0.5f) * cellSize.y +
+                       static_cast<float>(windowSize.y) * .5f});
 }
 
-void View::setViewOffset(const sf::Vector2f &position) {
+void View::applyViewOffset(const sf::Vector2f &position) {
   auto windowSize{m_window.getView().getSize()};
   auto cellSize{calculateCellSize()};
   sf::Vector2f minOffset{static_cast<float>(windowSize.x) -

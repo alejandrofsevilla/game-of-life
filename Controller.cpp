@@ -7,7 +7,10 @@ constexpr auto f_populationGenerationRate{.05};
 }  // namespace
 
 Controller::Controller(View& view, Model& model)
-    : m_view{view}, m_model{model}, m_mouseReferencePosition{} {}
+    : m_view{view},
+      m_model{model},
+      m_mouseReferencePosition{},
+      m_isSaveFileMenuReady{true} {}
 
 void Controller::onEvent(const sf::Event& event) {
   switch (event.type) {
@@ -25,6 +28,9 @@ void Controller::onEvent(const sf::Event& event) {
       return;
     case sf::Event::MouseMoved:
       onMouseMoved(event.mouseMove);
+      return;
+    case sf::Event::TextEntered:
+      onTextEnteredEvent(event.text);
       return;
     case sf::Event::KeyPressed:
       onKeyPressed(event.key);
@@ -57,10 +63,10 @@ void Controller::onMainModeMouseButtonPressed(
       m_model.finish();
       m_view.closeWindow();
       return;
-    case View::Button::LoadFile:
+    case View::Button::LoadFileMenu:
       m_view.setMode(View::Mode::LoadFile);
       return;
-    case View::Button::SaveFile:
+    case View::Button::SaveFileMenu:
       m_view.setMode(View::Mode::SaveFile);
       return;
     case View::Button::ZoomOut:
@@ -109,10 +115,8 @@ void Controller::onLoadFileModeMouseButtonPressed(
   auto highlightedLoadFileMenuItem{m_view.highlightedLoadFileMenuItem()};
   if (highlightedLoadFileMenuItem) {
     m_model.clear();
-    auto p{rle::loadPattern(highlightedLoadFileMenuItem.value())};
     m_model.insertPattern(
         rle::loadPattern(highlightedLoadFileMenuItem.value()));
-    rle::savePattern("MIERDA", p);
     m_view.setMode(View::Mode::Main);
     return;
   }
@@ -139,6 +143,12 @@ void Controller::onSaveFileModeMouseButtonPressed(
   }
   switch (highlightedButton.value()) {
     case View::Button::Back:
+      m_view.setMode(View::Mode::Main);
+      return;
+    case View::Button::SaveFile:
+      if (!m_view.fileNameToSave().empty()) {
+        rle::savePattern(m_view.fileNameToSave(), m_model.initialPattern());
+      }
       m_view.setMode(View::Mode::Main);
       return;
     default:
@@ -202,6 +212,23 @@ void Controller::onMouseMoved(const sf::Event::MouseMoveEvent& event) {
   m_mouseReferencePosition = sf::Vector2i{event.x, event.y};
 }
 
+void Controller::onTextEnteredEvent(const sf::Event::TextEvent& event) {
+  if (!m_isSaveFileMenuReady) {
+    m_isSaveFileMenuReady = true;
+    return;
+  }
+  if (m_view.mode() != View::Mode::SaveFile) {
+    return;
+  }
+  if (!std::iswalpha(event.unicode) && !std::iswalnum(event.unicode)) {
+    return;
+  }
+  std::wstring ws{static_cast<wchar_t>(event.unicode)};
+  auto name{m_view.fileNameToSave()};
+  name.append(ws.begin(), ws.end());
+  m_view.setFileNameToSave(name);
+}
+
 void Controller::onKeyPressed(const sf::Event::KeyEvent& event) {
   switch (m_view.mode()) {
     case View::Mode::LoadFile:
@@ -242,6 +269,7 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
       m_view.setMode(View::Mode::LoadFile);
       return;
     case sf::Keyboard::S:
+      m_isSaveFileMenuReady = false;
       m_view.setMode(View::Mode::SaveFile);
       return;
     case sf::Keyboard::G:
@@ -275,10 +303,10 @@ void Controller::onLoadFileModeKeyPressed(const sf::Event::KeyEvent& event) {
     case sf::Keyboard::Escape:
       m_view.setMode(View::Mode::Main);
       return;
-    case sf::Keyboard::Up:
+    case sf::Keyboard::PageUp:
       m_view.pageUp();
       return;
-    case sf::Keyboard::Down:
+    case sf::Keyboard::PageDown:
       m_view.pageDown();
       return;
     default:
@@ -292,6 +320,51 @@ void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent& event) {
     case sf::Keyboard::Escape:
       m_view.setMode(View::Mode::Main);
       return;
+    case sf::Keyboard::Return:
+      if (!m_view.fileNameToSave().empty()) {
+        rle::savePattern(m_view.fileNameToSave(), m_model.initialPattern());
+      }
+      m_view.setMode(View::Mode::Main);
+      return;
+    case sf::Keyboard::Space: {
+      auto name{m_view.fileNameToSave()};
+      name.push_back(' ');
+      m_view.setFileNameToSave(name);
+      return;
+    }
+    case sf::Keyboard::BackSpace: {
+      auto name{m_view.fileNameToSave()};
+      if (name.empty()) {
+        return;
+      }
+      name.pop_back();
+      m_view.setFileNameToSave(name);
+      return;
+    }
+    case sf::Keyboard::Hyphen: {
+      auto name{m_view.fileNameToSave()};
+      name.push_back('_');
+      m_view.setFileNameToSave(name);
+      return;
+    }
+    case sf::Keyboard::Home: {
+      auto name{m_view.fileNameToSave()};
+      name.push_back('+');
+      m_view.setFileNameToSave(name);
+      return;
+    }
+    case sf::Keyboard::Add: {
+      auto name{m_view.fileNameToSave()};
+      name.push_back('+');
+      m_view.setFileNameToSave(name);
+      return;
+    }
+    case sf::Keyboard::Subtract: {
+      auto name{m_view.fileNameToSave()};
+      name.push_back('-');
+      m_view.setFileNameToSave(name);
+      return;
+    }
     default:
       return;
   }

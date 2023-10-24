@@ -10,7 +10,7 @@ constexpr auto f_underpopulationThreshold{2};
 constexpr auto f_overpopulationThreshold{3};
 constexpr auto f_reproductionValue{3};
 constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{1000}};
-constexpr auto f_defaultSpeed{5};
+constexpr auto f_defaultSpeed{1};
 constexpr auto f_maxSpeed{20};
 constexpr auto f_minSpeed{1};
 constexpr auto f_defaultSize{10};
@@ -52,6 +52,8 @@ const std::set<Cell>& Model::cells() {
   std::lock_guard<std::mutex> guard{m_mutex};
   return m_cells;
 }
+
+const std::set<Cell>& Model::initialPattern() const { return m_initialPattern; }
 
 void Model::run() {
   switch (m_status) {
@@ -117,6 +119,7 @@ void Model::reduceSize() {
 }
 
 void Model::insertPattern(const std::set<Cell>& pattern) {
+  m_initialPattern = pattern;
   auto mostRightElement{
       std::max_element(pattern.cbegin(), pattern.cend(),
                        [](const auto& a, const auto& b) { return a.x < b.x; })};

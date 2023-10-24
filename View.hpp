@@ -14,7 +14,8 @@ class View {
   enum class Mode { Main, LoadFile, SaveFile };
   enum class Button {
     Quit,
-    LoadFile,
+    LoadFileMenu,
+    SaveFileMenu,
     SaveFile,
     ZoomOut,
     ZoomIn,
@@ -42,11 +43,13 @@ class View {
   void closeWindow();
   void setMode(View::Mode mode);
   void dragView(sf::Vector2i offset);
+  void setFileNameToSave(const std::string &name);
 
   Mode mode() const;
   std::optional<View::Button> highlightedButton() const;
   std::optional<std::string> highlightedLoadFileMenuItem() const;
   std::optional<sf::Vector2i> pixelToCellPosition(sf::Vector2i pixel) const;
+  const std::string &fileNameToSave() const;
 
  private:
   enum class TextBoxStyle { Simple, Display, Button, Hidden };
@@ -59,16 +62,14 @@ class View {
   void drawBottomLeftMenu();
   void drawTopRightMenu();
   void drawTopLeftMenu();
-  void drawLoadFileMenu();
-  void drawSaveFileMenu();
+  void drawLoadFileScreen();
+  void drawSaveFileScreen();
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);
-  void setViewOffset(const sf::Vector2f &offset);
-  void setZoomLevel(float zoomLevel);
+  void applyViewOffset(const sf::Vector2f &offset);
+  void applyZoomLevel(float zoomLevel);
 
   sf::Vector2f calculateCellSize() const;
-
-  const std::set<std::string> m_loadFileMenuItems;
 
   Model &m_model;
   View::Mode m_mode;
@@ -79,6 +80,7 @@ class View {
   std::optional<std::string> m_highlightedLoadFileMenuItem;
   float m_zoomLevel;
   int m_scrollPos;
+  std::string m_fileNameToSave;
 };
 
 #endif
