@@ -12,13 +12,13 @@ struct Cell {
     return x == other.x && y == other.y;
   }
   bool operator<(const Cell& other) const {
-    if (x < other.x) {
+    if (y < other.y) {
       return true;
     }
-    if (x > other.x) {
+    if (y > other.y) {
       return false;
     }
-    if (y < other.y) {
+    if (x < other.x) {
       return true;
     }
     return false;

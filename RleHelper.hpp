@@ -10,7 +10,7 @@
 namespace rle {
 std::set<std::string> listPatternNames();
 std::set<Cell> loadPattern(const std::string& fileName);
-void savePattern(const std::string& fileName, const std::set<Cell> pattern);
+void savePattern(const std::string& name, const std::set<Cell> pattern);
 }  // namespace rle
 
 #endif
