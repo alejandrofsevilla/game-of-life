@@ -4,12 +4,15 @@
 #include <SFML/Window/Mouse.hpp>
 
 #include "RleHelper.hpp"
+#include "SFML/Graphics/Color.hpp"
+#include "SFML/Graphics/PrimitiveType.hpp"
 
 namespace {
 const auto f_frameColor{sf::Color::Black};
 const auto f_livingCellColor{sf::Color::White};
 const auto f_deadCellColor{sf::Color{80, 80, 80}};
 const auto f_emptyCellColor{sf::Color{40, 40, 40}};
+const auto f_cellOutlineColor{sf::Color::Black};
 const auto f_simpleTextBoxFillColor{sf::Color::Black};
 const auto f_simpleTextBoxOutlineColor{sf::Color::Black};
 const auto f_simpleTextBoxTextColor{sf::Color::White};
@@ -45,7 +48,7 @@ constexpr auto f_clearButtonWidth{130.f};
 constexpr auto f_generatePopButtonWidth{240.f};
 constexpr auto f_addRemoveCellButtonWidth{280.f};
 constexpr auto f_dragViewButtonWidth{230.f};
-constexpr auto f_displayBoxWidth{90.f};
+constexpr auto f_displayBoxWidth{110.f};
 constexpr auto f_generationButtonWidth{130.f};
 constexpr auto f_populationButtonWidth{130.f};
 constexpr auto f_plusMinusButtonWidth{50.f};
@@ -90,6 +93,7 @@ void View::update() {
     case Mode::Main:
     default:
       m_scrollPos = 0;
+      drawGrid();
       drawCells();
       drawFrame();
       drawBottomLeftMenu();
@@ -178,29 +182,45 @@ void View::drawFrame() {
   m_window.draw(rect);
 }
 
-void View::drawCells() {
+void View::drawGrid() {
+  auto windowSize{static_cast<sf::Vector2f>(m_window.getView().getSize())};
+  sf::RectangleShape background{windowSize};
+  background.setPosition(0, 0);
+  background.setFillColor(f_emptyCellColor);
+  m_window.draw(background);
   auto cellSize{calculateCellSize()};
-  sf::RectangleShape rect{cellSize};
-  rect.setOutlineThickness(f_cellOutlineThickness);
-  rect.setOutlineColor(f_frameColor);
-  auto cells{m_model.cells()};
+  sf::Vertex line[2];
+  line[0].color = sf::Color::Black;
+  line[1].color = sf::Color::Black;
   for (auto x = 0; x < m_model.width(); x++) {
-    for (auto y = 0; y < m_model.height(); y++) {
-      auto cell{cells.find({x, y})};
-      if (cell == cells.end()) {
-        if (!m_isGridVisible) {
-          continue;
-        }
-        rect.setFillColor(f_emptyCellColor);
-      } else if (cell->status == Cell::Status::Dead) {
-        rect.setFillColor(f_deadCellColor);
-      } else {
-        rect.setFillColor(f_livingCellColor);
-      }
-      rect.setPosition(static_cast<float>(x) * cellSize.x + m_viewOffset.x,
-                       static_cast<float>(y) * cellSize.y + m_viewOffset.y);
-      m_window.draw(rect);
+    auto pos{static_cast<float>(x) * cellSize.x + m_viewOffset.x};
+    line[0].position = sf::Vector2f(pos, 0);
+    line[1].position = sf::Vector2f(pos, windowSize.y);
+    m_window.draw(line, 2, sf::LinesStrip);
+  }
+  for (auto y = 0; y < m_model.height(); y++) {
+    auto pos{static_cast<float>(y) * cellSize.y + m_viewOffset.y};
+    line[0].position = sf::Vector2f(0, pos);
+    line[1].position = sf::Vector2f(windowSize.x, pos);
+    m_window.draw(line, 2, sf::Lines);
+  }
+}
+
+void View::drawCells() {
+  sf::RectangleShape rect{calculateCellSize()};
+  auto size{calculateCellSize()};
+  auto cells{m_model.cells()};
+  rect.setOutlineThickness(f_textBoxOutlineThickness);
+  rect.setOutlineColor(f_cellOutlineColor);
+  for (const auto &cell : cells) {
+    rect.setPosition(static_cast<float>(cell.x) * size.x + m_viewOffset.x,
+                     static_cast<float>(cell.y) * size.y + m_viewOffset.y);
+    if (cell.status == Cell::Status::Dead) {
+      rect.setFillColor(f_deadCellColor);
+    } else {
+      rect.setFillColor(f_livingCellColor);
     }
+    m_window.draw(rect);
   }
 }
 
@@ -499,12 +519,4 @@ sf::Vector2f View::calculateCellSize() const {
           (static_cast<float>(windowSize.y) - f_frameHorizontalThickness -
            f_frameHorizontalThickness) /
           static_cast<float>(m_model.height())};
-}
-
-sf::Vector2f View::calculateCellPosition(Cell cell) const {
-  auto cellSize{calculateCellSize()};
-  return {static_cast<float>(cell.x) * cellSize.x + f_frameHorizontalThickness +
-              m_viewOffset.x,
-          static_cast<float>(cell.y) * cellSize.y + f_frameHorizontalThickness +
-              m_viewOffset.y};
 }

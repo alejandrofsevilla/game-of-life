@@ -56,6 +56,7 @@ class View {
   enum class TextBoxStyle { Simple, Display, Button, Hidden };
 
   void drawFrame();
+  void drawGrid();
   void drawCells();
   void drawBottomRightMenu();
   void drawBottomLeftMenu();
@@ -69,7 +70,6 @@ class View {
   void setZoomLevel(float zoomLevel);
 
   sf::Vector2f calculateCellSize() const;
-  sf::Vector2f calculateCellPosition(Cell cell) const;
 
   const std::set<std::string> m_loadFileMenuItems;
 
