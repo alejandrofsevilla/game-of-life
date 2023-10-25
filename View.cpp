@@ -28,16 +28,17 @@ const auto f_displayTextBoxTextFillColor{sf::Color::White};
 const auto f_hiddenTextBoxFillColor{sf::Color::Black};
 const auto f_hiddenTextBoxOutlineColor{sf::Color::Black};
 const auto f_hiddenTextBoxTextColor{sf::Color{80, 80, 80}};
+const auto f_tooSmallCellsGridMask{sf::Color{0, 0, 0, 100}};
 constexpr auto f_fontPath{"../resources/futura.ttf"};
 constexpr auto f_frameHorizontalThickness{50.f};
 constexpr auto f_frameVerticalThickness{0.f};
 constexpr auto f_fontSize{18};
 constexpr auto f_textBoxOutlineThickness{1.f};
 constexpr auto f_textBoxHeight{f_frameHorizontalThickness};
-constexpr auto f_defaultZoomLevel{1.f};
-constexpr auto f_minZoomLevel{1.f};
-constexpr auto f_maxZoomLevel{10.f};
-constexpr auto f_zoomSensibility{1.f};
+constexpr auto f_defaultZoomLevel{1};
+constexpr auto f_minZoomLevel{1};
+constexpr auto f_maxZoomLevel{10};
+constexpr auto f_zoomSensibility{1};
 constexpr auto f_textBoxTextVerticalPosition{12.f};
 constexpr auto f_startButtonWidth{180.f};
 constexpr auto f_resetButtonWidth{130.f};
@@ -62,7 +63,7 @@ constexpr auto f_pageUpDownButtonWidth{350.f};
 constexpr auto f_scrollUpDownButtonWidth{280.f};
 }  // namespace
 
-View::View(sf::RenderWindow &window, Model &model)
+View::View(sf::RenderWindow& window, Model& model)
     : m_model{model},
       m_mode{Mode::Main},
       m_window{window},
@@ -105,14 +106,14 @@ void View::scrollDown() { m_scrollPos++; }
 void View::scrollUp() { m_scrollPos = std::max(0, m_scrollPos - 1); }
 
 void View::pageDown() {
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   auto maxNumberOfItems{static_cast<int>(
       windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
   m_scrollPos = std::max(0, m_scrollPos + maxNumberOfItems);
 }
 
 void View::pageUp() {
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   auto maxNumberOfItems{static_cast<int>(
       windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
   m_scrollPos = std::max(0, m_scrollPos - maxNumberOfItems);
@@ -130,7 +131,7 @@ void View::dragView(sf::Vector2i offset) {
                    m_viewOffset.y + static_cast<float>(offset.y)});
 }
 
-void View::setFileNameToSave(const std::string &name) {
+void View::setFileNameToSave(const std::string& name) {
   m_fileNameToSave = name;
 }
 
@@ -147,7 +148,7 @@ std::optional<View::Button> View::highlightedButton() const {
 std::optional<sf::Vector2i> View::pixelToCellPosition(
     sf::Vector2i pixel) const {
   auto coord = m_window.mapPixelToCoords(pixel);
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   if (coord.x < f_frameVerticalThickness ||
       coord.x > (windowSize.x - f_frameVerticalThickness) ||
       coord.y < f_frameHorizontalThickness ||
@@ -156,10 +157,10 @@ std::optional<sf::Vector2i> View::pixelToCellPosition(
   }
   auto cellSize{calculateCellSize()};
   return {{static_cast<int>((coord.x - m_viewOffset.x) / cellSize.x),
-           static_cast<int>(((coord.y - m_viewOffset.y) / cellSize.y))}};
+           static_cast<int>((coord.y - m_viewOffset.y) / cellSize.y)}};
 }
 
-const std::string &View::fileNameToSave() const { return m_fileNameToSave; }
+const std::string& View::fileNameToSave() const { return m_fileNameToSave; }
 
 void View::drawMainScreen() {
   drawBackground();
@@ -186,7 +187,7 @@ void View::drawLoadFileScreen() {
   drawTextBox("Page Up/Down(PageUp/PageDown)", position,
               f_pageUpDownButtonWidth, TextBoxStyle::Simple);
 
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   auto maxNumberOfItems{static_cast<int>(
       windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
   auto items{rle::listPatternNames()};
@@ -222,7 +223,7 @@ void View::drawSaveFileScreen() {
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::SaveFile;
   }
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   auto screenMiddleHeight{windowSize.y * .5f};
   position.x = f_frameVerticalThickness + f_textBoxOutlineThickness;
   position.y = screenMiddleHeight;
@@ -236,7 +237,7 @@ void View::drawSaveFileScreen() {
 }
 
 void View::drawFrame() {
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   sf::RectangleShape rect{{windowSize.x, f_frameHorizontalThickness}};
   rect.setFillColor(f_frameColor);
   m_window.draw(rect);
@@ -251,7 +252,7 @@ void View::drawFrame() {
 }
 
 void View::drawBackground() {
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   sf::RectangleShape background{windowSize};
   background.setPosition(0, 0);
   background.setFillColor(f_backgroundColor);
@@ -259,10 +260,9 @@ void View::drawBackground() {
 }
 
 void View::drawCells() {
-  sf::RectangleShape rect{calculateCellSize()};
   auto size{calculateCellSize()};
-  auto cells{m_model.cells()};
-  for (const auto &cell : cells) {
+  sf::RectangleShape rect{{size.x, size.y}};
+  for (const auto& cell : m_model.cells()) {
     rect.setPosition(static_cast<float>(cell.x) * size.x + m_viewOffset.x,
                      static_cast<float>(cell.y) * size.y + m_viewOffset.y);
     if (cell.status == Cell::Status::Dead) {
@@ -275,7 +275,7 @@ void View::drawCells() {
 }
 
 void View::drawGrid() {
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   auto cellSize{calculateCellSize()};
   sf::Vertex line[2];
   line[0].color = sf::Color::Black;
@@ -354,8 +354,12 @@ void View::drawBottomRightMenu() {
       static_cast<float>(m_window.getView().getSize().y) -
           f_frameHorizontalThickness + f_textBoxOutlineThickness};
   position.x -= f_displayBoxWidth;
-  drawTextBox(std::to_string(m_model.cells().size()), position,
-              f_displayBoxWidth, TextBoxStyle::Display);
+  auto cells{m_model.cells()};
+  auto population{std::count_if(
+      cells.cbegin(), cells.cend(),
+      [](const auto& cell) { return cell.status == Cell::Status::Alive; })};
+  drawTextBox(std::to_string(population), position, f_displayBoxWidth,
+              TextBoxStyle::Display);
   position.x -= f_populationButtonWidth;
   drawTextBox("Population", position, f_populationButtonWidth,
               TextBoxStyle::Simple);
@@ -407,9 +411,9 @@ void View::drawTopRightMenu() {
   drawTextBox("Speed(Left/Right)", position, f_speedButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
-  drawTextBox(std::to_string(static_cast<int>(m_zoomLevel)) + "/" +
-                  std::to_string(static_cast<int>(f_maxZoomLevel)),
-              position, f_displayBoxWidth, TextBoxStyle::Display);
+  drawTextBox(
+      std::to_string(m_zoomLevel) + "/" + std::to_string(f_maxZoomLevel),
+      position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
   if (drawTextBox("+", position, f_plusMinusButtonWidth,
                   TextBoxStyle::Button)) {
@@ -447,7 +451,7 @@ void View::drawTopRightMenu() {
   drawTextBox("Grid Size(Up/Down)", position, f_sizeButtonWidth, style);
 }
 
-bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
+bool View::drawTextBox(const std::string& content, const sf::Vector2f& position,
                        float width, TextBoxStyle style) {
   auto highlighted{false};
   sf::RectangleShape rect{{width - 2 * f_textBoxOutlineThickness,
@@ -501,27 +505,25 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
   return highlighted;
 }
 
-#include <iostream>
-void View::applyZoomLevel(float zoomLevel) {
-  auto windowSize{m_window.getView().getSize()};
-  auto cellAtCentre{
-      pixelToCellPosition(
-          {static_cast<int>(windowSize.x * .5),
-           static_cast<int>(f_frameHorizontalThickness +
-                            (windowSize.y - f_frameHorizontalThickness -
-                             f_frameHorizontalThickness) *
-                                .5)})
-          .value()};
+void View::applyZoomLevel(int zoomLevel) {
+  auto& windowSize{m_window.getView().getSize()};
+  auto cellAtCentre{pixelToCellPosition(
+      {static_cast<int>(windowSize.x * .5),
+       static_cast<int>(f_frameHorizontalThickness +
+                        (windowSize.y - f_frameHorizontalThickness -
+                         f_frameHorizontalThickness) *
+                            .5)})};
   m_zoomLevel = std::min(f_maxZoomLevel, std::max(f_minZoomLevel, zoomLevel));
   auto cellSize{calculateCellSize()};
-  applyViewOffset({-(static_cast<float>(cellAtCentre.x) + .5f) * cellSize.x +
-                       static_cast<float>(windowSize.x) * .5f,
-                   -(static_cast<float>(cellAtCentre.y) + 0.5f) * cellSize.y +
-                       static_cast<float>(windowSize.y) * .5f});
+  applyViewOffset(
+      {-(static_cast<float>(cellAtCentre.value().x) + .5f) * cellSize.x +
+           static_cast<float>(windowSize.x) * .5f,
+       -(static_cast<float>(cellAtCentre.value().y) + 0.5f) * cellSize.y +
+           static_cast<float>(windowSize.y) * .5f});
 }
 
-void View::applyViewOffset(const sf::Vector2f &position) {
-  auto windowSize{m_window.getView().getSize()};
+void View::applyViewOffset(const sf::Vector2f& position) {
+  auto& windowSize{m_window.getView().getSize()};
   auto cellSize{calculateCellSize()};
   sf::Vector2f minOffset{static_cast<float>(windowSize.x) -
                              cellSize.x * static_cast<float>(m_model.width()) -
@@ -536,12 +538,12 @@ void View::applyViewOffset(const sf::Vector2f &position) {
 }
 
 sf::Vector2f View::calculateCellSize() const {
-  auto windowSize{m_window.getView().getSize()};
+  auto& windowSize{m_window.getView().getSize()};
   return {
-      m_zoomLevel *
+      static_cast<float>(m_zoomLevel) *
           (static_cast<float>(windowSize.x) - 2 * f_frameVerticalThickness) /
           static_cast<float>(m_model.width()),
-      m_zoomLevel *
+      static_cast<float>(m_zoomLevel) *
           (static_cast<float>(windowSize.y) - f_frameHorizontalThickness -
            f_frameHorizontalThickness) /
           static_cast<float>(m_model.height())};

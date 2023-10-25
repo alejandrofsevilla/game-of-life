@@ -1,8 +1,9 @@
 #ifndef GAME_OF_LIFE_MODEL_HPP
 #define GAME_OF_LIFE_MODEL_HPP
 
-#include <mutex>
+#include <future>
 #include <set>
+#include <mutex>
 
 #include "Cell.hpp"
 
@@ -20,7 +21,7 @@ class Model {
   int width() const;
   int height() const;
   int generation() const;
-  const std::set<Cell>& cells();
+  std::set<Cell> cells();
   const std::set<Cell>& initialPattern() const;
 
   void run();
@@ -54,6 +55,7 @@ class Model {
   int m_generation;
   std::set<Cell> m_initialPattern;
   std::set<Cell> m_cells;
+  std::future<void> m_timer;
   std::mutex m_mutex;
 };
 

@@ -68,7 +68,7 @@ class View {
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);
   void applyViewOffset(const sf::Vector2f &offset);
-  void applyZoomLevel(float zoomLevel);
+  void applyZoomLevel(int zoomLevel);
 
   sf::Vector2f calculateCellSize() const;
 
@@ -79,7 +79,7 @@ class View {
   sf::Font m_font;
   std::optional<View::Button> m_highlightedButton;
   std::optional<std::string> m_highlightedLoadFileMenuItem;
-  float m_zoomLevel;
+  int m_zoomLevel;
   int m_scrollPos;
   std::string m_fileNameToSave;
 };

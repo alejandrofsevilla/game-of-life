@@ -45,17 +45,9 @@ void Controller::onMainModeMouseButtonPressed(
   if (event.button != sf::Mouse::Button::Left) {
     return;
   }
-  auto pos{m_view.pixelToCellPosition({event.x, event.y})};
-  if (pos) {
-    auto cell{Cell{pos->x, pos->y}};
-    auto match{m_model.cells().find(cell)};
-    if (match != m_model.cells().end() &&
-        match->status == Cell::Status::Alive) {
-      m_model.removeCell(cell);
-    } else {
-      m_model.removeCell(cell);
-      m_model.insertCell(cell);
-    }
+  auto cell{m_view.pixelToCellPosition({event.x, event.y})};
+  if (cell) {
+    onMouseButtonPressedOnCell({cell->x, cell->y});
     return;
   }
   auto highlightedButton{m_view.highlightedButton()};
@@ -373,4 +365,18 @@ void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent& event) {
     default:
       return;
   }
+}
+
+void Controller::onMouseButtonPressedOnCell(const Cell& cell) {
+  if (m_model.status() != Model::Status::Stopped) {
+    return;
+  }
+  auto cells{ m_model.cells() };
+  auto match{cells.find(cell)};
+  if (match != cells.end()) {
+    m_model.removeCell(cell);
+  } else {
+    m_model.insertCell(cell);
+  }
+  return;
 }

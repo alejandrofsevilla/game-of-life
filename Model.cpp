@@ -9,12 +9,12 @@ namespace {
 constexpr auto f_underpopulationThreshold{2};
 constexpr auto f_overpopulationThreshold{3};
 constexpr auto f_reproductionValue{3};
-constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{1000}};
-constexpr auto f_defaultSpeed{1};
+constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{500}};
+constexpr auto f_defaultSpeed{5};
 constexpr auto f_maxSpeed{10};
 constexpr auto f_minSpeed{1};
 constexpr auto f_defaultSize{1};
-constexpr auto f_maxSize{10};
+constexpr auto f_maxSize{5};
 constexpr auto f_minSize{1};
 
 inline int generateRandomValue(int min, int max) {
@@ -36,6 +36,7 @@ Model::Model(int maxWidth, int maxHeight)
       m_generation{},
       m_initialPattern{},
       m_cells{},
+      m_timer{},
       m_mutex{} {}
 
 Model::Status Model::status() const { return m_status; }
@@ -54,8 +55,8 @@ int Model::height() const { return m_height; }
 
 int Model::generation() const { return m_generation; }
 
-const std::set<Cell>& Model::cells() {
-  std::lock_guard<std::mutex> guard{m_mutex};
+std::set<Cell> Model::cells() {
+  std::lock_guard guard(m_mutex);
   return m_cells;
 }
 
@@ -76,9 +77,11 @@ void Model::run() {
       m_status = Status::Stopped;
       while (m_status != Model::Status::Finished) {
         if (m_status == Model::Status::Running) {
+          m_timer = std::async(&std::this_thread::sleep_for<int, std::milli>,
+                               f_modelUpdatePeriod / m_speed);
           update();
+          m_timer.wait();
         }
-        std::this_thread::sleep_for(f_modelUpdatePeriod / m_speed);
       }
       return;
   }
@@ -150,7 +153,6 @@ void Model::insertCell(const Cell& cell) {
   if (cell.x > m_width || cell.y > m_height) {
     return;
   }
-  std::lock_guard<std::mutex> guard{m_mutex};
   m_cells.insert(cell);
 }
 
@@ -158,7 +160,6 @@ void Model::removeCell(const Cell& cell) {
   if (cell.x > m_width || cell.y > m_height) {
     return;
   }
-  std::lock_guard<std::mutex> guard{m_mutex};
   m_cells.erase(cell);
 }
 
@@ -170,7 +171,6 @@ void Model::generatePopulation(double density) {
   for (int i = 0; i < population; i++) {
     auto pos{generateRandomValue(0, m_width * m_height)};
     Cell cell{pos % m_width, pos / m_width};
-    std::lock_guard<std::mutex> guard{m_mutex};
     if (m_cells.count(cell) == 0) {
       m_cells.insert(cell);
     }
@@ -179,7 +179,7 @@ void Model::generatePopulation(double density) {
 
 void Model::update() {
   // see: https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
-  std::lock_guard<std::mutex> guard{m_mutex};
+  std::lock_guard guard(m_mutex);
   auto updatedCells{m_cells};
   auto isUpdated{false};
   std::map<Cell, int> deadCellsWithAliveNeighboursCount;
@@ -234,6 +234,10 @@ void Model::update() {
   }
 }
 
-int Model::calculateWidth() { return m_maxWidth / (1 + f_maxSize - m_size); }
+int Model::calculateWidth() {
+  return m_maxWidth / std::max(1, 2 * (f_maxSize - m_size));
+}
 
-int Model::calculateHeight() { return m_maxHeight / (1 + f_maxSize - m_size); }
+int Model::calculateHeight() {
+  return m_maxHeight / std::max(1, 2 * (f_maxSize - m_size));
+}

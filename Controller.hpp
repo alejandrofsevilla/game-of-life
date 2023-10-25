@@ -31,6 +31,7 @@ class Controller {
   void onMainModeKeyPressed(const sf::Event::KeyEvent &event);
   void onLoadFileModeKeyPressed(const sf::Event::KeyEvent &event);
   void onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event);
+  void onMouseButtonPressedOnCell(const Cell &cell);
 
   View &m_view;
   Model &m_model;

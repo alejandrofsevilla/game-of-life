@@ -13,7 +13,7 @@ constexpr auto f_modelMaxHeight{490};
 
 int main() {
   auto desktopMode(sf::VideoMode::getDesktopMode());
-  sf::RenderWindow window{desktopMode, f_windowTitle, f_windowStyle };
+  sf::RenderWindow window{desktopMode, f_windowTitle, f_windowStyle};
   window.setVerticalSyncEnabled(true);
   Model model{f_modelMaxWidth, f_modelMaxHeight};
   std::thread modelThread{[&model]() { model.run(); }};
