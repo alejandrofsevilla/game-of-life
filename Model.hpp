@@ -1,7 +1,6 @@
 #ifndef GAME_OF_LIFE_MODEL_HPP
 #define GAME_OF_LIFE_MODEL_HPP
 
-#include <map>
 #include <mutex>
 #include <set>
 
@@ -15,6 +14,9 @@ class Model {
 
   Status status() const;
   int speed() const;
+  int maxSpeed() const;
+  int size() const;
+  int maxSize() const;
   int width() const;
   int height() const;
   int generation() const;

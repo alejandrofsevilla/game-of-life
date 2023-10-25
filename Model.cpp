@@ -10,10 +10,10 @@ constexpr auto f_underpopulationThreshold{2};
 constexpr auto f_overpopulationThreshold{3};
 constexpr auto f_reproductionValue{3};
 constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{1000}};
-constexpr auto f_defaultSpeed{5};
+constexpr auto f_defaultSpeed{1};
 constexpr auto f_maxSpeed{10};
 constexpr auto f_minSpeed{1};
-constexpr auto f_defaultSize{5};
+constexpr auto f_defaultSize{1};
 constexpr auto f_maxSize{10};
 constexpr auto f_minSize{1};
 
@@ -41,6 +41,12 @@ Model::Model(int maxWidth, int maxHeight)
 Model::Status Model::status() const { return m_status; }
 
 int Model::speed() const { return m_speed; }
+
+int Model::maxSpeed() const { return f_maxSpeed; }
+
+int Model::size() const { return m_size; }
+
+int Model::maxSize() const { return f_maxSize; }
 
 int Model::width() const { return m_width; }
 
@@ -228,6 +234,6 @@ void Model::update() {
   }
 }
 
-int Model::calculateWidth() { return m_maxWidth /(1 + f_maxSize - m_size); }
+int Model::calculateWidth() { return m_maxWidth / (1 + f_maxSize - m_size); }
 
 int Model::calculateHeight() { return m_maxHeight / (1 + f_maxSize - m_size); }

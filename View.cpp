@@ -173,8 +173,8 @@ void View::drawMainScreen() {
 }
 
 void View::drawLoadFileScreen() {
-  sf::Vector2f position{ f_frameVerticalThickness 
-    + f_textBoxOutlineThickness, f_textBoxOutlineThickness};
+  sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
+                        f_textBoxOutlineThickness};
   if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
@@ -211,8 +211,8 @@ void View::drawLoadFileScreen() {
 }
 
 void View::drawSaveFileScreen() {
-  sf::Vector2f position{ f_frameVerticalThickness 
-    + f_textBoxOutlineThickness, f_textBoxOutlineThickness};
+  sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
+                        f_textBoxOutlineThickness};
   if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
@@ -224,7 +224,7 @@ void View::drawSaveFileScreen() {
   }
   auto windowSize{m_window.getView().getSize()};
   auto screenMiddleHeight{windowSize.y * .5f};
-  position.x = f_frameVerticalThickness;
+  position.x = f_frameVerticalThickness + f_textBoxOutlineThickness;
   position.y = screenMiddleHeight;
   drawTextBox(m_fileNameToSave, position,
               windowSize.x - 2 * f_frameVerticalThickness,
@@ -390,8 +390,9 @@ void View::drawTopRightMenu() {
       m_window.getView().getSize().x - f_frameVerticalThickness,
       f_textBoxOutlineThickness};
   position.x -= f_displayBoxWidth;
-  drawTextBox(std::to_string(m_model.speed()) + "x", position,
-              f_displayBoxWidth, TextBoxStyle::Display);
+  drawTextBox(std::to_string(m_model.speed()) + "/" +
+                  std::to_string(m_model.maxSpeed()),
+              position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
   if (drawTextBox("+", position, f_plusMinusButtonWidth,
                   TextBoxStyle::Button)) {
@@ -406,8 +407,9 @@ void View::drawTopRightMenu() {
   drawTextBox("Speed(Left/Right)", position, f_speedButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
-  drawTextBox(std::to_string(static_cast<int>(m_zoomLevel)) + "/" + std::to_string(static_cast<int>(f_maxZoomLevel)), position,
-              f_displayBoxWidth, TextBoxStyle::Display);
+  drawTextBox(std::to_string(static_cast<int>(m_zoomLevel)) + "/" +
+                  std::to_string(static_cast<int>(f_maxZoomLevel)),
+              position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
   if (drawTextBox("+", position, f_plusMinusButtonWidth,
                   TextBoxStyle::Button)) {
@@ -423,7 +425,7 @@ void View::drawTopRightMenu() {
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
   drawTextBox(
-      std::to_string(m_model.width()) + "x" + std::to_string(m_model.height()),
+      std::to_string(m_model.size()) + "/" + std::to_string(m_model.maxSize()),
       position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
   auto style{

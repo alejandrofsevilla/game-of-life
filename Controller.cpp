@@ -1,6 +1,7 @@
+#include "Controller.hpp"
+
 #include <cwctype>
 
-#include "Controller.hpp"
 #include "RleHelper.hpp"
 
 namespace {
@@ -48,9 +49,11 @@ void Controller::onMainModeMouseButtonPressed(
   if (pos) {
     auto cell{Cell{pos->x, pos->y}};
     auto match{m_model.cells().find(cell)};
-    if (match != m_model.cells().end()) {
+    if (match != m_model.cells().end() &&
+        match->status == Cell::Status::Alive) {
       m_model.removeCell(cell);
     } else {
+      m_model.removeCell(cell);
       m_model.insertCell(cell);
     }
     return;
