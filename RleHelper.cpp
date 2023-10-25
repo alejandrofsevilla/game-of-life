@@ -9,6 +9,7 @@ constexpr auto f_patternsFolder{"../patterns/"};
 constexpr auto f_nextRowSymbol{'$'};
 constexpr auto f_deadCellSymbol{'b'};
 constexpr auto f_aliveCellSymbol{'o'};
+constexpr auto f_endOfLine{ '\n' };
 constexpr auto f_endOfPatternSymbol{'!'};
 constexpr auto f_rleFileExtension{".rle"};
 const std::regex f_rleCommentRegex{"#.*"};
@@ -88,7 +89,7 @@ std::set<Cell> loadPattern(const std::string& name) {
   while (std::getline(istrm, line)) {
     if (!std::regex_search(line, f_rleCommentRegex) &&
         !std::regex_search(line, f_rleHeaderRegex)) {
-      if (line.back() != f_endOfPatternSymbol) {
+      if (line.back() == f_endOfLine) {
         line.pop_back();
       }
       pattern.append(line);
