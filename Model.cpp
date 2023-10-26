@@ -71,6 +71,8 @@ void Model::run() {
   }
 }
 
+void Model::pause() { m_status = Model::Status::Paused; }
+
 void Model::reset() {
   m_aliveCells = m_initialPattern;
   m_deadCells.clear();
@@ -85,10 +87,6 @@ void Model::clear() {
   m_generation = 0;
   updateStatus();
 }
-
-void Model::pause() { m_status = Model::Status::Paused; }
-
-void Model::finish() { m_status = Model::Status::Finished; }
 
 void Model::speedUp() { m_speed = std::min(f_maxSpeed, m_speed + 1); }
 

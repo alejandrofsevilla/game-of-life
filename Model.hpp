@@ -7,7 +7,7 @@
 
 class Model {
  public:
-  enum class Status { ReadyToRun, Running, Paused, Stopped, Finished };
+  enum class Status { ReadyToRun, Running, Paused, Stopped};
 
   Model(int maxWidth, int maxHeight);
 
@@ -25,10 +25,9 @@ class Model {
 
   void update();
   void run();
+  void pause();
   void clear();
   void reset();
-  void pause();
-  void finish();
   void speedUp();
   void slowDown();
   void increaseSize();

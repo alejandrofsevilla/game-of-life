@@ -19,7 +19,6 @@ void Controller::onEvent(const sf::Event &event) {
     default:
       return;
     case sf::Event::Closed:
-      m_model.finish();
       m_view.closeWindow();
       return;
     case sf::Event::MouseButtonPressed:
@@ -56,7 +55,6 @@ void Controller::onMainModeMouseButtonPressed(
   }
   switch (highlightedButton.value()) {
     case View::Button::Quit:
-      m_model.finish();
       m_view.closeWindow();
       return;
     case View::Button::LoadFileMenu:
@@ -288,7 +286,6 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
       m_model.generatePopulation(f_populationGenerationRate);
       return;
     case sf::Keyboard::Escape:
-      m_model.finish();
       m_view.closeWindow();
       return;
     case sf::Keyboard::Space:
