@@ -201,8 +201,8 @@ void View::drawLoadFileScreen() {
     return;
   }
   auto itemsSize{static_cast<int>(items.size())};
-  auto maxScrollPos{std::max(1, itemsSize - maxNumberOfItems)};
-  m_scrollPos = std::min(m_scrollPos, maxScrollPos);
+  auto maxScrollPos{std::min(itemsSize, maxNumberOfItems)};
+  m_scrollPos = std::min(m_scrollPos, maxScrollPos - 1);
   auto topItem{items.cbegin()};
   std::advance(topItem, m_scrollPos);
   auto maxItem{topItem};
