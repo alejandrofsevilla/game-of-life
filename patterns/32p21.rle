@@ -1,7 +1,0 @@
-#N 32p21.rle
-#O Charity Engine, 2022
-#C https://conwaylife.com/wiki/32P21
-#C https://www.conwaylife.com/patterns/32p21.rle
-x = 16, y = 18, rule = B3/S23
-5b2o$5b2o2$bo$obo$bo3b3o$9bo$5bo4bo$5bo3bo$6bo3bo$5bo4bo$6bo$8b3o3bo$
-13bobo$14bo2$9b2o$9b2o!

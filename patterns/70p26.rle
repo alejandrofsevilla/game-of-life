@@ -1,8 +1,0 @@
-#N 70p26.rle
-#O Mitchell Riley, 2022
-#C https://conwaylife.com/wiki/70P26
-#C https://www.conwaylife.com/patterns/70p26.rle
-x = 39, y = 10, rule = B3/S23
-5b2o25b2o$5bobo23bobo$6b2o6b3o5b3o6b2o$2b2o9bo2bo5bo2bo9b2o$bobo5b2o
-17b2o5bobo$bo6bobo2b2o9b2o2bobo6bo$2o6bo21bo6b2o$6b3o21b3o$5bo10b2o3b
-2o10bo$5b2o9b2o3b2o9b2o!

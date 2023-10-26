@@ -1,6 +1,0 @@
-#N 52448m.rle
-#C https://conwaylife.com/wiki/52513M
-#C https://www.conwaylife.com/patterns/52448m.rle
-x = 11, y = 35, rule = B3/S23
-4b2o$2b2o2$bo$bo$bo6$3bobo2$4bo$4bo$4bo9$7bo$7b2o$6bo3$o8b2o$b2o6bo2$b
-o$b2o$o!

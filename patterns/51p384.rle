@@ -1,7 +1,0 @@
-#N 51p384.rle
-#O Mitchell Riley, 2023
-#C https://conwaylife.com/wiki/51P384
-#C https://www.conwaylife.com/patterns/51p384.rle
-x = 30, y = 19, rule = B3/S23
-11b2o$b2o8b2o$2bo$bo$b2o$3bo5b3o$b3o$o$2o2$16b2o10b2o$10b2obo2bo12bo$
-14bo11b3o$11b2o13bo$9bo2bo14b2o$9bo2bo15bo$11bo15bo$17b2o8b2o$17b2o!

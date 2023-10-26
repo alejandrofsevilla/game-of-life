@@ -1,7 +1,0 @@
-#N 24p10on30p25.rle
-#C https://conwaylife.com/wiki/30P25
-#C https://www.conwaylife.com/patterns/24p10on30p25.rle
-x = 25, y = 22, rule = B3/S23
-19bo$17b3o$16bo$16b2o2$13bo$12b2o$11b2o$14b2o$13b3o$4b3o$4b2o$7b2o$6b
-2o11b2o$6bo12bo2bo$15bo4bo3bo$2b2o12b2o3bob2o$3bo$3o9b2obo3b2o$o11bo3b
-o4bo$14bo2bo$16b2o!

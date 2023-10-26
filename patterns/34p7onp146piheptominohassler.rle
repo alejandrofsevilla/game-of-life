@@ -1,8 +1,0 @@
-#N 34p7onp146piheptominohassler.rle
-#C https://conwaylife.com/wiki/P146_pi-heptomino_hassler
-#C https://www.conwaylife.com/patterns/34p7onp146piheptominohassler.rle
-x = 28, y = 40, rule = B3/S23
-3bo5bo$3b2o3b2o3b2o$3b2o3b2o3bobo2b2o$4bo3bo5bo3b2o2$25bo$23b3o$22bo$
-22b2o5$14b3o$13bo2bo7b2o$13bo10bobo$bo24bo$2o11b3o10b2o$2o12bo$o7$7b2o
-$9bo2b2o$9bo2b2o$8b2o$6bo$6bobobo$6bo3b2o$7b2o3bo$8bobobo$12bo$9b2o$5b
-2o2bo$5b2o2bo$10b2o!

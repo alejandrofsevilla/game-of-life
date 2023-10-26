@@ -1,9 +1,0 @@
-#N 163p4h1v0.rle
-#C https://conwaylife.com/wiki/C/4_orthogonal
-#C https://www.conwaylife.com/patterns/163p4h1v0.rle
-x = 40, y = 17, rule = B3/S23
-20bo$7b2o8b4o8b2o$7bo2b3o2b4o5b4obo$6bo7b2o2bo4bo7bo5bo$5b4obobo3bo2bo
-4b2o4b4obo2b2o$5b2o8bo2b2obo2bo2bobobob3o$4bo10b2obo9bo2bo$b3obo5bobo
-5bobob3o6b2o$o2bo7bo9bob3o$b3obo5bobo5bobob3o6b2o$4bo10b2obo9bo2bo$5b
-2o8bo2b2obo2bo2bobobob3o$5b4obobo3bo2bo4b2o4b4obo2b2o$6bo7b2o2bo4bo7bo
-5bo$7bo2b3o2b4o5b4obo$7b2o8b4o8b2o$20bo!

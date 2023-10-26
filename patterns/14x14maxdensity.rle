@@ -1,7 +1,0 @@
-#N 14x14maxdensity.rle
-#C https://conwaylife.com/wiki/Density
-#C https://www.conwaylife.com/patterns/14x14maxdensity.rle
-x = 14, y = 14, rule = B3/S23
-2ob2ob2ob2ob2o$2ob2ob2ob2ob2o2$4ob6ob2o$o2bobo4bob2o$bobobob2obo$2obob
-ob2obob2o$bobobo4bob2o$o2bob6o$4o8b2o$4b7ob2o$2o2bo5bo$obobob3obob2o$b
-2ob2obob2ob2o!

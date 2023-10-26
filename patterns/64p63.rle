@@ -1,7 +1,0 @@
-#N 64p63.rle
-#C https://conwaylife.com/wiki/32P21_phase-shifting_p5
-#C https://www.conwaylife.com/patterns/64p63.rle
-x = 23, y = 22, rule = B3/S23
-3bobo$2bob2o$2bo3b2o$2ob2o3bo$bobob3o$o2bobo$3obo4bo$8bobo$2b2o5bo$2bo
-$obo10b2o$2o3b2o5bo2bo$5b2o5bo2bo$12bobo$13bobo$12bo2bo5b2o$12bo2bo5b
-2o$13b2o2$18bo$17bobo$18bo!

@@ -1,8 +1,0 @@
-#N 34p7onmerzenichsp31.rle
-#C https://conwaylife.com/wiki/34P7
-#C https://www.conwaylife.com/patterns/34p7onmerzenichsp31.rle
-x = 38, y = 24, rule = B3/S23
-22b2o7b2o$22b2o7b2o6$19bobo11bobo$18bo2b2o9b2o2bo$21b3o7b3o$20bo2b2o5b
-2o2bo$17bo2bob3o5b3obo2bo$6bo5b2o3bo2bob3o5b3obo2bo$7bo4bo2bo4bo2b2o5b
-2o2bo$2b2o2bo14b3o7b3o$bo2bobob2o8bo2b2o9b2o2bo$o4b2o2b2o4bo3bobo11bo
-bo$6b2obobo2bo$9bo2b2o$o2bo4bo$2b2o5bo2$22b2o7b2o$22b2o7b2o!

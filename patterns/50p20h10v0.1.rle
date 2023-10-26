@@ -1,6 +1,0 @@
-#N 50p20h10v0.1.rle
-#C https://conwaylife.com/wiki/Heavyweight_spaceship
-#C https://www.conwaylife.com/patterns/50p20h10v0.1.rle
-x = 10, y = 17, rule = B3/S23
-6b2o$4bo4bo$3bo$3bo5bo$3b6o4$b2o$2ob7o$b9o$2b8o$6b2o$4bo4bo$3bo$3bo5bo
-$3b6o!

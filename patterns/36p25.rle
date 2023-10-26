@@ -1,7 +1,0 @@
-#N 36p25.rle
-#O Mitchell Riley, 2022
-#C https://conwaylife.com/wiki/36P25
-#C https://www.conwaylife.com/patterns/36p25.rle
-x = 24, y = 12, rule = B3/S23
-5b2o16bo$4bo2bo13b3o$7bo12bo$2bo3bo5bo7b2o$bob2o6b3o$bo8bo2b2o$2o12bo
-4b2o$19b2o3$13b2o$13b2o!

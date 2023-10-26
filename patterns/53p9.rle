@@ -1,6 +1,0 @@
-#N 53p9.rle
-#C https://conwaylife.com/wiki/Period-9_sparkers
-#C https://www.conwaylife.com/patterns/53p9.rle
-x = 16, y = 14, rule = B3/S23
-12bo$11bobo$11bobo$10b2o2b2o$4bo2bobo2bobo$4bo2bobob2o2bo$9bobo2b2o$3b
-ob4o2bo$b3obo5b2o$o4bob4o$b5obo2bo2$ob2o$2obo!

@@ -1,8 +1,0 @@
-#N 103p69.rle
-#C https://conwaylife.com/wiki/55P23
-#C https://www.conwaylife.com/patterns/103p69.rle
-x = 27, y = 28, rule = B3/S23
-23bo$22bobo$21bobobo$21bo3bo$13b2o4b2ob2ob2o$13bo2bobobo3bo$15b2obo3bo
-bo$16bobo2b2ob2o$4bo10b2o3bo2bo$4b3o4b2o4b2ob2obo$7bo3b2o6bo2bo$6b2o
-13bo$22b3o$18b2o4bo$2b2o14bo$2bo13bobo$4bo11b2o$3b2o6bo$2bo6b3o$bob2o
-4bobo$o2bobo5bo$2o2bo2$15b2o$8b2o5bobo$9bo7bo$6b3o8b2o$6bo!

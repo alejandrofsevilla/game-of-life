@@ -1,8 +1,0 @@
-#N 54p94.rle
-#O Nico Brown, 2022
-#C https://conwaylife.com/wiki/54P94
-#C https://www.conwaylife.com/patterns/54p94.rle
-x = 37, y = 28, rule = B3/S23
-13b2o$13b2o5$29b2o$29b2o$35b2o$3b2o30bo$3bo7b3o19bobo$13b2o18b2o$11bo
-2bo$12b2o$23b2o$22bo2bo$2b2o18b2o$bobo19b3o7bo$bo30b2o$2o$6b2o$6b2o5$
-22b2o$22b2o!

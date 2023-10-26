@@ -1,7 +1,0 @@
-#N 37p7.1onp68centuryhassler.rle
-#C https://conwaylife.com/wiki/P68_century_hassler
-#C https://www.conwaylife.com/patterns/37p7.1onp68centuryhassler.rle
-x = 23, y = 31, rule = B3/S23
-10b2o$10b2o2$10b4o$10bo2bo4$bo$b3o12bo$4bo12bo$3b2o9bo2bo$14b3o4$2b2o$
-bobo$bo$2o$19b2o$8bo5b2o3bo$7bo3b4obo3b3o$7bo9bo4bo$9bo5b3o$11bo$9bobo
-bob2obo$8bob2obobob2o$8bo3bobo$7b2o3bo$11b2o!

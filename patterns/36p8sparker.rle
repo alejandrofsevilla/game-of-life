@@ -1,6 +1,0 @@
-#N 36p8sparker.rle
-#C https://conwaylife.com/wiki/Period-8_sparkers
-#C https://www.conwaylife.com/patterns/36p8sparker.rle
-x = 12, y = 12, rule = B3/S23
-6b2o$10b2o$5b2obo2bo$6bob3o$7bo$2bo4b4o$ob2o3bo2bo$o3b3ob2o$2b2obobo$
-3bobobo$bobob2o$b2o!

@@ -1,8 +1,0 @@
-#N 34p7onp129rpentominohassler.rle
-#C https://conwaylife.com/wiki/P129_R-pentomino_hassler
-#C https://www.conwaylife.com/patterns/34p7onp129rpentominohassler.rle
-x = 65, y = 40, rule = B3/S23
-26bo$24b3o$23bo$23b2o$2o$bo$bobo$2b2o2$20b2o$19b2o$20bo6$44bo$44b2o$
-43b2o2$61b2o$61bobo$63bo$29bo2bo30b2o$28bo11b2o$27bo5bo7bo$27bo4b2o4b
-3o$28bo9bo$29bo$25bob4o$26bo3bo$28bo3bo$28b4obo$29bo$30bo$25b2o4bo$25b
-o5bo$30bo$26bo2bo!

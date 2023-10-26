@@ -1,9 +1,0 @@
-#N 34p7on74p127.rle
-#C https://conwaylife.com/wiki/74P127
-#C https://www.conwaylife.com/patterns/34p7on74p127.rle
-x = 43, y = 44, rule = B3/S23
-5b2o$2o2bo$2o2bo$4b2o$7bo$3bobobo21bo$2b2o3bo19b3o$bo3b2o19bo$bobobo
-20b2o$bo$3b2o$4bo2b2o4bo10bo9b2o$4bo2b2o3bobo8b2o9b2o$2b2o9bo7b2o$19b
-2o2bo$23bo2bo$25bo$19bobo3bo$20b3o4bo2$5b2o$5b2o6$41b2o$41b2o2$20bo4b
-3o$22bo3bobo$22bo$21bo2bo$24bo2b2o$25b2o7bo$12b2o9b2o8bobo$12b2o9bo10b
-o3$20b2o$21bo$18b3o$18bo!

@@ -1,9 +1,0 @@
-#N 76p75.rle
-#O Mitchell Riley, 2022
-#C https://conwaylife.com/wiki/P75_I-heptomino_hassler
-#C https://www.conwaylife.com/patterns/76p75.rle
-#C https://catagolue.hatsya.com/object/xp75_474y484oz1v1y4321z9p9z01zy4ciab97f79baa4zy6iv078b43123/b3s23
-x = 21, y = 29, rule = B3/S23
-3o$3o10bo$bo10bobo$bo13bo$bo9bo2bo$obo8b3o3$obo$bo$bo$bo$3o$3o3$14bo$
-12bo3bo2$11bo5bo$9b3ob3ob3o$8bo3b2ob2o3bo$8bob3obob4o$9bo$11bobobob2o
-bo$10b2ob3obob2o$11bobo2bo$11bo2b2o$10b2o!

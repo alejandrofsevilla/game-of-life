@@ -1,6 +1,0 @@
-#N 34p7onpentadecathlon.rle
-#C https://conwaylife.com/wiki/34P7
-#C https://www.conwaylife.com/patterns/34p7onpentadecathlon.rle
-x = 26, y = 11, rule = B3/S23
-20b3o$19bo3bo$2b2o5bo8bo5bo$o2bo4bo$9bo2b2o3bo7bo$6b2obobo2bo2bo7bo$o
-4b2o2b2o4bo$bo2bobob2o8bo5bo$2b2o2bo12bo3bo$7bo4bo2bo4b3o$6bo5b2o!

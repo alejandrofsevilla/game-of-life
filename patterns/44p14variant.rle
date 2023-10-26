@@ -1,6 +1,0 @@
-#N 44p14variant.rle
-#C https://conwaylife.com/wiki/44P14
-#C https://www.conwaylife.com/patterns/44p14variant.rle
-x = 12, y = 13, rule = B3/S23
-5b2o$5bo2bo$7b4o$3b4o4bo$2bo5bobo$2b8o2$2b3o2b3o$bobo5bo$o4b4o$b4o$3bo
-2bo$5b2o!

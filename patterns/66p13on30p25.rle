@@ -1,9 +1,0 @@
-#N 66p13on30p25.rle
-#C https://conwaylife.com/wiki/30P25
-#C https://www.conwaylife.com/patterns/66p13on30p25.rle
-x = 25, y = 30, rule = B3/S23
-13bobobobo$12bob2ob2obo$10b3o7b3o$9bo4b2ob2o4bo$9bo2b2obobob2o2bo$8b2o
-bobo5bobob2o$9bobo2b2ob2o2bobo$9bobo3b3o3bobo$10bo11bo2$2o$bo$bobo12bo
-$2b2o3bo7bobo$8b2o$8b2o5bo3bo$4bo3bo3bo6bo$2bobo3bo3b3o3bo$7b2o3b3o4b
-3o$7b2o4b3o5bo$4b3o4b2o$5b3o3b2o$5b3o3bo3bobo$7bo3bo3bo$10b2o$10b2o$
-12bo3b2o$16bobo$18bo$18b2o!

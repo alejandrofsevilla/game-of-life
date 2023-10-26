@@ -1,8 +1,0 @@
-#N 99p18.rle
-#C https://conwaylife.com/wiki/117P18
-#C https://www.conwaylife.com/patterns/99p18.rle
-x = 19, y = 32, rule = B3/S23
-6bo$5bobo2b2o$5bobo3bo$3b2obob3o$2bobo3bo$bo2bobo$2b4obo$7bo2b2o$2b2o
-bobo2b2o$o2bob2o$2obo$3bo$3b2o$13b2o$9b2o2b2o$8b2o$9bo$4b2o$4b2o$14b2o
-$15bo$15bob2o$12b2obo2bo$7b2o2bobob2o$7b2o2bo$11bob4o$12bobo2bo$10bo3b
-obo$8b3obob2o$7bo3bobo$7b2o2bobo$12bo!

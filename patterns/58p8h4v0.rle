@@ -1,8 +1,0 @@
-#N 58p8h4v0.rle
-#O Charity Engine, 2022
-#C https://conwaylife.com/wiki/58P8H4V0
-#C https://www.conwaylife.com/patterns/58p8h4v0.rle
-x = 23, y = 13, rule = B3/S23
-8bo5bo$7b3o3b3o$6bo2b2ob2o2bo$7bobo3bobo$b3o5bo3bo5b3o$o2bo4b2o3b2o4bo
-2bo$o3bo2bob2ob2obo2bo3bo$b3o2bo3bobo3bo2b3o$3bo2bo2bo3bo2bo2bo$8bo5bo
-2$bo19bo$bo19bo!

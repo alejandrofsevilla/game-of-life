@@ -1,7 +1,0 @@
-#N 58p8h4v0blockpuffer.rle
-#C https://conwaylife.com/wiki/58P8H4V0
-#C https://www.conwaylife.com/patterns/58p8h4v0blockpuffer.rle
-x = 15, y = 31, rule = B3/S23
-4b6o$3bo5bo$9bo$3bo4bo$5b2o2$7bo$6bo2bo$2o2b2o4bo$2o2b3o3bo$8b3o2$4b2o
-$11b2o$5bo3bobobo$9b2o2b2o$12b2o$10b3o2$10b3o$12b2o$9b2o2b2o$5bo3bobob
-o$11b2o$4b2o2$8b3o$4b3o3bo$4b2o4bo$6bo2bo$7bo!

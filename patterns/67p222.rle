@@ -1,7 +1,0 @@
-#N 67p222.rle
-#C https://conwaylife.com/wiki/58P37
-#C https://www.conwaylife.com/patterns/67p222.rle
-x = 33, y = 25, rule = B3/S23
-14bo$14b3o14b2o$17bo13bo$16b2o11bobo$29b2o2$23bo$24bo$24b2o$6b2o15b2o$
-7bo14b2o$7bobo19b2o$8b2o19bobo$15b2o14bo$14b2o15b2o$13b2o$14bo$5b2o8bo
-$5b2o2$6bo14b2o$5bobo13bo$2o2bo2bo14b3o$2obo20bo$4b2o!

@@ -1,7 +1,0 @@
-#N 23p4h2v0tagalongonlwss.rle
-#O Hartmut Holzwart, 2020
-#C https://conwaylife.com/wiki/Unnamed_tagalong_23P4H2V0
-#C https://www.conwaylife.com/patterns/23p4h2v0tagalongonlwss.rle
-x = 10, y = 15, rule = B3/S23
-9bo$7b3o$5b2o$5bo2b2o$5bo3bo$6b2o$7b2o$5b2o$5bo2b2o$5b3o2$bo2bo$o$o3bo
-$4o!

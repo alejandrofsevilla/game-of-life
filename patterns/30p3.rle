@@ -1,6 +1,0 @@
-#N 30p3.rle
-#O iNoMed, 2022
-#C https://conwaylife.com/wiki/30P3
-#C https://www.conwaylife.com/patterns/30p3.rle
-x = 15, y = 8, rule = B3/S23
-11b2o$2bo9bo$o3b4obo$o3bo5b5o$o8bo4bo$3bo7bo$b2o7bobo$7b3obo!

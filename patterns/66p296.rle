@@ -1,7 +1,0 @@
-#N 66p296.rle
-#C https://conwaylife.com/wiki/58P37
-#C https://www.conwaylife.com/patterns/66p296.rle
-x = 29, y = 27, rule = B3/S23
-10bo$10b3o14b2o$13bo13bo$12b2o11bobo$25b2o2$19bo$20bo$20b2o$2b2o15b2o
-$3bo14b2o$3bobo19b2o$4b2o19bobo$11b2o14bo$10b2o15b2o$9b2o$10bo$b2o8bo
-$o2bo$3bo$3bo13b2o$2obo13bo$2o16b3o$20bo2$b2o$b2o!

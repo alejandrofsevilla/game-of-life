@@ -1,8 +1,0 @@
-#N 86p6h3v0.rle
-#O Matthias Merzenich, 2012
-#C https://conwaylife.com/wiki/86P6H3V0
-#C https://www.conwaylife.com/patterns/86p6h3v0.rle
-x = 33, y = 11, rule = B3/S23
-5b3o17b3o$4bo3bo3bo7bo3bo3bo$3b2o4bob3o5b3obo4b2o$2bobob2obo3b2o3b2o3b
-ob2obobo$b2obo4bobo2b2ob2o2bobo4bob2o$o4bo3bo4bo3bo4bo3bo4bo$14b5o$2o
-9b2obo3bob2o9b2o$11bo2bo3bo2bo$10bo3bobobo3bo$11bo9bo!

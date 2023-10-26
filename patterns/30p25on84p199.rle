@@ -1,9 +1,0 @@
-#N 30p25on84p199.rle
-#C https://conwaylife.com/wiki/84P199
-#C https://www.conwaylife.com/patterns/30p25on84p199.rle
-x = 66, y = 45, rule = B3/S23
-16b2o16b2o$16b2o7b2o7b2o$25b2o4$64b2o$2o48b2o12bo$2o48b2o9b2obo$63bo$
-56bo$18bo14bo22b2o3bo$18b3o10b3o25bo$57b3o$19b3o8b3o4$52b3o$8b2o32b2o
-8bo$8b2o32b2o6bo3b2o$55bo$48bo$47bob2o$8b2o32b2o3bo$8b2o32b2o2b2o5$19b
-3o8b3o2$18b3o10b3o$18bo14bo3$2o48b2o$2o48b2o5$25b2o$16b2o7b2o7b2o$16b
-2o16b2o!

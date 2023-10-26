@@ -1,7 +1,0 @@
-#N 17x17maxdensity.rle
-#C https://conwaylife.com/wiki/Density
-#C https://www.conwaylife.com/patterns/17x17maxdensity.rle
-x = 17, y = 17, rule = B3/S23
-ob2ob2obob2ob2obo$2obobob3obobob2o$3bobo5bobo$2obob7obob2o$2obo9bob2o$
-3b11o$3o11b3o$o2b11o2bo$2bo11bo$ob13obo$2o13b2o$3b11o$2obo9bob2o$2obob
-7obob2o$3bobo5bobo$2obobob3obobob2o$ob2ob2obob2ob2obo!

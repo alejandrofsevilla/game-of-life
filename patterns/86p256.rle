@@ -1,9 +1,0 @@
-#N 86p256.rle
-#O Carson Cheng, 2023
-#C https://conwaylife.com/wiki/86P256
-#C https://www.conwaylife.com/patterns/86p256.rle
-x = 30, y = 37, rule = B3/S23
-18b2o2$16bo3bo$16bo4bo$18bobobo$19bobobo$20bo4bo$21bo3bo2$22b2o$17bo$
-16bobo2bo$17bo3bo4b2o$20b2o4b2o5$11b2o$b2o8b2o$2bo15bo$bo14b2obo$b2o
-16bo$3bo11bo3bo$b3o9bob2obo$o11bobo$2o10bobo2$28b2o$29bo$26b3o$18b3o5b
-o$4b2o21b2o$4b2o22bo$27bo$17b2o8b2o$17b2o!

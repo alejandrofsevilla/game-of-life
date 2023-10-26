@@ -1,9 +1,0 @@
-#N 104p32.rle
-#C https://conwaylife.com/wiki/P32_honey_farm_hassler
-#C https://www.conwaylife.com/patterns/104p32.rle
-x = 49, y = 17, rule = B3/S23
-6bo35bo$5bob2o12b2o3b2o12b2obo$4bo3bo12bobobobo12bo3bo$4bo5bo12bobo12b
-o5bo$bo2bo5bo11b2ob2o11bo5bo2bo$obo7bo27bo7bobo$b2o2b4o11bo7bo11b4o2b
-2o$19bobo5bobo$b2o2b4o9bo3bo3bo3bo9b4o2b2o$obo7bo7bo3bo3bo3bo7bo7bobo$
-bo2bo5bo7bo3bo3bo3bo7bo5bo2bo$4bo5bo8bobo5bobo8bo5bo$4bo3bo11bo7bo11bo
-3bo$5bob2o31b2obo$6bo35bo$13b2o19b2o$13b2o19b2o!

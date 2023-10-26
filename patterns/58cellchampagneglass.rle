@@ -1,6 +1,0 @@
-#N 58cellchampagneglass.rle
-#C https://conwaylife.com/wiki/Champagne_glass
-#C https://www.conwaylife.com/patterns/58cellchampagneglass.rle
-x = 15, y = 17, rule = B3/S23
-5b2o$6bo$4bo$4b5o$8bo$4b2o3b2o$2obobo5bob2o$bobo7bobo$o2b2o5b2o2bo$b2o
-6bo2b2o$3b3o4b2o$3bo4bo2bo$4b7o2$6b3o$6bo2bo$8b2o!

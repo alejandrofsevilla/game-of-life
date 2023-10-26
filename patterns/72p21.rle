@@ -1,8 +1,0 @@
-#N 72p21.rle
-#O David Raucci, 2021
-#C https://conwaylife.com/wiki/72P21
-#C https://www.conwaylife.com/patterns/72p21.rle
-x = 34, y = 34, rule = B3/S23
-19bo$17b3o$16bo$16b2o2$13b2o$13bobo$14b2o6$17b2o8b2o$2o14bobo7bobo$bo
-11b2obo9b2o$bobo9bo4b2o10b2o$2b2o10b2o4bo9bobo$6b2o9bob2o11bo$5bobo7bo
-bo14b2o$5b2o8b2o6$18b2o$18bobo$19b2o2$16b2o$17bo$14b3o$14bo!

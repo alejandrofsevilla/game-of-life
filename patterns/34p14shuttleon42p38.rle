@@ -1,8 +1,0 @@
-#N 34p14shuttleon42p38.rle
-#C https://conwaylife.com/wiki/42P38
-#C https://www.conwaylife.com/patterns/34p14shuttleon42p38.rle
-x = 39, y = 25, rule = B3/S23
-13bo$12bo2bo13b2o5b2o$12bo2bo2bo10b2o5b2o$14bo3bo$18bo2$28b3o5b3o$o27b
-o2bo3bo2bo$3o26bo7bo$3bo14bo11bobobobo$2b2o14b2o$17b2o12b2ob2o2$8b2o$
-7b2o14b2o5bo5bo$8bo14bo5b2o5b2o$24b3o$26bo3$8bo$8bo3bo$8bo2bo2bo$11bo
-2bo$13bo!

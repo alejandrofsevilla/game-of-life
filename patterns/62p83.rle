@@ -1,8 +1,0 @@
-#N 62p83.rle
-#O Mitchell Riley, 2022
-#C https://conwaylife.com/wiki/62P83
-#C https://www.conwaylife.com/patterns/62p83.rle
-x = 35, y = 27, rule = B3/S23
-19b2o$6b2o11bo$7bo9bobo$7bobo7b2o$8b2o$25b2o$26bo$23b3o$23bo2$2o$2o11b
-o$11b2ob2o$14bo5bo$19b2ob2o$21bo11b2o$33b2o2$11bo$9b3o$8bo$8b2o$25b2o$
-16b2o7bobo$15bobo9bo$15bo11b2o$14b2o!

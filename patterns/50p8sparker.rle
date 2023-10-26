@@ -1,6 +1,0 @@
-#N 50p8sparker.rle
-#C https://conwaylife.com/wiki/Period-8_sparkers
-#C https://www.conwaylife.com/patterns/50p8sparker.rle
-x = 12, y = 17, rule = B3/S23
-9bo$2o2bo5bo$bo2bobo4bo$3bobob2obo2$3b6o$2bo6bo$bo8bo$bobo4bobo$2obo4b
-ob2o$2bobo2bobo$2bo6bo$3bo4bo$4b4o2$5b2o$5b2o!

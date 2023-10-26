@@ -1,9 +1,0 @@
-#N 20x20maxdensity.rle
-#C https://conwaylife.com/wiki/Density
-#C https://www.conwaylife.com/patterns/20x20maxdensity.rle
-x = 20, y = 20, rule = B3/S23
-2o2b2ob2obob2ob2ob2o$o2bobobob3obob2obob$bobobobo5bo5bo$2obobob6ob6o$b
-obobo6bobo5b$o2bob6obobob4o$4o6bobobobo2bo$4b5obobobobobob$4o4bobobobo
-bob2o$o2bob2obobobobobobob$bobobobobobob2obo2bo$2obobobobobo4b4o$bobob
-obobob5o4b$o2bobobobo6b4o$4obobob6obo2bo$5bobo6bobobob$6ob6obobob2o$o
-5bo5bobobobob$bob2obob3obobobo2bo$2ob2ob2obob2ob2o2b2o!

@@ -1,7 +1,0 @@
-#N 43p54.rle
-#O Mitchell Riley, 2022
-#C https://conwaylife.com/wiki/43P54
-#C https://www.conwaylife.com/patterns/43p54.rle
-x = 26, y = 19, rule = B3/S23
-5bo$5b3o7b2o$8bo6b2o$7b2o2$2o22b2o$bo22bo$bobo10b3o5bobo$2b2o10bo7b2o$
-14b2o4$21bo$21b2o$5b2o14b2o$5bo16bo$6bo$5b2o!

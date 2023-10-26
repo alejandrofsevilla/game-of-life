@@ -1,8 +1,0 @@
-#N 84p199.rle
-#O Mitchell Riley, 2022
-#C https://conwaylife.com/wiki/84P199
-#C https://www.conwaylife.com/patterns/84p199.rle
-x = 52, y = 45, rule = B3/S23
-16b2o16b2o$16b2o7b2o7b2o$25b2o5$2o48b2o$2o48b2o3$18bo14bo$18b3o10b3o2$
-19b3o8b3o5$8b2o32b2o$8b2o32b2o4$8b2o32b2o$8b2o32b2o5$19b3o8b3o2$18b3o
-10b3o$18bo14bo3$2o48b2o$2o48b2o5$25b2o$16b2o7b2o7b2o$16b2o16b2o!

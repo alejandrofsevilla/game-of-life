@@ -1,7 +1,0 @@
-#N 34p14shuttleon34p20.rle
-#C https://conwaylife.com/wiki/34P14_shuttle
-#C https://www.conwaylife.com/patterns/34p14shuttleon34p20.rle
-x = 20, y = 28, rule = B3/S23
-11bo$10bob2o$14bo$10bo3bo$7bobobob2o$6bo3bobo$7bo3bo$7bo2bo3bo$8b3o2bo
-bo2b2o$14bo3b2o3$14b2o$14b2o4$5b2o$2o2b2obo5b2o$2o3bobo5b2o$7bo$9bo2$
-9bo$7bo$2o3bobo5b2o$2o2b2obo5b2o$5b2o!

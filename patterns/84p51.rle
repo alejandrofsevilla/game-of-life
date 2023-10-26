@@ -1,8 +1,0 @@
-#N 84p51.rle
-#C https://conwaylife.com/wiki/Honey_farm_hasslers
-#C https://www.conwaylife.com/patterns/84p51.rle
-x = 40, y = 29, rule = B3/S23
-18bo$8bo7b3o$7bobo5bo$8bo6b2o2$35bo$33b3o$32bo$12bo19b2o$4b2o5bobo$3bo
-bo4bo3bo$3bo6bo3bo$2b2o6bo3bo21b2o$6b2o3bobo22bo$5bobo4bo16bo4bobo$5bo
-22bobo3b2o$4b2o21bo3bo6b2o$27bo3bo6bo$27bo3bo4bobo$28bobo5b2o$8b2o19bo
-$9bo$6b3o$6bo2$25b2o6bo$26bo5bobo$23b3o7bo$23bo!

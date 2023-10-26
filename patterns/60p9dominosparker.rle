@@ -1,6 +1,0 @@
-#N 60p9dominosparker.rle
-#C https://conwaylife.com/wiki/Period-9_sparkers
-#C https://www.conwaylife.com/patterns/60p9dominosparker.rle
-x = 14, y = 14, rule = B3/S23
-2bo3b3o3bo$bobo7bobo$obo3bobo3bo$bo$5b4o$4bo4bobobo$obobob2obo3bo$o3b
-ob2obobobo$obobo4bo$5b4o$12bo$bo3bobo3bobo$obo7bobo$bo3b3o3bo!

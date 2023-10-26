@@ -1,8 +1,0 @@
-#N P156unixloop.rle
-#C https://conwaylife.com/wiki/Hotcrystal0_reaction
-#C https://www.conwaylife.com/patterns/P156unixloop.rle
-x = 46, y = 59, rule = B3/S23
-9bo$4bo4b3o$4obo6bo$3obobo4b2o$5bobo$6bo$5b2o$5b2o7bo$5b2o7bo$13bobo$13b2o$
-13b2o6$12bo$11bobo$11bobo$12bo$16b2o$16bobo$18bo$18b2o10$26b2o$27bo$27bobo$
-28b2o$33bo$32bobo$32bobo$33bo6$31b2o$31b2o$30bobo$31bo7b2o$31bo7b2o$39b2o$39b
-o$38bobo$33b2o4bobob3o$33bo6bob4o$34b3o4bo$36bo!

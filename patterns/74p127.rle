@@ -1,8 +1,0 @@
-#N 74p127.rle
-#O Luke Kiernan, 2022
-#C https://conwaylife.com/wiki/74P127
-#C https://www.conwaylife.com/patterns/74p127.rle
-x = 38, y = 39, rule = B3/S23
-13bo$13b3o$16bo$15b2o3$7b2o20bo$7b2o8b3o8bobo$17b3o9bo$17bo$20bo2$17b
-5o$19bo2b2o$21b2o$21bo14b2o$36b2o6$2o$2o14bo$15b2o$14b2o2bo$16b5o2$17b
-o$20bo$8bo9b3o$7bobo8b3o8b2o$8bo20b2o3$21b2o$21bo$22b3o$24bo!
