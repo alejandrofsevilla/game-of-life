@@ -2,11 +2,8 @@
 #define GAME_OF_LIFE_CELL_HPP
 
 struct Cell {
-  enum class Status { Dead, Alive };
-
   int x{0};
   int y{0};
-  Status status{Status::Alive};
 
   bool operator==(const Cell& other) const {
     return x == other.x && y == other.y;

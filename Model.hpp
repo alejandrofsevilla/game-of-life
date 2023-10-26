@@ -9,7 +9,7 @@
 
 class Model {
  public:
-  enum class Status { Uninitialized, Stopped, Running, Paused, Finished };
+   enum class Status { Uninitialized, ReadyToRun, Running, Paused, Stopped, Finished };
 
   Model(int maxWidth, int maxHeight);
 
@@ -21,7 +21,10 @@ class Model {
   int width() const;
   int height() const;
   int generation() const;
-  std::set<Cell> cells();
+  int aliveCellsCount() const;
+  int deadCellsCount() const;
+  std::set<Cell> aliveCells();
+  std::set<Cell> deadCells();
   const std::set<Cell>& initialPattern() const;
 
   void run();
@@ -40,6 +43,7 @@ class Model {
 
  private:
   void update();
+  void updateStatus();
 
   int calculateWidth();
   int calculateHeight();
@@ -54,7 +58,8 @@ class Model {
   int m_speed;
   int m_generation;
   std::set<Cell> m_initialPattern;
-  std::set<Cell> m_cells;
+  std::set<Cell> m_aliveCells;
+  std::set<Cell> m_deadCells;
   std::future<void> m_timer;
   std::mutex m_mutex;
 };

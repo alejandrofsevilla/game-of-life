@@ -10,10 +10,10 @@ constexpr auto f_underpopulationThreshold{2};
 constexpr auto f_overpopulationThreshold{3};
 constexpr auto f_reproductionValue{3};
 constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{500}};
-constexpr auto f_defaultSpeed{5};
+constexpr auto f_defaultSpeed{10};
 constexpr auto f_maxSpeed{10};
 constexpr auto f_minSpeed{1};
-constexpr auto f_defaultSize{1};
+constexpr auto f_defaultSize{5};
 constexpr auto f_maxSize{5};
 constexpr auto f_minSize{1};
 
@@ -35,7 +35,8 @@ Model::Model(int maxWidth, int maxHeight)
       m_speed{f_defaultSpeed},
       m_generation{},
       m_initialPattern{},
-      m_cells{},
+      m_aliveCells{},
+      m_deadCells{},
       m_timer{},
       m_mutex{} {}
 
@@ -55,9 +56,20 @@ int Model::height() const { return m_height; }
 
 int Model::generation() const { return m_generation; }
 
-std::set<Cell> Model::cells() {
+int Model::aliveCellsCount() const {
+  return m_aliveCells.size(); }
+
+int Model::deadCellsCount() const {
+  return m_deadCells.size(); }
+
+std::set<Cell> Model::aliveCells() {
   std::lock_guard guard(m_mutex);
-  return m_cells;
+  return m_aliveCells;
+}
+
+std::set<Cell> Model::deadCells() {
+  std::lock_guard guard(m_mutex);
+  return m_deadCells;
 }
 
 const std::set<Cell>& Model::initialPattern() const { return m_initialPattern; }
@@ -66,11 +78,13 @@ void Model::run() {
   switch (m_status) {
     default:
       return;
-    case Model::Status::Stopped:
+    case Model::Status::ReadyToRun:
       m_status = Model::Status::Running;
       return;
     case Model::Status::Paused:
       m_status = Model::Status::Running;
+      return;
+    case Model::Status::Stopped:
       return;
     case Model::Status::Uninitialized:
       m_status = Status::Stopped;
@@ -87,19 +101,18 @@ void Model::run() {
 }
 
 void Model::reset() {
-  if (m_status == Model::Status::Stopped) {
-    return;
-  }
-  m_cells = m_initialPattern;
+  m_aliveCells = m_initialPattern;
+  m_deadCells.clear();
   m_generation = 0;
-  m_status = Status::Stopped;
+  updateStatus();
 }
 
 void Model::clear() {
-  m_cells.clear();
+  m_aliveCells.clear();
+  m_deadCells.clear();
   m_initialPattern.clear();
   m_generation = 0;
-  m_status = Status::Stopped;
+  updateStatus();
 }
 
 void Model::pause() { m_status = Model::Status::Paused; }
@@ -111,18 +124,12 @@ void Model::speedUp() { m_speed = std::min(f_maxSpeed, m_speed + 1); }
 void Model::slowDown() { m_speed = std::max(f_minSpeed, m_speed - 1); }
 
 void Model::increaseSize() {
-  if (!m_cells.empty()) {
-    return;
-  }
   m_size = std::min(f_maxSize, m_size + 1);
   m_width = calculateWidth();
   m_height = calculateHeight();
 }
 
 void Model::reduceSize() {
-  if (!m_cells.empty()) {
-    return;
-  }
   m_size = std::max(f_minSize, m_size - 1);
   m_width = calculateWidth();
   m_height = calculateHeight();
@@ -146,8 +153,9 @@ void Model::insertPattern(const std::set<Cell>& pattern) {
   for (auto cell : pattern) {
     cell.x += (m_width - width) / 2;
     cell.y += (m_height - height) / 2;
-    m_cells.insert(cell);
+    m_aliveCells.insert(cell);
     m_initialPattern.insert(cell);
+    updateStatus();
   }
 }
 
@@ -155,40 +163,39 @@ void Model::insertCell(const Cell& cell) {
   if (cell.x > m_width || cell.y > m_height) {
     return;
   }
-  m_cells.insert(cell);
+  m_aliveCells.insert(cell);
+  m_deadCells.erase(cell);
   m_initialPattern.insert(cell);
+  updateStatus();
 }
 
 void Model::removeCell(const Cell& cell) {
   if (cell.x > m_width || cell.y > m_height) {
     return;
   }
-  m_cells.erase(cell);
+  m_aliveCells.erase(cell);
+  m_deadCells.erase(cell);
   m_initialPattern.erase(cell);
+  updateStatus();
 }
 
 void Model::generatePopulation(double density) {
-  if (m_status != Model::Status::Stopped) {
-    return;
-  }
   auto population{m_width * m_height * density};
   for (int i = 0; i < population; i++) {
     auto pos{generateRandomValue(0, m_width * m_height)};
     Cell cell{pos % m_width, pos / m_width};
     insertCell(cell);
   }
+  updateStatus();
 }
 
 void Model::update() {
   // see: https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
   std::lock_guard guard(m_mutex);
-  auto updatedCells{m_cells};
+  auto updatedAliveCells{m_aliveCells};
   auto isUpdated{false};
   std::map<Cell, int> deadCellsWithAliveNeighboursCount;
-  for (const auto& cell : m_cells) {
-    if (cell.status == Cell::Status::Dead) {
-      continue;
-    }
+  for (const auto& cell : m_aliveCells) {
     auto aliveNeighboursCount{0};
     for (auto x = cell.x - 1; x <= cell.x + 1; x++) {
       if (x < 0 || x >= m_width) {
@@ -202,8 +209,7 @@ void Model::update() {
         if (neighbour == cell) {
           continue;
         }
-        auto match{m_cells.find(neighbour)};
-        if (match == m_cells.end() || match->status == Cell::Status::Dead) {
+        if (m_aliveCells.count(neighbour) == 0) {
           deadCellsWithAliveNeighboursCount[neighbour]++;
         } else {
           aliveNeighboursCount++;
@@ -212,27 +218,32 @@ void Model::update() {
     }
     if (aliveNeighboursCount < f_underpopulationThreshold ||
         aliveNeighboursCount > f_overpopulationThreshold) {
-      updatedCells.erase(cell);
-      updatedCells.insert({cell.x, cell.y, Cell::Status::Dead});
+      updatedAliveCells.erase(cell);
+      m_deadCells.insert(cell);
       isUpdated = true;
     }
   }
   for (const auto& value : deadCellsWithAliveNeighboursCount) {
-    if (value.second != f_reproductionValue) {
-      continue;
+    if (value.second == f_reproductionValue) {
+      m_deadCells.erase(value.first);
+      updatedAliveCells.insert(value.first);
     }
-    auto cell{value.first};
-    updatedCells.erase(cell);
-    updatedCells.insert(cell);
     isUpdated = true;
   }
-  if (m_cells.empty()) {
-    m_status = Status::Stopped;
-  } else if (!isUpdated) {
+  if (!isUpdated) {
     m_status = Status::Paused;
   } else {
-    m_cells = std::move(updatedCells);
+    m_aliveCells = std::move(updatedAliveCells);
     m_generation++;
+  }
+}
+
+void Model::updateStatus() {
+  if (m_aliveCells.size() > 0) {
+    m_status = Status::ReadyToRun;
+  }
+  else {
+    m_status = Status::Stopped;
   }
 }
 

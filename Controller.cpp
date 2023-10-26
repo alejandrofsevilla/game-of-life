@@ -84,6 +84,10 @@ void Controller::onMainModeMouseButtonPressed(
       m_model.pause();
       return;
     case View::Button::GeneratePopulation:
+      if (m_model.status() != Model::Status::Stopped
+        && m_model.status() != Model::Status::ReadyToRun) {
+        return;
+      }
       m_model.generatePopulation(f_populationGenerationRate);
       return;
     case View::Button::Reset:
@@ -257,6 +261,10 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
       m_model.speedUp();
       return;
     case sf::Keyboard::R:
+      if (m_model.status() != Model::Status::Running
+        && m_model.status() != Model::Status::Paused) {
+        return;
+      }
       m_model.reset();
       return;
     case sf::Keyboard::C:
@@ -273,6 +281,10 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
       m_view.setMode(View::Mode::SaveFile);
       return;
     case sf::Keyboard::G:
+      if (m_model.status() != Model::Status::Stopped 
+        && m_model.status() != Model::Status::ReadyToRun) {
+        return;
+      }
       m_model.generatePopulation(f_populationGenerationRate);
       return;
     case sf::Keyboard::Escape:
@@ -280,11 +292,8 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
       m_view.closeWindow();
       return;
     case sf::Keyboard::Space:
-      if (m_model.cells().empty()) {
-        return;
-      }
       switch (m_model.status()) {
-        case Model::Status::Stopped:
+        case Model::Status::ReadyToRun:
         case Model::Status::Paused:
           m_model.run();
           return;
@@ -373,10 +382,11 @@ void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent& event) {
 }
 
 void Controller::onMouseButtonPressedOnCell(const Cell& cell) {
-  if (m_model.status() != Model::Status::Stopped) {
+  if (m_model.status() != Model::Status::Stopped
+    && m_model.status() != Model::Status::ReadyToRun) {
     return;
   }
-  auto cells{ m_model.cells() };
+  auto cells{ m_model.aliveCells() };
   auto match{cells.find(cell)};
   if (match != cells.end()) {
     m_model.removeCell(cell);

@@ -269,14 +269,18 @@ void View::drawBackground() {
 void View::drawCells() {
   auto size{calculateCellSize()};
   sf::RectangleShape rect{{size.x, size.y}};
-  for (const auto& cell : m_model.cells()) {
+  auto aliveCells{m_model.aliveCells()};
+  auto deadCells{m_model.deadCells()};
+  for (const auto& cell : aliveCells) {
     rect.setPosition(static_cast<float>(cell.x) * size.x + m_viewOffset.x,
                      static_cast<float>(cell.y) * size.y + m_viewOffset.y);
-    if (cell.status == Cell::Status::Dead) {
-      rect.setFillColor(f_deadCellColor);
-    } else {
-      rect.setFillColor(f_livingCellColor);
-    }
+    rect.setFillColor(f_livingCellColor);
+    m_window.draw(rect);
+  }
+  for (const auto& cell : deadCells) {
+    rect.setPosition(static_cast<float>(cell.x) * size.x + m_viewOffset.x,
+      static_cast<float>(cell.y) * size.y + m_viewOffset.y);
+    rect.setFillColor(f_deadCellColor);
     m_window.draw(rect);
   }
 }
@@ -306,10 +310,11 @@ void View::drawBottomLeftMenu() {
                         static_cast<float>(m_window.getView().getSize().y) -
                             f_frameHorizontalThickness +
                             f_textBoxOutlineThickness};
-  auto style{m_model.cells().empty() ? TextBoxStyle::Hidden
+  auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Hidden
                                      : TextBoxStyle::Button};
   switch (m_model.status()) {
     case Model::Status::Stopped:
+    case Model::Status::ReadyToRun:
       if (drawTextBox("Start(space)", position, f_startButtonWidth, style)) {
         m_highlightedButton = Button::Run;
       }
@@ -328,7 +333,7 @@ void View::drawBottomLeftMenu() {
       break;
   }
   position.x += f_startButtonWidth;
-  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Hidden
+  style = (m_model.status() == Model::Status::ReadyToRun || m_model.status() == Model::Status::Stopped) ? TextBoxStyle::Hidden
                                                      : TextBoxStyle::Button;
   if (drawTextBox("Reset(R)", position, f_resetButtonWidth, style)) {
     m_highlightedButton = Button::Reset;
@@ -339,7 +344,7 @@ void View::drawBottomLeftMenu() {
     m_highlightedButton = Button::Clear;
   }
   position.x += f_clearButtonWidth;
-  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
+  style = (m_model.status() == Model::Status::ReadyToRun || m_model.status() == Model::Status::Stopped) ? TextBoxStyle::Button
                                                      : TextBoxStyle::Hidden;
   if (drawTextBox("Generate Population(G)", position, f_generatePopButtonWidth,
                   style)) {
@@ -361,11 +366,7 @@ void View::drawBottomRightMenu() {
       static_cast<float>(m_window.getView().getSize().y) -
           f_frameHorizontalThickness + f_textBoxOutlineThickness};
   position.x -= f_displayBoxWidth;
-  auto cells{m_model.cells()};
-  auto population{std::count_if(
-      cells.cbegin(), cells.cend(),
-      [](const auto& cell) { return cell.status == Cell::Status::Alive; })};
-  drawTextBox(std::to_string(population), position, f_displayBoxWidth,
+  drawTextBox(std::to_string(m_model.aliveCellsCount()), position, f_displayBoxWidth,
               TextBoxStyle::Display);
   position.x -= f_populationButtonWidth;
   drawTextBox("Population", position, f_populationButtonWidth,
@@ -442,7 +443,7 @@ void View::drawTopRightMenu() {
       position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
   auto style{
-      (m_model.status() == Model::Status::Stopped && m_model.cells().empty())
+      m_model.status() == Model::Status::Stopped
           ? TextBoxStyle::Button
           : TextBoxStyle::Hidden};
   if (drawTextBox("+", position, f_plusMinusButtonWidth, style)) {
@@ -454,7 +455,7 @@ void View::drawTopRightMenu() {
   }
   position.x -= f_sizeButtonWidth;
   style =
-      (m_model.status() == Model::Status::Stopped && m_model.cells().empty())
+      m_model.status() == Model::Status::Stopped
           ? TextBoxStyle::Simple
           : TextBoxStyle::Hidden;
   drawTextBox("Grid Size(Up/Down)", position, f_sizeButtonWidth, style);
