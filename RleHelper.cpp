@@ -100,6 +100,9 @@ std::set<Cell> loadPattern(const std::string& name) {
 }
 
 void savePattern(const std::string& name, const std::set<Cell> pattern) {
+  if (pattern.empty()) {
+    return;
+  }
   if(!std::filesystem::is_directory(f_patternsFolder) 
     || !std::filesystem::exists(f_patternsFolder)) {
     std::filesystem::create_directory(f_patternsFolder);

@@ -174,32 +174,39 @@ void View::drawMainScreen() {
 }
 
 void View::drawLoadFileScreen() {
-  sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
-                        f_textBoxOutlineThickness};
+  sf::Vector2f position{ f_frameVerticalThickness + f_textBoxOutlineThickness,
+                        f_textBoxOutlineThickness };
   if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
-                  TextBoxStyle::Button)) {
+    TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
   position.x += f_backButtonWidth;
   drawTextBox("Scroll Up/Down(Mouse Wheel)", position,
-              f_scrollUpDownButtonWidth, TextBoxStyle::Simple);
+    f_scrollUpDownButtonWidth, TextBoxStyle::Simple);
   position.x += f_scrollUpDownButtonWidth;
   drawTextBox("Page Up/Down(PageUp/PageDown)", position,
-              f_pageUpDownButtonWidth, TextBoxStyle::Simple);
+    f_pageUpDownButtonWidth, TextBoxStyle::Simple);
 
-  auto& windowSize{m_window.getView().getSize()};
-  auto maxNumberOfItems{static_cast<int>(
-      windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.))};
-  auto items{rle::listPatternNames()};
+  auto& windowSize{ m_window.getView().getSize() };
+  auto maxNumberOfItems{ static_cast<int>(
+      windowSize.y / (f_textBoxHeight + f_textBoxOutlineThickness * 2.)) };
+  auto items{ rle::listPatternNames() };
   if (items.empty()) {
+    auto screenMiddleHeight{ windowSize.y * .5f };
+    position.x = f_frameVerticalThickness + f_textBoxOutlineThickness;
+    position.y = screenMiddleHeight;
+    drawTextBox("No file found in patterns directory." , position,
+      windowSize.x - 2 * f_frameVerticalThickness,
+      TextBoxStyle::Simple);
     return;
   }
-  auto maxScrollPos{static_cast<int>(items.size()) - maxNumberOfItems};
+  auto itemsSize{static_cast<int>(items.size())};
+  auto maxScrollPos{std::max(1, itemsSize - maxNumberOfItems)};
   m_scrollPos = std::min(m_scrollPos, maxScrollPos);
   auto topItem{items.cbegin()};
   std::advance(topItem, m_scrollPos);
   auto maxItem{topItem};
-  std::advance(maxItem, maxNumberOfItems);
+  std::advance(maxItem, maxScrollPos);
   for (auto it = topItem; it != maxItem; it++) {
     auto width{windowSize.x - 2 * f_frameVerticalThickness};
     auto x{f_frameVerticalThickness};
@@ -384,6 +391,8 @@ void View::drawTopLeftMenu() {
     m_highlightedButton = Button::LoadFileMenu;
   }
   position.x += f_loadButtonWidth;
+  style = m_model.initialPattern().empty() ? TextBoxStyle::Hidden
+                                           : TextBoxStyle::Button;
   if (drawTextBox("Save File(S)", position, f_saveFileButtonWidth, style)) {
     m_highlightedButton = Button::SaveFileMenu;
   }

@@ -142,9 +142,10 @@ void Controller::onSaveFileModeMouseButtonPressed(
       m_view.setMode(View::Mode::Main);
       return;
     case View::Button::SaveFile:
-      if (!m_view.fileNameToSave().empty()) {
-        rle::savePattern(m_view.fileNameToSave(), m_model.initialPattern());
+      if (m_view.fileNameToSave().empty()) {
+        return;
       }
+      rle::savePattern(m_view.fileNameToSave(), m_model.initialPattern());
       m_view.setMode(View::Mode::Main);
       return;
     default:
@@ -265,6 +266,9 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent& event) {
       m_view.setMode(View::Mode::LoadFile);
       return;
     case sf::Keyboard::S:
+      if (m_model.initialPattern().empty()) {
+        return;
+      }
       m_isSaveFileMenuReady = false;
       m_view.setMode(View::Mode::SaveFile);
       return;
@@ -318,9 +322,10 @@ void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent& event) {
       m_view.setMode(View::Mode::Main);
       return;
     case sf::Keyboard::Return:
-      if (!m_view.fileNameToSave().empty()) {
-        rle::savePattern(m_view.fileNameToSave(), m_model.initialPattern());
+      if (m_view.fileNameToSave().empty()) {
+        return;
       }
+      rle::savePattern(m_view.fileNameToSave(), m_model.initialPattern());
       m_view.setMode(View::Mode::Main);
       return;
     case sf::Keyboard::Space: {

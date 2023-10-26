@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.22.0)
 
 set(SFML_VERSION "2.6.0")
 set(BIN_PATH_NAME "bin")
-set(PATTERNS_PATH_NAME "patterns")
 set(RESOURCES_PATH_NAME "resources")
 set(CMAKE_INSTALL_PREFIX "install")
 set(CMAKE_INSTALL_RPATH "../lib")
@@ -51,5 +50,4 @@ endif()
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${BIN_PATH_NAME})
 install(DIRECTORY ${RESOURCES_PATH_NAME} DESTINATION .)
-install(DIRECTORY ${PATTERNS_PATH_NAME} DESTINATION .)
 
