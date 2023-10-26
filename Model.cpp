@@ -175,9 +175,7 @@ void Model::generatePopulation(double density) {
   for (int i = 0; i < population; i++) {
     auto pos{generateRandomValue(0, m_width * m_height)};
     Cell cell{pos % m_width, pos / m_width};
-    if (m_cells.count(cell) == 0) {
-      m_cells.insert(cell);
-    }
+    insertCell(cell);
   }
 }
 
