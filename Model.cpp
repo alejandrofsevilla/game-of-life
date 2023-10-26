@@ -224,6 +224,7 @@ void Model::update() {
   }
   if (!isUpdated) {
     m_status = Status::Paused;
+    updateStatus();
   } else {
     m_aliveCells = std::move(updatedAliveCells);
     m_generation++;
@@ -233,7 +234,7 @@ void Model::update() {
 void Model::updateStatus() {
   if (m_aliveCells.size() > 0) {
     m_status = Status::ReadyToRun;
-  } else {
+  } else if (m_deadCells.size() == 0){
     m_status = Status::Stopped;
   }
 }
