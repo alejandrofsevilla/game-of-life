@@ -6,7 +6,7 @@
 ## Features
 * Visual Representation of a Cellular Automata with rule B3/S23 (Conway's Game of Life).
 * Support for [Run Length Encoded](https://conwaylife.com/wiki/Run_Length_Encoded) format for loading and saving pattern files. Patterns loaded and saved to folder "patterns". Example of patterns can be found at [https://conwaylife.com/wiki](https://conwaylife.com/wiki).
-* Maximum grid size set to 960x490 Cells.
+* Maximum grid size set to 960x490 cells.
 ## Requirements
 * C++17 compiler.
 * CMake 3.22.0.
