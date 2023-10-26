@@ -68,7 +68,7 @@ Cell mostBottomCell(const std::set<Cell> &pattern) {
       pattern.cbegin(), pattern.cend(),
       [](const auto &a, const auto &b) { return a.y < b.y; });
 }
-} // namespace
+}  // namespace
 
 namespace rle {
 std::set<std::string> listPatternNames() {
@@ -172,4 +172,4 @@ void savePattern(const std::string &name, const std::set<Cell> pattern) {
   ostrm << f_endOfPatternSymbol << std::endl;
   ostrm.close();
 }
-} // namespace rle
+}  // namespace rle

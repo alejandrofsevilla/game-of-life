@@ -10,7 +10,7 @@
 #include "Model.hpp"
 
 class View {
-public:
+ public:
   enum class Mode { Main, LoadFile, SaveFile };
   enum class Button {
     Quit,
@@ -51,7 +51,7 @@ public:
   std::optional<sf::Vector2i> pixelToCellPosition(sf::Vector2i pixel) const;
   const std::string &fileNameToSave() const;
 
-private:
+ private:
   enum class TextBoxStyle { Simple, Display, Button, Hidden };
 
   void drawMainScreen();

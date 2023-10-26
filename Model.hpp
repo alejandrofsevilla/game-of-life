@@ -1,22 +1,13 @@
 #ifndef GAME_OF_LIFE_MODEL_HPP
 #define GAME_OF_LIFE_MODEL_HPP
 
-#include <future>
-#include <mutex>
 #include <set>
 
 #include "Cell.hpp"
 
 class Model {
-public:
-  enum class Status {
-    Uninitialized,
-    ReadyToRun,
-    Running,
-    Paused,
-    Stopped,
-    Finished
-  };
+ public:
+  enum class Status { ReadyToRun, Running, Paused, Stopped, Finished };
 
   Model(int maxWidth, int maxHeight);
 
@@ -28,12 +19,11 @@ public:
   int width() const;
   int height() const;
   int generation() const;
-  std::size_t aliveCellsCount() const;
-  std::size_t deadCellsCount() const;
-  std::set<Cell> aliveCells();
-  std::set<Cell> deadCells();
-  const std::set<Cell> &initialPattern() const;
+  const std::set<Cell>& aliveCells();
+  const std::set<Cell>& deadCells();
+  const std::set<Cell>& initialPattern() const;
 
+  void update();
   void run();
   void clear();
   void reset();
@@ -44,12 +34,11 @@ public:
   void increaseSize();
   void reduceSize();
   void generatePopulation(double density);
-  void insertCell(const Cell &cell);
-  void removeCell(const Cell &cell);
-  void insertPattern(const std::set<Cell> &pattern);
+  void insertCell(const Cell& cell);
+  void removeCell(const Cell& cell);
+  void insertPattern(const std::set<Cell>& pattern);
 
-private:
-  void update();
+ private:
   void updateStatus();
 
   int calculateWidth();
@@ -67,8 +56,6 @@ private:
   std::set<Cell> m_initialPattern;
   std::set<Cell> m_aliveCells;
   std::set<Cell> m_deadCells;
-  std::future<void> m_timer;
-  std::mutex m_mutex;
 };
 
 #endif

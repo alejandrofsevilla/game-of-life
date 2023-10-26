@@ -3,13 +3,11 @@
 #include <algorithm>
 #include <map>
 #include <random>
-#include <thread>
 
 namespace {
 constexpr auto f_underpopulationThreshold{2};
 constexpr auto f_overpopulationThreshold{3};
 constexpr auto f_reproductionValue{3};
-constexpr auto f_modelUpdatePeriod{std::chrono::milliseconds{500}};
 constexpr auto f_defaultSpeed{10};
 constexpr auto f_maxSpeed{10};
 constexpr auto f_minSpeed{1};
@@ -23,14 +21,20 @@ inline int generateRandomValue(int min, int max) {
   std::uniform_int_distribution<int> distr{min, max};
   return distr(gen);
 }
-} // namespace
+}  // namespace
 
 Model::Model(int maxWidth, int maxHeight)
     : m_maxWidth{maxWidth},
-      m_maxHeight{maxHeight}, m_status{Status::Uninitialized},
-      m_size{f_defaultSize}, m_width{calculateWidth()},
-      m_height{calculateHeight()}, m_speed{f_defaultSpeed}, m_generation{},
-      m_initialPattern{}, m_aliveCells{}, m_deadCells{}, m_timer{}, m_mutex{} {}
+      m_maxHeight{maxHeight},
+      m_status{Status::Stopped},
+      m_size{f_defaultSize},
+      m_width{calculateWidth()},
+      m_height{calculateHeight()},
+      m_speed{f_defaultSpeed},
+      m_generation{},
+      m_initialPattern{},
+      m_aliveCells{},
+      m_deadCells{} {}
 
 Model::Status Model::status() const { return m_status; }
 
@@ -48,50 +52,26 @@ int Model::height() const { return m_height; }
 
 int Model::generation() const { return m_generation; }
 
-std::size_t Model::aliveCellsCount() const { return m_aliveCells.size(); }
+const std::set<Cell>& Model::aliveCells() { return m_aliveCells; }
 
-std::size_t Model::deadCellsCount() const { return m_deadCells.size(); }
+const std::set<Cell>& Model::deadCells() { return m_deadCells; }
 
-std::set<Cell> Model::aliveCells() {
-  std::lock_guard guard(m_mutex);
-  return m_aliveCells;
-}
-
-std::set<Cell> Model::deadCells() {
-  std::lock_guard guard(m_mutex);
-  return m_deadCells;
-}
-
-const std::set<Cell> &Model::initialPattern() const { return m_initialPattern; }
+const std::set<Cell>& Model::initialPattern() const { return m_initialPattern; }
 
 void Model::run() {
   switch (m_status) {
-  default:
-    return;
-  case Model::Status::ReadyToRun:
-    m_status = Model::Status::Running;
-    return;
-  case Model::Status::Paused:
-    m_status = Model::Status::Running;
-    return;
-  case Model::Status::Stopped:
-    return;
-  case Model::Status::Uninitialized:
-    m_status = Status::Stopped;
-    while (m_status != Model::Status::Finished) {
-      if (m_status == Model::Status::Running) {
-        m_timer = std::async(&std::this_thread::sleep_for<int, std::milli>,
-                             f_modelUpdatePeriod / m_speed);
-        update();
-        m_timer.wait();
-      }
-    }
-    return;
+    case Model::Status::ReadyToRun:
+      m_status = Model::Status::Running;
+      return;
+    case Model::Status::Paused:
+      m_status = Model::Status::Running;
+      return;
+    default:
+      return;
   }
 }
 
 void Model::reset() {
-  std::lock_guard guard(m_mutex);
   m_aliveCells = m_initialPattern;
   m_deadCells.clear();
   m_generation = 0;
@@ -99,7 +79,6 @@ void Model::reset() {
 }
 
 void Model::clear() {
-  std::lock_guard guard(m_mutex);
   m_aliveCells.clear();
   m_deadCells.clear();
   m_initialPattern.clear();
@@ -127,13 +106,13 @@ void Model::reduceSize() {
   m_height = calculateHeight();
 }
 
-void Model::insertPattern(const std::set<Cell> &pattern) {
+void Model::insertPattern(const std::set<Cell>& pattern) {
   auto mostRightElement{
       std::max_element(pattern.cbegin(), pattern.cend(),
-                       [](const auto &a, const auto &b) { return a.x < b.x; })};
+                       [](const auto& a, const auto& b) { return a.x < b.x; })};
   auto mostBottomElement{
       std::max_element(pattern.cbegin(), pattern.cend(),
-                       [](const auto &a, const auto &b) { return a.y < b.y; })};
+                       [](const auto& a, const auto& b) { return a.y < b.y; })};
   auto width{mostRightElement->x};
   auto height{mostBottomElement->y};
   while (width > m_width || height > m_height) {
@@ -151,7 +130,7 @@ void Model::insertPattern(const std::set<Cell> &pattern) {
   }
 }
 
-void Model::insertCell(const Cell &cell) {
+void Model::insertCell(const Cell& cell) {
   if (cell.x > m_width || cell.y > m_height) {
     return;
   }
@@ -161,7 +140,7 @@ void Model::insertCell(const Cell &cell) {
   updateStatus();
 }
 
-void Model::removeCell(const Cell &cell) {
+void Model::removeCell(const Cell& cell) {
   if (cell.x > m_width || cell.y > m_height) {
     return;
   }
@@ -183,11 +162,10 @@ void Model::generatePopulation(double density) {
 
 void Model::update() {
   // see: https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
-  std::lock_guard guard(m_mutex);
   auto updatedAliveCells{m_aliveCells};
   auto isUpdated{false};
   std::map<Cell, int> deadCellsWithAliveNeighboursCount;
-  for (const auto &cell : m_aliveCells) {
+  for (const auto& cell : m_aliveCells) {
     auto aliveNeighboursCount{0};
     for (auto x = cell.x - 1; x <= cell.x + 1; x++) {
       if (x < 0 || x >= m_width) {
@@ -215,7 +193,7 @@ void Model::update() {
       isUpdated = true;
     }
   }
-  for (const auto &value : deadCellsWithAliveNeighboursCount) {
+  for (const auto& value : deadCellsWithAliveNeighboursCount) {
     if (value.second == f_reproductionValue) {
       m_deadCells.erase(value.first);
       updatedAliveCells.insert(value.first);
@@ -234,7 +212,7 @@ void Model::update() {
 void Model::updateStatus() {
   if (m_aliveCells.size() > 0) {
     m_status = Status::ReadyToRun;
-  } else if (m_deadCells.size() == 0){
+  } else if (m_deadCells.size() == 0) {
     m_status = Status::Stopped;
   }
 }
