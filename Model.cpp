@@ -91,6 +91,7 @@ void Model::run() {
 }
 
 void Model::reset() {
+  std::lock_guard guard(m_mutex);
   m_aliveCells = m_initialPattern;
   m_deadCells.clear();
   m_generation = 0;
@@ -98,6 +99,7 @@ void Model::reset() {
 }
 
 void Model::clear() {
+  std::lock_guard guard(m_mutex);
   m_aliveCells.clear();
   m_deadCells.clear();
   m_initialPattern.clear();
