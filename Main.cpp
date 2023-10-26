@@ -9,7 +9,7 @@ constexpr auto f_windowTitle{"Game Of Life"};
 constexpr auto f_windowStyle{sf::Style::Fullscreen};
 constexpr auto f_modelMaxWidth{960};
 constexpr auto f_modelMaxHeight{490};
-}  // namespace
+} // namespace
 
 int main() {
   auto desktopMode(sf::VideoMode::getDesktopMode());

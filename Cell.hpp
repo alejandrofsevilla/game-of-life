@@ -5,10 +5,10 @@ struct Cell {
   int x{0};
   int y{0};
 
-  bool operator==(const Cell& other) const {
+  bool operator==(const Cell &other) const {
     return x == other.x && y == other.y;
   }
-  bool operator<(const Cell& other) const {
+  bool operator<(const Cell &other) const {
     if (y < other.y) {
       return true;
     }
@@ -20,7 +20,7 @@ struct Cell {
     }
     return false;
   }
-  bool operator>(const Cell& other) const {
+  bool operator>(const Cell &other) const {
     return !(*this == other) && !(*this < other);
   }
 };

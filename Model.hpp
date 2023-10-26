@@ -2,14 +2,21 @@
 #define GAME_OF_LIFE_MODEL_HPP
 
 #include <future>
-#include <set>
 #include <mutex>
+#include <set>
 
 #include "Cell.hpp"
 
 class Model {
- public:
-   enum class Status { Uninitialized, ReadyToRun, Running, Paused, Stopped, Finished };
+public:
+  enum class Status {
+    Uninitialized,
+    ReadyToRun,
+    Running,
+    Paused,
+    Stopped,
+    Finished
+  };
 
   Model(int maxWidth, int maxHeight);
 
@@ -21,11 +28,11 @@ class Model {
   int width() const;
   int height() const;
   int generation() const;
-  int aliveCellsCount() const;
-  int deadCellsCount() const;
+  std::size_t aliveCellsCount() const;
+  std::size_t deadCellsCount() const;
   std::set<Cell> aliveCells();
   std::set<Cell> deadCells();
-  const std::set<Cell>& initialPattern() const;
+  const std::set<Cell> &initialPattern() const;
 
   void run();
   void clear();
@@ -37,11 +44,11 @@ class Model {
   void increaseSize();
   void reduceSize();
   void generatePopulation(double density);
-  void insertCell(const Cell& cell);
-  void removeCell(const Cell& cell);
-  void insertPattern(const std::set<Cell>& pattern);
+  void insertCell(const Cell &cell);
+  void removeCell(const Cell &cell);
+  void insertPattern(const std::set<Cell> &pattern);
 
- private:
+private:
   void update();
   void updateStatus();
 

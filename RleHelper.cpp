@@ -9,14 +9,14 @@ constexpr auto f_patternsFolder{"../patterns/"};
 constexpr auto f_nextRowSymbol{'$'};
 constexpr auto f_deadCellSymbol{'b'};
 constexpr auto f_aliveCellSymbol{'o'};
-constexpr auto f_endOfLine{ '\n' };
+constexpr auto f_endOfLine{'\n'};
 constexpr auto f_endOfPatternSymbol{'!'};
 constexpr auto f_rleFileExtension{".rle"};
 const std::regex f_rleCommentRegex{"#.*"};
 const std::regex f_rleHeaderRegex{"x = [0-9]*, y = [0-9]*(, rule=.*)?"};
 const std::regex f_rleContentRegex("([0-9]*)(o|b)(?:([0-9]*)(\\$))?");
 
-std::set<Cell> map(const std::string& pattern) {
+std::set<Cell> map(const std::string &pattern) {
   std::set<Cell> result;
   std::smatch match;
   Cell cell;
@@ -45,26 +45,30 @@ std::set<Cell> map(const std::string& pattern) {
   return result;
 }
 
-Cell mostLeftCell(const std::set<Cell>& pattern) {
-  return *std::min_element(pattern.cbegin(), pattern.cend(),
-    [](const auto& a, const auto& b) { return a.x < b.x; });
+Cell mostLeftCell(const std::set<Cell> &pattern) {
+  return *std::min_element(
+      pattern.cbegin(), pattern.cend(),
+      [](const auto &a, const auto &b) { return a.x < b.x; });
 }
 
-Cell mostRightCell(const std::set<Cell>& pattern) {
-  return *std::max_element(pattern.cbegin(), pattern.cend(),
-    [](const auto& a, const auto& b) { return a.x < b.x; });
+Cell mostRightCell(const std::set<Cell> &pattern) {
+  return *std::max_element(
+      pattern.cbegin(), pattern.cend(),
+      [](const auto &a, const auto &b) { return a.x < b.x; });
 }
 
-Cell mostTopCell(const std::set<Cell>& pattern) {
-  return *std::min_element(pattern.cbegin(), pattern.cend(),
-    [](const auto& a, const auto& b) { return a.y < b.y; });
+Cell mostTopCell(const std::set<Cell> &pattern) {
+  return *std::min_element(
+      pattern.cbegin(), pattern.cend(),
+      [](const auto &a, const auto &b) { return a.y < b.y; });
 }
 
-Cell mostBottomCell(const std::set<Cell>& pattern) {
-  return *std::max_element(pattern.cbegin(), pattern.cend(),
-    [](const auto& a, const auto& b) { return a.y < b.y; });
+Cell mostBottomCell(const std::set<Cell> &pattern) {
+  return *std::max_element(
+      pattern.cbegin(), pattern.cend(),
+      [](const auto &a, const auto &b) { return a.y < b.y; });
 }
-}  // namespace
+} // namespace
 
 namespace rle {
 std::set<std::string> listPatternNames() {
@@ -72,7 +76,7 @@ std::set<std::string> listPatternNames() {
   if (!std::filesystem::exists(f_patternsFolder)) {
     return {};
   }
-  for (const auto& file :
+  for (const auto &file :
        std::filesystem::directory_iterator(f_patternsFolder)) {
     if (file.path().extension().string() == f_rleFileExtension) {
       files.insert(file.path().filename().stem().string());
@@ -81,7 +85,7 @@ std::set<std::string> listPatternNames() {
   return files;
 }
 
-std::set<Cell> loadPattern(const std::string& name) {
+std::set<Cell> loadPattern(const std::string &name) {
   std::string pattern;
   std::string line;
   std::ifstream istrm;
@@ -99,21 +103,21 @@ std::set<Cell> loadPattern(const std::string& name) {
   return map(pattern);
 }
 
-void savePattern(const std::string& name, const std::set<Cell> pattern) {
+void savePattern(const std::string &name, const std::set<Cell> pattern) {
   if (pattern.empty()) {
     return;
   }
-  if(!std::filesystem::is_directory(f_patternsFolder) 
-    || !std::filesystem::exists(f_patternsFolder)) {
+  if (!std::filesystem::is_directory(f_patternsFolder) ||
+      !std::filesystem::exists(f_patternsFolder)) {
     std::filesystem::create_directory(f_patternsFolder);
   }
   std::ofstream ostrm;
   ostrm.open(f_patternsFolder + name + f_rleFileExtension);
   ostrm << "#N " << name << std::endl;
-  auto minCol{ mostLeftCell(pattern).x };
-  auto minRow{ mostTopCell(pattern).y };
-  auto maxCol{ mostRightCell(pattern).x };
-  auto maxRow{ mostBottomCell(pattern).y };
+  auto minCol{mostLeftCell(pattern).x};
+  auto minRow{mostTopCell(pattern).y};
+  auto maxCol{mostRightCell(pattern).x};
+  auto maxRow{mostBottomCell(pattern).y};
   ostrm << "x = " << maxCol - minCol;
   ostrm << ", y = " << maxRow - minRow << std::endl;
   auto prevCol{0};
@@ -127,7 +131,7 @@ void savePattern(const std::string& name, const std::set<Cell> pattern) {
       prevRow = row - 1;
     }
     auto columnsSkipped{col - prevCol};
-    auto rowsSkipped{ row - prevRow };
+    auto rowsSkipped{row - prevRow};
     auto next{it};
     std::advance(next, 1);
     if (rowsSkipped > 0 || columnsSkipped > 1) {
@@ -168,4 +172,4 @@ void savePattern(const std::string& name, const std::set<Cell> pattern) {
   ostrm << f_endOfPatternSymbol << std::endl;
   ostrm.close();
 }
-}  // namespace rle
+} // namespace rle

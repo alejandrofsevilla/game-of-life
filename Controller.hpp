@@ -8,21 +8,21 @@
 #include "View.hpp"
 
 class Controller {
- public:
+public:
   Controller(View &view, Model &model);
 
   void onEvent(const sf::Event &event);
 
- private:
+private:
   void onMouseButtonPressed(const sf::Event::MouseButtonEvent &event);
   void onMainModeMouseButtonPressed(const sf::Event::MouseButtonEvent &event);
-  void onLoadFileModeMouseButtonPressed(
-      const sf::Event::MouseButtonEvent &event);
-  void onSaveFileModeMouseButtonPressed(
-      const sf::Event::MouseButtonEvent &event);
+  void
+  onLoadFileModeMouseButtonPressed(const sf::Event::MouseButtonEvent &event);
+  void
+  onSaveFileModeMouseButtonPressed(const sf::Event::MouseButtonEvent &event);
   void onMouseWheelScrolled(const sf::Event::MouseWheelScrollEvent &event);
-  void onMainModeMouseWheelScrolled(
-      const sf::Event::MouseWheelScrollEvent &event);
+  void
+  onMainModeMouseWheelScrolled(const sf::Event::MouseWheelScrollEvent &event);
   void onLoadFileModeMouseWheelScrolled(
       const sf::Event::MouseWheelScrollEvent &event);
   void onMouseMoved(const sf::Event::MouseMoveEvent &event);
