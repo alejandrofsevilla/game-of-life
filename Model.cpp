@@ -67,7 +67,6 @@ void Model::run() {
     default:
       return;
     case Model::Status::Stopped:
-      m_initialPattern = m_cells;
       m_status = Model::Status::Running;
       return;
     case Model::Status::Paused:
@@ -91,12 +90,14 @@ void Model::reset() {
   if (m_status == Model::Status::Stopped) {
     return;
   }
-  clear();
   m_cells = m_initialPattern;
+  m_generation = 0;
+  m_status = Status::Stopped;
 }
 
 void Model::clear() {
   m_cells.clear();
+  m_initialPattern.clear();
   m_generation = 0;
   m_status = Status::Stopped;
 }
@@ -128,7 +129,6 @@ void Model::reduceSize() {
 }
 
 void Model::insertPattern(const std::set<Cell>& pattern) {
-  m_initialPattern = pattern;
   auto mostRightElement{
       std::max_element(pattern.cbegin(), pattern.cend(),
                        [](const auto& a, const auto& b) { return a.x < b.x; })};
@@ -143,9 +143,11 @@ void Model::insertPattern(const std::set<Cell>& pattern) {
       break;
     }
   }
-  for (const auto& cell : pattern) {
-    m_cells.insert(
-        {cell.x + (m_width - width) / 2, cell.y + (m_height - height) / 2});
+  for (auto cell : pattern) {
+    cell.x += (m_width - width) / 2;
+    cell.y += (m_height - height) / 2;
+    m_cells.insert(cell);
+    m_initialPattern.insert(cell);
   }
 }
 
@@ -154,6 +156,7 @@ void Model::insertCell(const Cell& cell) {
     return;
   }
   m_cells.insert(cell);
+  m_initialPattern.insert(cell);
 }
 
 void Model::removeCell(const Cell& cell) {
@@ -161,6 +164,7 @@ void Model::removeCell(const Cell& cell) {
     return;
   }
   m_cells.erase(cell);
+  m_initialPattern.erase(cell);
 }
 
 void Model::generatePopulation(double density) {

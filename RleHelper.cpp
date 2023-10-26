@@ -45,24 +45,24 @@ std::set<Cell> map(const std::string& pattern) {
   return result;
 }
 
-int calculatePatternWidth(const std::set<Cell>& pattern) {
-  auto mostRightElement{
-      std::max_element(pattern.cbegin(), pattern.cend(),
-                       [](const auto& a, const auto& b) { return a.x < b.x; })};
-  auto mostLeftElement{
-      std::min_element(pattern.cbegin(), pattern.cend(),
-                       [](const auto& a, const auto& b) { return a.x < b.x; })};
-  return mostRightElement->x - mostLeftElement->x + 1;
+Cell mostLeftCell(const std::set<Cell>& pattern) {
+  return *std::min_element(pattern.cbegin(), pattern.cend(),
+    [](const auto& a, const auto& b) { return a.x < b.x; });
 }
 
-int calculatePatternHeight(const std::set<Cell>& pattern) {
-  auto mostTopElement{
-      std::min_element(pattern.cbegin(), pattern.cend(),
-                       [](const auto& a, const auto& b) { return a.y < b.y; })};
-  auto mostBottomElement{
-      std::max_element(pattern.cbegin(), pattern.cend(),
-                       [](const auto& a, const auto& b) { return a.y < b.y; })};
-  return mostBottomElement->y - mostTopElement->y + 1;
+Cell mostRightCell(const std::set<Cell>& pattern) {
+  return *std::max_element(pattern.cbegin(), pattern.cend(),
+    [](const auto& a, const auto& b) { return a.x < b.x; });
+}
+
+Cell mostTopCell(const std::set<Cell>& pattern) {
+  return *std::min_element(pattern.cbegin(), pattern.cend(),
+    [](const auto& a, const auto& b) { return a.y < b.y; });
+}
+
+Cell mostBottomCell(const std::set<Cell>& pattern) {
+  return *std::max_element(pattern.cbegin(), pattern.cend(),
+    [](const auto& a, const auto& b) { return a.y < b.y; });
 }
 }  // namespace
 
@@ -103,21 +103,27 @@ void savePattern(const std::string& name, const std::set<Cell> pattern) {
   std::ofstream ostrm;
   ostrm.open(f_patternsFolder + name + f_rleFileExtension);
   ostrm << "#N " << name << std::endl;
-  ostrm << "x = " << calculatePatternWidth(pattern);
-  ostrm << ", y = " << calculatePatternHeight(pattern) << std::endl;
-  auto prevCol{-1};
-  auto prevRow{-1};
+  auto minCol{ mostLeftCell(pattern).x };
+  auto minRow{ mostTopCell(pattern).y };
+  auto maxCol{ mostRightCell(pattern).x };
+  auto maxRow{ mostBottomCell(pattern).y };
+  ostrm << "x = " << maxCol - minCol;
+  ostrm << ", y = " << maxRow - minRow << std::endl;
+  auto prevCol{0};
+  auto prevRow{0};
   auto consecutiveCells{0};
   for (auto it = pattern.cbegin(); it != pattern.cend(); it++) {
-    auto col{it->x};
-    auto row{it->y};
+    auto col = it->x - minCol;
+    auto row = it->y - minRow;
+    if (it == pattern.cbegin()) {
+      prevCol = col - 1;
+      prevRow = row - 1;
+    }
     auto columnsSkipped{col - prevCol};
+    auto rowsSkipped{ row - prevRow };
     auto next{it};
     std::advance(next, 1);
-    if (next == pattern.cend() || row != prevRow || columnsSkipped > 1) {
-      if (next == pattern.cend()) {
-        consecutiveCells++;
-      }
+    if (rowsSkipped > 0 || columnsSkipped > 1) {
       if (consecutiveCells > 0) {
         if (consecutiveCells > 1) {
           ostrm << consecutiveCells;
@@ -125,9 +131,8 @@ void savePattern(const std::string& name, const std::set<Cell> pattern) {
         consecutiveCells = 0;
         ostrm << f_aliveCellSymbol;
       }
-      if (row != prevRow) {
+      if (rowsSkipped > 0) {
         if (it != pattern.cbegin()) {
-          auto rowsSkipped{row - prevRow};
           if (rowsSkipped > 1) {
             ostrm << rowsSkipped;
           }
@@ -145,6 +150,13 @@ void savePattern(const std::string& name, const std::set<Cell> pattern) {
     consecutiveCells++;
     prevRow = row;
     prevCol = col;
+  }
+  if (consecutiveCells > 0) {
+    if (consecutiveCells > 1) {
+      ostrm << consecutiveCells;
+    }
+    consecutiveCells = 0;
+    ostrm << f_aliveCellSymbol;
   }
   ostrm << f_endOfPatternSymbol << std::endl;
   ostrm.close();
