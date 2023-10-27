@@ -2,7 +2,7 @@
 
 A visual representation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), a cellular automata devised by the British mathematician John Horton Conway.
 
-![gif1](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/b650f6af-1aa7-45b8-b20a-3e18f63c934b)
+![ezgif-4-ffe8b51cf1](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/2f0afaf2-a0fe-45b1-b5d5-be2378734f2b)
 
 ## About the Game of Life
 
