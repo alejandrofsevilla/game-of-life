@@ -7,7 +7,7 @@
 
 class Model {
  public:
-  enum class Status { ReadyToRun, Running, Paused, Stopped};
+  enum class Status { ReadyToRun, Running, Paused, Stopped };
 
   Model(int maxWidth, int maxHeight);
 

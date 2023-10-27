@@ -325,7 +325,8 @@ void View::drawBottomLeftMenu() {
       }
       break;
     case Model::Status::Paused:
-      if (drawTextBox("Continue [Space]", position, f_startButtonWidth, style)) {
+      if (drawTextBox("Continue [Space]", position, f_startButtonWidth,
+                      style)) {
         m_highlightedButton = Button::Run;
       }
       break;
@@ -342,10 +343,9 @@ void View::drawBottomLeftMenu() {
   }
   position.x += f_resetButtonWidth;
   style = (m_model.aliveCells().empty() && m_model.deadCells().empty())
-    ? TextBoxStyle::Hidden
-    : TextBoxStyle::Button;
-  if (drawTextBox("Clear [C]", position, f_clearButtonWidth,
-                  style)) {
+              ? TextBoxStyle::Hidden
+              : TextBoxStyle::Button;
+  if (drawTextBox("Clear [C]", position, f_clearButtonWidth, style)) {
     m_highlightedButton = Button::Clear;
   }
   position.x += f_clearButtonWidth;
@@ -358,9 +358,9 @@ void View::drawBottomLeftMenu() {
     m_highlightedButton = Button::GeneratePopulation;
   }
   style = (m_model.status() == Model::Status::ReadyToRun ||
-    m_model.status() == Model::Status::Stopped)
-    ? TextBoxStyle::Simple
-    : TextBoxStyle::Hidden;
+           m_model.status() == Model::Status::Stopped)
+              ? TextBoxStyle::Simple
+              : TextBoxStyle::Hidden;
   position.x += f_generatePopButtonWidth;
   drawTextBox("Add/RemoveCell [Mouse Left]", position,
               f_addRemoveCellButtonWidth, style);
@@ -395,12 +395,13 @@ void View::drawTopLeftMenu() {
     m_highlightedButton = Button::Quit;
   }
   position.x += f_quitButtonWidth;
-  if (drawTextBox("Load File [L]", position, f_loadButtonWidth, TextBoxStyle::Button)) {
+  if (drawTextBox("Load File [L]", position, f_loadButtonWidth,
+                  TextBoxStyle::Button)) {
     m_highlightedButton = Button::LoadFileMenu;
   }
   position.x += f_loadButtonWidth;
-  auto style{ m_model.initialPattern().empty() ? TextBoxStyle::Hidden
-                                           : TextBoxStyle::Button };
+  auto style{m_model.initialPattern().empty() ? TextBoxStyle::Hidden
+                                              : TextBoxStyle::Button};
   if (drawTextBox("Save File [S]", position, f_saveFileButtonWidth, style)) {
     m_highlightedButton = Button::SaveFileMenu;
   }

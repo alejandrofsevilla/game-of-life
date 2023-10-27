@@ -268,8 +268,7 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
       m_model.reset();
       return;
     case sf::Keyboard::C:
-      if (m_model.aliveCells().empty() &&
-        m_model.deadCells().empty()) {
+      if (m_model.aliveCells().empty() && m_model.deadCells().empty()) {
         return;
       }
       m_model.clear();

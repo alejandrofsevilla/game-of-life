@@ -28,7 +28,7 @@ int main() {
     }
     if (model.status() == Model::Status::Running) {
       scheduler = std::async(&std::this_thread::sleep_for<int, std::milli>,
-        f_defaultModelUpdatePeriod / model.speed());
+                             f_defaultModelUpdatePeriod / model.speed());
       model.update();
       scheduler.wait();
     }
