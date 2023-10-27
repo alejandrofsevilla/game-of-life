@@ -15,8 +15,7 @@ Conway's Game of Life is a zero-player game that evolves based on its initial st
 
 ## Features
 
-- **Add/Remove Cells [Mouse Left].**\
-  Click on grid to add or remove a living cell.
+- **Add/Remove Cells [Mouse Left].**
 - **Load/Save Patterns [L/S].**\
   Pattern files are stored in folder <em>/patterns</em> using [Run Length Encoded](https://conwaylife.com/wiki/Run_Length_Encoded) format. Example of pattern files can be found at [https://conwaylife.com/wiki](https://conwaylife.com/wiki).
 - **Generate Population [G].**\
