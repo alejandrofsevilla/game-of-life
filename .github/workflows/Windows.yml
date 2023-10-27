@@ -1,4 +1,4 @@
-name: Windows Actions
+name: Windows
 
 on: [push]
 
