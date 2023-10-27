@@ -176,15 +176,15 @@ void View::drawMainScreen() {
 void View::drawLoadFileScreen() {
   sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
                         f_textBoxOutlineThickness};
-  if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
+  if (drawTextBox("Back [Esc]", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
   position.x += f_backButtonWidth;
-  drawTextBox("Scroll Up/Down(Mouse Wheel)", position,
+  drawTextBox("Scroll Up/Down [Mouse Wheel]", position,
               f_scrollUpDownButtonWidth, TextBoxStyle::Simple);
   position.x += f_scrollUpDownButtonWidth;
-  drawTextBox("Page Up/Down(PageUp/PageDown)", position,
+  drawTextBox("Page Up/Down [PageUp/PageDown]", position,
               f_pageUpDownButtonWidth, TextBoxStyle::Simple);
 
   auto &windowSize{m_window.getView().getSize()};
@@ -221,12 +221,12 @@ void View::drawLoadFileScreen() {
 void View::drawSaveFileScreen() {
   sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
                         f_textBoxOutlineThickness};
-  if (drawTextBox("Back(Esc)", position, f_backButtonWidth,
+  if (drawTextBox("Back [Esc]", position, f_backButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
   position.x += f_backButtonWidth;
-  if (drawTextBox("Save(Enter)", position, f_saveButtonWidth,
+  if (drawTextBox("Save [Enter]", position, f_saveButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::SaveFile;
   }
@@ -315,17 +315,17 @@ void View::drawBottomLeftMenu() {
   switch (m_model.status()) {
     case Model::Status::Stopped:
     case Model::Status::ReadyToRun:
-      if (drawTextBox("Start(space)", position, f_startButtonWidth, style)) {
+      if (drawTextBox("Start [space]", position, f_startButtonWidth, style)) {
         m_highlightedButton = Button::Run;
       }
       break;
     case Model::Status::Running:
-      if (drawTextBox("Pause(space)", position, f_startButtonWidth, style)) {
+      if (drawTextBox("Pause [space]", position, f_startButtonWidth, style)) {
         m_highlightedButton = Button::Pause;
       }
       break;
     case Model::Status::Paused:
-      if (drawTextBox("Continue(Space)", position, f_startButtonWidth, style)) {
+      if (drawTextBox("Continue [Space]", position, f_startButtonWidth, style)) {
         m_highlightedButton = Button::Run;
       }
       break;
@@ -337,11 +337,11 @@ void View::drawBottomLeftMenu() {
            m_model.status() == Model::Status::Stopped)
               ? TextBoxStyle::Hidden
               : TextBoxStyle::Button;
-  if (drawTextBox("Reset(R)", position, f_resetButtonWidth, style)) {
+  if (drawTextBox("Reset [R]", position, f_resetButtonWidth, style)) {
     m_highlightedButton = Button::Reset;
   }
   position.x += f_resetButtonWidth;
-  if (drawTextBox("Clear(C)", position, f_clearButtonWidth,
+  if (drawTextBox("Clear [C]", position, f_clearButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Clear;
   }
@@ -350,17 +350,17 @@ void View::drawBottomLeftMenu() {
            m_model.status() == Model::Status::Stopped)
               ? TextBoxStyle::Button
               : TextBoxStyle::Hidden;
-  if (drawTextBox("Generate Population(G)", position, f_generatePopButtonWidth,
+  if (drawTextBox("Generate Population [G]", position, f_generatePopButtonWidth,
                   style)) {
     m_highlightedButton = Button::GeneratePopulation;
   }
   position.x += f_generatePopButtonWidth;
   style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Simple
                                                      : TextBoxStyle::Hidden;
-  drawTextBox("Add/RemoveCell(Mouse Left)", position,
+  drawTextBox("Add/RemoveCell [Mouse Left]", position,
               f_addRemoveCellButtonWidth, style);
   position.x += f_addRemoveCellButtonWidth;
-  drawTextBox("Drag View(Mouse Right)", position, f_dragViewButtonWidth,
+  drawTextBox("Drag View [Mouse Right]", position, f_dragViewButtonWidth,
               TextBoxStyle::Simple);
 }
 
@@ -385,20 +385,20 @@ void View::drawBottomRightMenu() {
 
 void View::drawTopLeftMenu() {
   sf::Vector2f position{f_frameVerticalThickness, f_textBoxOutlineThickness};
-  if (drawTextBox("Quit(Esc)", position, f_quitButtonWidth,
+  if (drawTextBox("Quit [Esc]", position, f_quitButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Quit;
   }
   position.x += f_quitButtonWidth;
   auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
                                                         : TextBoxStyle::Hidden};
-  if (drawTextBox("Load File(L)", position, f_loadButtonWidth, style)) {
+  if (drawTextBox("Load File [L]", position, f_loadButtonWidth, style)) {
     m_highlightedButton = Button::LoadFileMenu;
   }
   position.x += f_loadButtonWidth;
   style = m_model.initialPattern().empty() ? TextBoxStyle::Hidden
                                            : TextBoxStyle::Button;
-  if (drawTextBox("Save File(S)", position, f_saveFileButtonWidth, style)) {
+  if (drawTextBox("Save File [S]", position, f_saveFileButtonWidth, style)) {
     m_highlightedButton = Button::SaveFileMenu;
   }
 }
@@ -422,7 +422,7 @@ void View::drawTopRightMenu() {
     m_highlightedButton = Button::SlowDown;
   }
   position.x -= f_speedButtonWidth;
-  drawTextBox("Speed(Left/Right)", position, f_speedButtonWidth,
+  drawTextBox("Speed [Left/Right]", position, f_speedButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
   drawTextBox(
@@ -439,7 +439,7 @@ void View::drawTopRightMenu() {
     m_highlightedButton = Button::ZoomOut;
   }
   position.x -= f_zoomButtonWidth;
-  drawTextBox("Zoom(Mouse Wheel)", position, f_zoomButtonWidth,
+  drawTextBox("Zoom [Mouse Wheel]", position, f_zoomButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
   drawTextBox(
@@ -458,7 +458,7 @@ void View::drawTopRightMenu() {
   position.x -= f_sizeButtonWidth;
   style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Simple
                                                      : TextBoxStyle::Hidden;
-  drawTextBox("Grid Size(Up/Down)", position, f_sizeButtonWidth, style);
+  drawTextBox("Grid Size [Up/Down]", position, f_sizeButtonWidth, style);
 }
 
 bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
