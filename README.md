@@ -31,8 +31,7 @@ Conway's Game of Life is a zero-player game that evolves based on its initial st
    git clone https://github.com/alejandrofsevilla/game-of-life.git
    cd game-of-life
 2. Build.
-   ```bash    
-   mkdir build
+   ```bash
    cmake -S . -B build
    cmake --build build
 3. Portable installation.
