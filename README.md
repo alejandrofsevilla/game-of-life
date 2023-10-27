@@ -25,7 +25,7 @@ Conway's Game of Life is a zero-player game that evolves based on its initial st
 - **Control Simulation Speed [←/→].**
 - **Control Camara [Mouse Right].**
 
-## Installation and Usage
+## Build and Install
 
 1. Clone the repository to your local machine.
    ```bash
