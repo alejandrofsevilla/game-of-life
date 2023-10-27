@@ -19,7 +19,7 @@ Conway's Game of Life is a zero-player game that evolves based on its initial st
 - **Randomize Grid [G]:** Fill the grid with a random pattern of living cells.
 - **Reset [R]:** Reset grid to its original pattern.
 - **Clear Grid [C]:** Removes all cells from grid.
-- **Change Grid Size [↑/↓]:** Maximum size currently set to 960x490.
+- **Change Grid Size [↑/↓]:** Maximum grid size currently set to 960x490 cells.
 - **Control Zoom [Mouse Wheel].**
 - **Control Simulation Speed [←/→].**
 - **Control Camara [Mouse Right].**
