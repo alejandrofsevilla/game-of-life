@@ -341,8 +341,11 @@ void View::drawBottomLeftMenu() {
     m_highlightedButton = Button::Reset;
   }
   position.x += f_resetButtonWidth;
+  style = (m_model.aliveCells().empty() && m_model.deadCells().empty())
+    ? TextBoxStyle::Hidden
+    : TextBoxStyle::Button;
   if (drawTextBox("Clear [C]", position, f_clearButtonWidth,
-                  TextBoxStyle::Button)) {
+                  style)) {
     m_highlightedButton = Button::Clear;
   }
   position.x += f_clearButtonWidth;
@@ -354,9 +357,11 @@ void View::drawBottomLeftMenu() {
                   style)) {
     m_highlightedButton = Button::GeneratePopulation;
   }
+  style = (m_model.status() == Model::Status::ReadyToRun ||
+    m_model.status() == Model::Status::Stopped)
+    ? TextBoxStyle::Simple
+    : TextBoxStyle::Hidden;
   position.x += f_generatePopButtonWidth;
-  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Simple
-                                                     : TextBoxStyle::Hidden;
   drawTextBox("Add/RemoveCell [Mouse Left]", position,
               f_addRemoveCellButtonWidth, style);
   position.x += f_addRemoveCellButtonWidth;
@@ -390,14 +395,12 @@ void View::drawTopLeftMenu() {
     m_highlightedButton = Button::Quit;
   }
   position.x += f_quitButtonWidth;
-  auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
-                                                        : TextBoxStyle::Hidden};
-  if (drawTextBox("Load File [L]", position, f_loadButtonWidth, style)) {
+  if (drawTextBox("Load File [L]", position, f_loadButtonWidth, TextBoxStyle::Button)) {
     m_highlightedButton = Button::LoadFileMenu;
   }
   position.x += f_loadButtonWidth;
-  style = m_model.initialPattern().empty() ? TextBoxStyle::Hidden
-                                           : TextBoxStyle::Button;
+  auto style{ m_model.initialPattern().empty() ? TextBoxStyle::Hidden
+                                           : TextBoxStyle::Button };
   if (drawTextBox("Save File [S]", position, f_saveFileButtonWidth, style)) {
     m_highlightedButton = Button::SaveFileMenu;
   }

@@ -82,10 +82,6 @@ void Controller::onMainModeMouseButtonPressed(
       m_model.pause();
       return;
     case View::Button::GeneratePopulation:
-      if (m_model.status() != Model::Status::Stopped &&
-          m_model.status() != Model::Status::ReadyToRun) {
-        return;
-      }
       m_model.generatePopulation(f_populationGenerationRate);
       return;
     case View::Button::Reset:
@@ -247,9 +243,15 @@ void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
 void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
   switch (event.code) {
     case sf::Keyboard::Up:
+      if (m_model.status() != Model::Status::Stopped) {
+        return;
+      }
       m_model.increaseSize();
       return;
     case sf::Keyboard::Down:
+      if (m_model.status() != Model::Status::Stopped) {
+        return;
+      }
       m_model.reduceSize();
       return;
     case sf::Keyboard::Left:
@@ -266,6 +268,10 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
       m_model.reset();
       return;
     case sf::Keyboard::C:
+      if (m_model.aliveCells().empty() &&
+        m_model.deadCells().empty()) {
+        return;
+      }
       m_model.clear();
       return;
     case sf::Keyboard::L:
