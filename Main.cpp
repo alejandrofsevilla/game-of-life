@@ -1,4 +1,3 @@
-#include <functional>
 #include <future>
 #include <thread>
 
@@ -21,18 +20,17 @@ int main() {
   Model model{f_modelMaxWidth, f_modelMaxHeight};
   View view{window, model};
   Controller controller{view, model};
-  auto scheduler{std::bind(&std::this_thread::sleep_for<int, std::milli>,
-                           f_defaultModelUpdatePeriod / model.speed())};
-  std::future<void> schedulerTask;
+  std::future<void> scheduler;
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
       controller.onEvent(event);
     }
     if (model.status() == Model::Status::Running) {
-      schedulerTask = std::async(scheduler);
+      scheduler = std::async(&std::this_thread::sleep_for<int, std::milli>,
+        f_defaultModelUpdatePeriod / model.speed());
       model.update();
-      schedulerTask.wait();
+      scheduler.wait();
     }
     view.update();
   }
