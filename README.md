@@ -1,3 +1,4 @@
+![LinuxWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Linux.yml/badge.svg) ![WindowsWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Windows.yml/badge.svg)
 # Game of Life
 
 A visual representation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), a cellular automata devised by the British mathematician John Horton Conway.
@@ -24,7 +25,7 @@ Conway's Game of Life is a zero-player game that evolves based on its initial st
 - **Control Simulation Speed [←/→].**
 - **Control Camara [Mouse Right].**
 
-## Installation and Usage
+## Build and Install
 
 1. Clone the repository to your local machine.
    ```bash

@@ -215,12 +215,12 @@ void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
   if (m_view.mode() != View::Mode::SaveFile) {
     return;
   }
-  if (!std::iswalpha(event.unicode) && !std::iswalnum(event.unicode)) {
+  auto character{static_cast<char>(event.unicode)};
+  if (!std::isalpha(character) && !std::isalnum(character)) {
     return;
   }
-  std::wstring ws{static_cast<wchar_t>(event.unicode)};
   auto name{m_view.fileNameToSave()};
-  name.append(ws.begin(), ws.end());
+  name.push_back(character);
   m_view.setFileNameToSave(name);
 }
 

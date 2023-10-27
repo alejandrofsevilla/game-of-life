@@ -2,3 +2,4 @@
 *.clang-format
 *.cache
 install
+patterns
