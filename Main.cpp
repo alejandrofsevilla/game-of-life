@@ -21,16 +21,19 @@ int main() {
   View view{window, model};
   Controller controller{view, model};
   std::future<void> scheduler;
+  auto isModelScheduled{ true };
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
       controller.onEvent(event);
     }
-    if (model.status() == Model::Status::Running) {
-      scheduler = std::async(&std::this_thread::sleep_for<int, std::milli>,
-                             f_defaultModelUpdatePeriod / model.speed());
+    if (model.status() == Model::Status::Running && isModelScheduled) {
+      scheduler = std::async([&isModelScheduled, &model] () {
+        isModelScheduled = false;
+        std::this_thread::sleep_for(f_defaultModelUpdatePeriod / model.speed());
+        isModelScheduled = true;
+      });
       model.update();
-      scheduler.wait();
     }
     view.update();
   }
