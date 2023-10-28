@@ -1,7 +1,7 @@
 # ![LinuxWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Linux.yml/badge.svg) ![WindowsWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Windows.yml/badge.svg)
 # Game of Life
 
-A visual representation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), a cellular automata devised by the British mathematician John Horton Conway.
+A visual representation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), a type of cellular automata invented by the British mathematician John Horton Conway in 1970.
 
 ![ezgif-4-ffe8b51cf1](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/2f0afaf2-a0fe-45b1-b5d5-be2378734f2b)
 
@@ -22,8 +22,7 @@ Conway's Game of Life is a zero-player game that evolves based on its initial st
   Fill the grid with a random pattern of living cells.
 - **Reset [R].**\
   Reset active pattern to its initial configuration.
-- **Clear Grid [G].**\
-  Removes all living and dead cells from grid.
+- **Clear Grid [G].**
 - **Change Grid Size [Up/Down].**\
   Maximum grid size currently set to 960x490 cells.
 - **Control Zoom [Mouse Wheel].**
