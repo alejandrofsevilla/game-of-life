@@ -103,7 +103,7 @@ std::set<Cell> loadPattern(const std::string &name) {
   return map(pattern);
 }
 
-void savePattern(const std::string &name, const std::set<Cell> pattern) {
+void savePattern(const std::string &name, const std::set<Cell>& pattern) {
   if (pattern.empty()) {
     return;
   }

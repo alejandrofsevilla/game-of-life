@@ -195,7 +195,7 @@ void View::drawLoadFileScreen() {
     auto screenMiddleHeight{windowSize.y * .5f};
     position.x = f_frameVerticalThickness + f_textBoxOutlineThickness;
     position.y = screenMiddleHeight;
-    drawTextBox("No file found in patterns directory.", position,
+    drawTextBox("No files found in patterns directory.", position,
                 windowSize.x - 2 * f_frameVerticalThickness,
                 TextBoxStyle::Simple);
     return;
