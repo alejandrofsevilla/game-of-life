@@ -186,14 +186,13 @@ void Model::update() {
     }
     if (aliveNeighboursCount < f_underpopulationThreshold ||
         aliveNeighboursCount > f_overpopulationThreshold) {
-      updatedAliveCells.erase(cell);
-      m_deadCells.insert(cell);
+      m_deadCells.insert(updatedAliveCells.extract(cell));
       isUpdated = true;
     }
   }
   for (const auto& value : deadCellsWithAliveNeighboursCount) {
     if (value.second == f_reproductionValue) {
-      m_deadCells.erase(value.first);
+      m_deadCells.extract(value.first);
       updatedAliveCells.insert(value.first);
     }
     isUpdated = true;

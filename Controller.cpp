@@ -44,16 +44,16 @@ void Controller::onMainModeMouseButtonPressed(
   if (event.button != sf::Mouse::Button::Left) {
     return;
   }
-  auto cell{m_view.pixelToCellPosition({event.x, event.y})};
+  auto cell{m_view.highlightedCell()};
   if (cell) {
     onMouseButtonPressedOnCell({cell->x, cell->y});
     return;
   }
   auto highlightedButton{m_view.highlightedButton()};
-  if (!highlightedButton) {
+  if (highlightedButton == View::Button::None) {
     return;
   }
-  switch (highlightedButton.value()) {
+  switch (highlightedButton) {
     case View::Button::Quit:
       m_view.closeWindow();
       return;
@@ -115,8 +115,8 @@ void Controller::onLoadFileModeMouseButtonPressed(
     return;
   }
   auto highlightedButton{m_view.highlightedButton()};
-  if (highlightedButton) {
-    switch (highlightedButton.value()) {
+  if (highlightedButton != View::Button::None) {
+    switch (highlightedButton) {
       case View::Button::Back:
         m_view.setMode(View::Mode::Main);
         return;
@@ -132,10 +132,10 @@ void Controller::onSaveFileModeMouseButtonPressed(
     return;
   }
   auto highlightedButton{m_view.highlightedButton()};
-  if (!highlightedButton) {
+  if (highlightedButton == View::Button::None) {
     return;
   }
-  switch (highlightedButton.value()) {
+  switch (highlightedButton) {
     case View::Button::Back:
       m_view.setMode(View::Mode::Main);
       return;
@@ -388,7 +388,7 @@ void Controller::onMouseButtonPressedOnCell(const Cell &cell) {
       m_model.status() != Model::Status::ReadyToRun) {
     return;
   }
-  auto cells{m_model.aliveCells()};
+  auto& cells{m_model.aliveCells()};
   auto match{cells.find(cell)};
   if (match != cells.end()) {
     m_model.removeCell(cell);

@@ -28,7 +28,8 @@ class View {
     GeneratePopulation,
     IncreaseSize,
     ReduceSize,
-    Back
+    Back,
+    None
   };
 
   View(sf::RenderWindow &window, Model &model);
@@ -47,7 +48,6 @@ class View {
 
   Mode mode() const;
   Button highlightedButton() const;
-  Edit highlightedEdit() const;
   std::optional<std::string> highlightedLoadFileMenuItem() const;
   std::optional<Cell> highlightedCell() const;
   const std::string &fileNameToSave() const;
@@ -81,7 +81,7 @@ class View {
   sf::RenderWindow &m_window;
   sf::Vector2f m_viewOffset;
   sf::Font m_font;
-  std::optional<View::Button> m_highlightedButton;
+  View::Button m_highlightedButton;
   std::optional<std::string> m_highlightedLoadFileMenuItem;
   int m_zoomLevel;
   int m_scrollPos;

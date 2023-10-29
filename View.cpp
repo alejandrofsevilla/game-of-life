@@ -78,7 +78,7 @@ View::View(sf::RenderWindow &window, Model &model)
 
 void View::update() {
   m_window.clear();
-  m_highlightedButton.reset();
+  m_highlightedButton = Button::None;
   m_highlightedLoadFileMenuItem.reset();
   switch (m_mode) {
     case Mode::SaveFile:
@@ -136,15 +136,11 @@ void View::setFileNameToSave(const std::string &name) {
 
 View::Mode View::mode() const { return m_mode; }
 
+View::Button View::highlightedButton() const { return m_highlightedButton; };
+
 std::optional<std::string> View::highlightedLoadFileMenuItem() const {
   return m_highlightedLoadFileMenuItem;
 }
-
-std::optional<View::Button> View::highlightedButton() const {
-  return m_highlightedButton;
-}
-
-View::Edit View::highlightedEdit() const { return m_highlightedEdit; }
 
 std::optional<Cell> View::highlightedCell() const {
   auto coord = m_window.mapPixelToCoords(sf::Mouse::getPosition());
@@ -277,12 +273,12 @@ void View::drawGrid() {
 
 void View::drawCells() {
   auto size{calculateCellSize()};
-  auto aliveCells{m_model.aliveCells()};
+  auto& aliveCells{m_model.aliveCells()};
   sf::RectangleShape rect{size};
   if (!aliveCells.empty()) {
     drawCells(aliveCells, f_livingCellColor);
   }
-  auto deadCells{m_model.deadCells()};
+  auto& deadCells{m_model.deadCells()};
   if (!deadCells.empty()) {
     drawCells(deadCells, f_deadCellColor);
   }
@@ -454,10 +450,12 @@ void View::drawCells(const std::set<Cell> &cells, const sf::Color &color) {
   rect.setFillColor(color);
   rect.setPosition(calculateCellPosition(*cells.begin()));
   auto lastItem{std::next(cells.cend(), -1)};
+  auto chunks{ 0 };
   for (auto it = cells.begin(); it != cells.end(); it++) {
     if (it == lastItem || it->y != std::next(it, 1)->y ||
         it->x != std::next(it, 1)->x - 1) {
       m_window.draw(rect);
+      chunks++;
       if (it != lastItem) {
         rect.setPosition(calculateCellPosition(*std::next(it, 1)));
         rect.setSize(size);
