@@ -46,9 +46,10 @@ class View {
   void setFileNameToSave(const std::string &name);
 
   Mode mode() const;
-  std::optional<View::Button> highlightedButton() const;
+  Button highlightedButton() const;
+  Edit highlightedEdit() const;
   std::optional<std::string> highlightedLoadFileMenuItem() const;
-  std::optional<sf::Vector2i> pixelToCellPosition(sf::Vector2i pixel) const;
+  std::optional<Cell> highlightedCell() const;
   const std::string &fileNameToSave() const;
 
  private:
@@ -59,18 +60,21 @@ class View {
   void drawSaveFileScreen();
   void drawFrame();
   void drawBackground();
-  void drawCells();
   void drawGrid();
+  void drawCells();
   void drawBottomLeftMenu();
   void drawBottomRightMenu();
   void drawTopLeftMenu();
   void drawTopRightMenu();
+  void drawCells(const std::set<Cell> &cells, const sf::Color &color);
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);
   void applyViewOffset(const sf::Vector2f &offset);
   void applyZoomLevel(int zoomLevel);
 
   sf::Vector2f calculateCellSize() const;
+  sf::Vector2f calculateCellPosition(const Cell &cell) const;
+  std::optional<Cell> cellAtCoord(sf::Vector2f coord) const;
 
   Model &m_model;
   View::Mode m_mode;
