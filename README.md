@@ -1,7 +1,7 @@
 # ![LinuxWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Linux.yml/badge.svg) ![WindowsWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Windows.yml/badge.svg)
 # Game of Life
 
-A visual representation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), a type of cellular automata invented by the British mathematician John Horton Conway in 1970.
+Desktop application using [SFML](https://www.sfml-dev.org/) to visualize [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), a type of cellular automata invented by the British mathematician John Horton Conway in 1970.
 
 ![ezgif-4-ffe8b51cf1](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/2f0afaf2-a0fe-45b1-b5d5-be2378734f2b)
 
