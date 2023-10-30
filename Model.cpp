@@ -161,7 +161,8 @@ void Model::generatePopulation(double density) {
 void Model::update() {
   // see: https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
   auto updatedAliveCells{m_aliveCells};
-  auto isUpdated{false};
+  auto isUpdated{ false };
+  Cell neighbour;
   std::map<Cell, int> deadCellsWithAliveNeighboursCount;
   for (const auto& cell : m_aliveCells) {
     auto aliveNeighboursCount{0};
@@ -169,15 +170,13 @@ void Model::update() {
       if (x < 0 || x >= m_width) {
         continue;
       }
+      neighbour.x = x;
       for (auto y = cell.y - 1; y <= cell.y + 1; y++) {
-        if (y < 0 || y >= m_height) {
+        if (y < 0 || y >= m_height || (x == cell.x && y == cell.y)) {
           continue;
         }
-        Cell neighbour{x, y};
-        if (neighbour == cell) {
-          continue;
-        }
-        if (m_aliveCells.count(neighbour) == 0) {
+        neighbour.y = y;
+        if (m_aliveCells.find(neighbour) == m_aliveCells.end()) {
           deadCellsWithAliveNeighboursCount[neighbour]++;
         } else {
           aliveNeighboursCount++;
