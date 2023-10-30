@@ -1,13 +1,12 @@
 # ![LinuxWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Linux.yml/badge.svg) ![WindowsWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Windows.yml/badge.svg)
 # Game of Life
 
-Desktop application using [SFML](https://www.sfml-dev.org/) to visualize [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), a type of cellular automata invented by the British mathematician John Horton Conway in 1970.
+Desktop application using [SFML](https://www.sfml-dev.org/) to visualize [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton).
 
-![ezgif-4-ffe8b51cf1](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/2f0afaf2-a0fe-45b1-b5d5-be2378734f2b)
+![v1 0 2](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/10e39bde-3700-42b9-80a7-d921e26b1065)
 
 ## About the Game of Life
-
-Conway's Game of Life is a zero-player game that evolves based on its initial state. The rules are simple yet give rise to complex patterns. Cells in a grid live, die, or multiply based on the following rules:
+Conway's Game is a cellular automata invented by the British mathematician John Horton Conway in 1970. It is a zero-player game that evolves based on its initial state. Cells in a grid live, die, or multiply based on the following rules:
 - Any live cell with fewer than two living neighbors dies (underpopulation).
 - Any live cell with two or three living neighbors lives on to the next generation.
 - Any live cell with more than three living neighbors dies (overpopulation).
@@ -18,10 +17,12 @@ Conway's Game of Life is a zero-player game that evolves based on its initial st
 - **Add/Remove Cells [Mouse Left].**
 - **Load/Save Patterns [L/S].**\
   Pattern files are stored in folder <em>/patterns</em> using [Run Length Encoded](https://conwaylife.com/wiki/Run_Length_Encoded) format. Example of pattern files can be found at [https://conwaylife.com/wiki](https://conwaylife.com/wiki).
-- **Generate Population [G].**\
+- **Populate [P].**\
   Fill the grid with a random pattern of living cells.
 - **Reset [R].**\
   Reset active pattern to its initial configuration.
+- **Rule [U].**\
+  Edit automata rules using [Golly notation](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#Notation_for_rules). Examples of life-like rules can be found at [https://conwaylife.com/wiki/List_of_Life-like_rules](https://conwaylife.com/wiki/List_of_Life-like_rules)
 - **Clear Grid [G].**
 - **Change Grid Size [Up/Down].**\
   Maximum grid size currently set to 960x490 cells.
