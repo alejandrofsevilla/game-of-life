@@ -11,7 +11,8 @@
 
 class View {
  public:
-  enum class Mode { Main, LoadFile, SaveFile };
+  enum class Mode { Main, LoadFile, SaveFile, EditRule };
+
   enum class Button {
     Quit,
     LoadFileMenu,
@@ -28,9 +29,12 @@ class View {
     GeneratePopulation,
     IncreaseSize,
     ReduceSize,
+    EditRule,
     Back,
     None
   };
+
+  enum class Edit { BirthRule, SurvivalRule, None };
 
   View(sf::RenderWindow &window, Model &model);
 
@@ -48,6 +52,7 @@ class View {
 
   Mode mode() const;
   Button highlightedButton() const;
+  Edit highlightedEdit() const;
   std::optional<std::string> highlightedLoadFileMenuItem() const;
   std::optional<Cell> highlightedCell() const;
   const std::string &fileNameToSave() const;
@@ -58,6 +63,8 @@ class View {
   void drawMainScreen();
   void drawLoadFileScreen();
   void drawSaveFileScreen();
+  void drawEditSurvivalRuleScreen();
+  void drawEditRuleScreen();
   void drawFrame();
   void drawBackground();
   void drawGrid();
@@ -81,7 +88,8 @@ class View {
   sf::RenderWindow &m_window;
   sf::Vector2f m_viewOffset;
   sf::Font m_font;
-  View::Button m_highlightedButton;
+  Button m_highlightedButton;
+  Edit m_highlightedEdit;
   std::optional<std::string> m_highlightedLoadFileMenuItem;
   int m_zoomLevel;
   int m_scrollPos;

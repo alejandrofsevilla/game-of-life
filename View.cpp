@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <sstream>
 
 #include "RleHelper.hpp"
 
@@ -42,16 +43,16 @@ constexpr auto f_textBoxTextVerticalPosition{12.f};
 constexpr auto f_startButtonWidth{180.f};
 constexpr auto f_resetButtonWidth{130.f};
 constexpr auto f_clearButtonWidth{130.f};
-constexpr auto f_generatePopButtonWidth{240.f};
+constexpr auto f_generatePopButtonWidth{160.f};
 constexpr auto f_addRemoveCellButtonWidth{280.f};
-constexpr auto f_dragViewButtonWidth{230.f};
-constexpr auto f_displayBoxWidth{110.f};
+constexpr auto f_dragViewButtonWidth{220.f};
+constexpr auto f_displayBoxWidth{100.f};
 constexpr auto f_generationButtonWidth{130.f};
 constexpr auto f_populationButtonWidth{130.f};
 constexpr auto f_plusMinusButtonWidth{50.f};
-constexpr auto f_speedButtonWidth{200.f};
-constexpr auto f_zoomButtonWidth{230.f};
-constexpr auto f_sizeButtonWidth{230.f};
+constexpr auto f_speedButtonWidth{190.f};
+constexpr auto f_zoomButtonWidth{210.f};
+constexpr auto f_sizeButtonWidth{210.f};
 constexpr auto f_quitButtonWidth{120.f};
 constexpr auto f_loadButtonWidth{140.f};
 constexpr auto f_saveFileButtonWidth{140.f};
@@ -60,6 +61,18 @@ constexpr auto f_saveMenuInfoButtonWidth{180.f};
 constexpr auto f_backButtonWidth{140.f};
 constexpr auto f_pageUpDownButtonWidth{350.f};
 constexpr auto f_scrollUpDownButtonWidth{280.f};
+constexpr auto f_ruleEditBoxWidth{240.f};
+constexpr auto f_ruleSimpleBoxWidth{120.f};
+constexpr auto f_editRuleMenuParenthesisWidth{20.f};
+constexpr auto f_editRuleMenuInfoButtonWidth{120.f};
+
+inline std::string toString(const std::set<int> &values) {
+  std::stringstream s;
+  for (const auto &val : values) {
+    s << val;
+  }
+  return s.str();
+}
 }  // namespace
 
 View::View(sf::RenderWindow &window, Model &model)
@@ -68,7 +81,8 @@ View::View(sf::RenderWindow &window, Model &model)
       m_window{window},
       m_viewOffset{f_frameVerticalThickness, f_frameHorizontalThickness},
       m_font{},
-      m_highlightedButton{},
+      m_highlightedButton{Button::None},
+      m_highlightedEdit{Edit::None},
       m_highlightedLoadFileMenuItem{},
       m_zoomLevel{f_defaultZoomLevel},
       m_scrollPos{},
@@ -81,6 +95,9 @@ void View::update() {
   m_highlightedButton = Button::None;
   m_highlightedLoadFileMenuItem.reset();
   switch (m_mode) {
+    case Mode::EditRule:
+      drawEditRuleScreen();
+      break;
     case Mode::SaveFile:
       drawSaveFileScreen();
       break;
@@ -136,11 +153,13 @@ void View::setFileNameToSave(const std::string &name) {
 
 View::Mode View::mode() const { return m_mode; }
 
-View::Button View::highlightedButton() const { return m_highlightedButton; };
-
 std::optional<std::string> View::highlightedLoadFileMenuItem() const {
   return m_highlightedLoadFileMenuItem;
 }
+
+View::Button View::highlightedButton() const { return m_highlightedButton; }
+
+View::Edit View::highlightedEdit() const { return m_highlightedEdit; }
 
 std::optional<Cell> View::highlightedCell() const {
   auto coord = m_window.mapPixelToCoords(sf::Mouse::getPosition());
@@ -228,6 +247,52 @@ void View::drawSaveFileScreen() {
               TextBoxStyle::Simple);
 }
 
+void View::drawEditRuleScreen() {
+  sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
+                        f_textBoxOutlineThickness};
+  if (drawTextBox("Back [Esc]", position, f_backButtonWidth,
+                  TextBoxStyle::Button)) {
+    m_highlightedButton = Button::Back;
+  }
+  position.x += f_backButtonWidth;
+  auto &windowSize{m_window.getView().getSize()};
+  auto screenMiddleHeight{windowSize.y * .5f};
+  position.x = f_frameVerticalThickness + f_textBoxOutlineThickness;
+  position.y = screenMiddleHeight;
+  auto buttonWidth{(windowSize.x - f_editRuleMenuParenthesisWidth) / 2 -
+                   f_textBoxOutlineThickness};
+  std::string rule{"B"};
+  rule.append(toString(m_model.birthRule()));
+  auto style{m_highlightedEdit == Edit::BirthRule ? TextBoxStyle::Display
+                                                  : TextBoxStyle::Button};
+  auto isBirthRuleEditHighlighted{
+      drawTextBox(rule, position, buttonWidth, style)};
+  if (isBirthRuleEditHighlighted) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      m_highlightedEdit = Edit::BirthRule;
+    }
+  }
+  position.x += buttonWidth;
+  drawTextBox("/", position, f_editRuleMenuParenthesisWidth,
+              TextBoxStyle::Simple);
+  position.x += f_editRuleMenuParenthesisWidth;
+  rule = "S";
+  rule.append(toString(m_model.survivalRule()));
+  style = m_highlightedEdit == Edit::SurvivalRule ? TextBoxStyle::Display
+                                                  : TextBoxStyle::Button;
+  auto isSurvivalRuleEditHighlighted{
+      drawTextBox(rule, position, buttonWidth, style)};
+  if (isSurvivalRuleEditHighlighted) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      m_highlightedEdit = Edit::SurvivalRule;
+    }
+  }
+  position.x = f_textBoxOutlineThickness;
+  position.y -= f_textBoxHeight;
+  drawTextBox("Click to edit...", position, f_editRuleMenuInfoButtonWidth,
+              TextBoxStyle::Simple);
+}
+
 void View::drawFrame() {
   auto &windowSize{m_window.getView().getSize()};
   sf::RectangleShape rect{{windowSize.x, f_frameHorizontalThickness}};
@@ -273,12 +338,12 @@ void View::drawGrid() {
 
 void View::drawCells() {
   auto size{calculateCellSize()};
-  auto& aliveCells{m_model.aliveCells()};
+  auto &aliveCells{m_model.aliveCells()};
   sf::RectangleShape rect{size};
   if (!aliveCells.empty()) {
     drawCells(aliveCells, f_livingCellColor);
   }
-  auto& deadCells{m_model.deadCells()};
+  auto &deadCells{m_model.deadCells()};
   if (!deadCells.empty()) {
     drawCells(deadCells, f_deadCellColor);
   }
@@ -332,8 +397,7 @@ void View::drawBottomLeftMenu() {
            m_model.status() == Model::Status::Stopped)
               ? TextBoxStyle::Button
               : TextBoxStyle::Hidden;
-  if (drawTextBox("Generate Population [G]", position, f_generatePopButtonWidth,
-                  style)) {
+  if (drawTextBox("Populate [P]", position, f_generatePopButtonWidth, style)) {
     m_highlightedButton = Button::GeneratePopulation;
   }
   style = (m_model.status() == Model::Status::ReadyToRun ||
@@ -341,10 +405,10 @@ void View::drawBottomLeftMenu() {
               ? TextBoxStyle::Simple
               : TextBoxStyle::Hidden;
   position.x += f_generatePopButtonWidth;
-  drawTextBox("Add/RemoveCell [Mouse Left]", position,
-              f_addRemoveCellButtonWidth, style);
+  drawTextBox("Add/RemoveCell [Mouse 1]", position, f_addRemoveCellButtonWidth,
+              style);
   position.x += f_addRemoveCellButtonWidth;
-  drawTextBox("Drag View [Mouse Right]", position, f_dragViewButtonWidth,
+  drawTextBox("Drag View [Mouse 2]", position, f_dragViewButtonWidth,
               TextBoxStyle::Simple);
 }
 
@@ -365,6 +429,24 @@ void View::drawBottomRightMenu() {
   position.x -= f_generationButtonWidth;
   drawTextBox("Generation", position, f_generationButtonWidth,
               TextBoxStyle::Simple);
+  position.x -= f_ruleEditBoxWidth;
+  std::string rule("B");
+  rule.append(toString(m_model.birthRule()));
+  rule.append("/S");
+  rule.append(toString(m_model.survivalRule()));
+  auto style{(m_model.status() != Model::Status::Stopped &&
+              m_model.status() != Model::Status::ReadyToRun)
+                 ? TextBoxStyle::Hidden
+                 : TextBoxStyle::Button};
+  if (drawTextBox(rule, position, f_ruleEditBoxWidth, style)) {
+    m_highlightedButton = Button::EditRule;
+  }
+  position.x -= f_ruleSimpleBoxWidth;
+  style = (m_model.status() != Model::Status::Stopped &&
+           m_model.status() != Model::Status::ReadyToRun)
+              ? TextBoxStyle::Hidden
+              : TextBoxStyle::Simple;
+  drawTextBox("Rule [U]:", position, f_ruleSimpleBoxWidth, style);
 }
 
 void View::drawTopLeftMenu() {
@@ -405,7 +487,7 @@ void View::drawTopRightMenu() {
     m_highlightedButton = Button::SlowDown;
   }
   position.x -= f_speedButtonWidth;
-  drawTextBox("Speed [Left/Right]", position, f_speedButtonWidth,
+  drawTextBox("Speed [Left/Right]:", position, f_speedButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
   drawTextBox(
@@ -422,7 +504,7 @@ void View::drawTopRightMenu() {
     m_highlightedButton = Button::ZoomOut;
   }
   position.x -= f_zoomButtonWidth;
-  drawTextBox("Zoom [Mouse Wheel]", position, f_zoomButtonWidth,
+  drawTextBox("Zoom [Mouse Wheel]:", position, f_zoomButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
   drawTextBox(
@@ -450,12 +532,10 @@ void View::drawCells(const std::set<Cell> &cells, const sf::Color &color) {
   rect.setFillColor(color);
   rect.setPosition(calculateCellPosition(*cells.begin()));
   auto lastItem{std::next(cells.cend(), -1)};
-  auto chunks{ 0 };
   for (auto it = cells.begin(); it != cells.end(); it++) {
     if (it == lastItem || it->y != std::next(it, 1)->y ||
         it->x != std::next(it, 1)->x - 1) {
       m_window.draw(rect);
-      chunks++;
       if (it != lastItem) {
         rect.setPosition(calculateCellPosition(*std::next(it, 1)));
         rect.setSize(size);

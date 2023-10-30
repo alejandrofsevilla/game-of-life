@@ -10,7 +10,7 @@ constexpr auto f_windowTitle{"Game Of Life"};
 constexpr auto f_windowStyle{sf::Style::Fullscreen};
 constexpr auto f_modelMaxWidth{960};
 constexpr auto f_modelMaxHeight{490};
-constexpr auto f_defaultModelUpdatePeriod{std::chrono::milliseconds{500}};
+constexpr auto f_defaultModelUpdatePeriod{std::chrono::milliseconds{300}};
 }  // namespace
 
 int main() {
@@ -21,14 +21,14 @@ int main() {
   View view{window, model};
   Controller controller{view, model};
   std::future<void> scheduler;
-  auto isModelScheduled{ true };
+  auto isModelScheduled{true};
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
       controller.onEvent(event);
     }
     if (model.status() == Model::Status::Running && isModelScheduled) {
-      scheduler = std::async([&isModelScheduled, &model] () {
+      scheduler = std::async([&isModelScheduled, &model]() {
         isModelScheduled = false;
         std::this_thread::sleep_for(f_defaultModelUpdatePeriod / model.speed());
         isModelScheduled = true;

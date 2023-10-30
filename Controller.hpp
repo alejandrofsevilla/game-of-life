@@ -20,6 +20,8 @@ class Controller {
       const sf::Event::MouseButtonEvent &event);
   void onSaveFileModeMouseButtonPressed(
       const sf::Event::MouseButtonEvent &event);
+  void onEditRuleModeMouseButtonPressed(
+      const sf::Event::MouseButtonEvent &event);
   void onMouseWheelScrolled(const sf::Event::MouseWheelScrollEvent &event);
   void onMainModeMouseWheelScrolled(
       const sf::Event::MouseWheelScrollEvent &event);
@@ -31,7 +33,9 @@ class Controller {
   void onMainModeKeyPressed(const sf::Event::KeyEvent &event);
   void onLoadFileModeKeyPressed(const sf::Event::KeyEvent &event);
   void onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event);
+  void onEditRuleModeKeyPressed(const sf::Event::KeyEvent &event);
   void onMouseButtonPressedOnCell(const Cell &cell);
+  void onEditRuleModeExit();
 
   View &m_view;
   Model &m_model;

@@ -19,9 +19,11 @@ class Model {
   int width() const;
   int height() const;
   int generation() const;
-  const std::set<Cell>& aliveCells();
-  const std::set<Cell>& deadCells();
+  const std::set<Cell>& aliveCells() const;
+  const std::set<Cell>& deadCells() const;
   const std::set<Cell>& initialPattern() const;
+  const std::set<int>& survivalRule() const;
+  const std::set<int>& birthRule() const;
 
   void update();
   void run();
@@ -36,6 +38,8 @@ class Model {
   void insertCell(const Cell& cell);
   void removeCell(const Cell& cell);
   void insertPattern(const std::set<Cell>& pattern);
+  void setSurvivalRule(const std::set<int>& rule);
+  void setBirthRule(const std::set<int>& rule);
 
  private:
   void updateStatus();
@@ -55,6 +59,8 @@ class Model {
   std::set<Cell> m_initialPattern;
   std::set<Cell> m_aliveCells;
   std::set<Cell> m_deadCells;
+  std::set<int> m_survivalRule;
+  std::set<int> m_birthRule;
 };
 
 #endif

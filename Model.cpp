@@ -1,6 +1,7 @@
 #include "Model.hpp"
 
 #include <algorithm>
+#include <initializer_list>
 #include <map>
 #include <random>
 
@@ -14,6 +15,8 @@ constexpr auto f_minSpeed{1};
 constexpr auto f_defaultSize{5};
 constexpr auto f_maxSize{5};
 constexpr auto f_minSize{1};
+constexpr std::initializer_list<int> f_conwaysBirthRule{3};
+constexpr std::initializer_list<int> f_conwaysSurvivalRule{2, 3};
 
 inline int generateRandomValue(int min, int max) {
   std::random_device rd;
@@ -34,7 +37,9 @@ Model::Model(int maxWidth, int maxHeight)
       m_generation{},
       m_initialPattern{},
       m_aliveCells{},
-      m_deadCells{} {}
+      m_deadCells{},
+      m_survivalRule{f_conwaysSurvivalRule},
+      m_birthRule{f_conwaysBirthRule} {}
 
 Model::Status Model::status() const { return m_status; }
 
@@ -52,11 +57,15 @@ int Model::height() const { return m_height; }
 
 int Model::generation() const { return m_generation; }
 
-const std::set<Cell>& Model::aliveCells() { return m_aliveCells; }
+const std::set<Cell>& Model::aliveCells() const { return m_aliveCells; }
 
-const std::set<Cell>& Model::deadCells() { return m_deadCells; }
+const std::set<Cell>& Model::deadCells() const { return m_deadCells; }
 
 const std::set<Cell>& Model::initialPattern() const { return m_initialPattern; }
+
+const std::set<int>& Model::survivalRule() const { return m_survivalRule; }
+
+const std::set<int>& Model::birthRule() const { return m_birthRule; }
 
 void Model::run() {
   switch (m_status) {
@@ -104,6 +113,26 @@ void Model::reduceSize() {
   m_height = calculateHeight();
 }
 
+void Model::insertCell(const Cell& cell) {
+  if (cell.x > m_width || cell.y > m_height) {
+    return;
+  }
+  m_aliveCells.insert(cell);
+  m_deadCells.erase(cell);
+  m_initialPattern.insert(cell);
+  updateStatus();
+}
+
+void Model::removeCell(const Cell& cell) {
+  if (cell.x > m_width || cell.y > m_height) {
+    return;
+  }
+  m_aliveCells.erase(cell);
+  m_deadCells.erase(cell);
+  m_initialPattern.erase(cell);
+  updateStatus();
+}
+
 void Model::insertPattern(const std::set<Cell>& pattern) {
   auto mostRightElement{
       std::max_element(pattern.cbegin(), pattern.cend(),
@@ -128,24 +157,10 @@ void Model::insertPattern(const std::set<Cell>& pattern) {
   }
 }
 
-void Model::insertCell(const Cell& cell) {
-  if (cell.x > m_width || cell.y > m_height) {
-    return;
-  }
-  m_aliveCells.insert(cell);
-  m_deadCells.erase(cell);
-  m_initialPattern.insert(cell);
-  updateStatus();
-}
+void Model::setBirthRule(const std::set<int>& rule) { m_birthRule = rule; }
 
-void Model::removeCell(const Cell& cell) {
-  if (cell.x > m_width || cell.y > m_height) {
-    return;
-  }
-  m_aliveCells.erase(cell);
-  m_deadCells.erase(cell);
-  m_initialPattern.erase(cell);
-  updateStatus();
+void Model::setSurvivalRule(const std::set<int>& rule) {
+  m_survivalRule = rule;
 }
 
 void Model::generatePopulation(double density) {
@@ -161,7 +176,7 @@ void Model::generatePopulation(double density) {
 void Model::update() {
   // see: https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
   auto updatedAliveCells{m_aliveCells};
-  auto isUpdated{ false };
+  auto isUpdated{false};
   Cell neighbour;
   std::map<Cell, int> deadCellsWithAliveNeighboursCount;
   for (const auto& cell : m_aliveCells) {
@@ -183,15 +198,14 @@ void Model::update() {
         }
       }
     }
-    if (aliveNeighboursCount < f_underpopulationThreshold ||
-        aliveNeighboursCount > f_overpopulationThreshold) {
+    if (m_survivalRule.count(aliveNeighboursCount) == 0) {
       m_deadCells.insert(updatedAliveCells.extract(cell));
       isUpdated = true;
     }
   }
   for (const auto& value : deadCellsWithAliveNeighboursCount) {
-    if (value.second == f_reproductionValue) {
-      m_deadCells.extract(value.first);
+    if (m_birthRule.count(value.second) > 0) {
+      m_deadCells.erase(value.first);
       updatedAliveCells.insert(value.first);
     }
     isUpdated = true;

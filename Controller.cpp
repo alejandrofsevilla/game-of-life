@@ -96,6 +96,9 @@ void Controller::onMainModeMouseButtonPressed(
     case View::Button::ReduceSize:
       m_model.reduceSize();
       return;
+    case View::Button::EditRule:
+      m_view.setMode(View::Mode::EditRule);
+      return;
     default:
       return;
   }
@@ -151,6 +154,24 @@ void Controller::onSaveFileModeMouseButtonPressed(
   }
 }
 
+void Controller::onEditRuleModeMouseButtonPressed(
+    const sf::Event::MouseButtonEvent &event) {
+  if (event.button != sf::Mouse::Button::Left) {
+    return;
+  }
+  auto highlightedButton{m_view.highlightedButton()};
+  if (highlightedButton == View::Button::None) {
+    return;
+  }
+  switch (highlightedButton) {
+    case View::Button::Back:
+      onEditRuleModeExit();
+      return;
+    default:
+      return;
+  }
+}
+
 void Controller::onMouseButtonPressed(
     const sf::Event::MouseButtonEvent &event) {
   switch (m_view.mode()) {
@@ -162,6 +183,9 @@ void Controller::onMouseButtonPressed(
       return;
     case View::Mode::SaveFile:
       onSaveFileModeMouseButtonPressed(event);
+      return;
+    case View::Mode::EditRule:
+      onEditRuleModeMouseButtonPressed(event);
       return;
     default:
       return;
@@ -208,20 +232,47 @@ void Controller::onMouseMoved(const sf::Event::MouseMoveEvent &event) {
 }
 
 void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
-  if (!m_isSaveFileMenuReady) {
-    m_isSaveFileMenuReady = true;
-    return;
+  switch (m_view.mode()) {
+    case View::Mode::SaveFile: {
+      if (!m_isSaveFileMenuReady) {
+        m_isSaveFileMenuReady = true;
+        return;
+      }
+      if (m_view.mode() != View::Mode::SaveFile) {
+        return;
+      }
+      auto character{static_cast<char>(event.unicode)};
+      if (!std::isalpha(character) && !std::isalnum(character)) {
+        return;
+      }
+      auto name{m_view.fileNameToSave()};
+      name.push_back(character);
+      m_view.setFileNameToSave(name);
+      return;
+    }
+    case View::Mode::EditRule: {
+      auto character{static_cast<char>(event.unicode)};
+      if (!std::isalnum(character)) {
+        return;
+      }
+      auto value{std::atoi(&character)};
+      if (value == 0) {
+        return;
+      }
+      if (m_view.highlightedEdit() == View::Edit::BirthRule) {
+        auto rule{m_model.birthRule()};
+        rule.insert(value);
+        m_model.setBirthRule(rule);
+      } else if (m_view.highlightedEdit() == View::Edit::SurvivalRule) {
+        auto rule{m_model.survivalRule()};
+        rule.insert(value);
+        m_model.setSurvivalRule(rule);
+      }
+      return;
+    }
+    default:
+      return;
   }
-  if (m_view.mode() != View::Mode::SaveFile) {
-    return;
-  }
-  auto character{static_cast<char>(event.unicode)};
-  if (!std::isalpha(character) && !std::isalnum(character)) {
-    return;
-  }
-  auto name{m_view.fileNameToSave()};
-  name.push_back(character);
-  m_view.setFileNameToSave(name);
 }
 
 void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
@@ -232,6 +283,9 @@ void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
     case View::Mode::SaveFile:
       onSaveFileModeKeyPressed(event);
       return;
+    case View::Mode::EditRule:
+      onEditRuleModeKeyPressed(event);
+      break;
     case View::Mode::Main:
       onMainModeKeyPressed(event);
       break;
@@ -283,7 +337,7 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
       m_isSaveFileMenuReady = false;
       m_view.setMode(View::Mode::SaveFile);
       return;
-    case sf::Keyboard::G:
+    case sf::Keyboard::P:
       if (m_model.status() != Model::Status::Stopped &&
           m_model.status() != Model::Status::ReadyToRun) {
         return;
@@ -292,6 +346,13 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
       return;
     case sf::Keyboard::Escape:
       m_view.closeWindow();
+      return;
+    case sf::Keyboard::U:
+      if (m_model.status() != Model::Status::Stopped &&
+          m_model.status() != Model::Status::ReadyToRun) {
+        return;
+      }
+      m_view.setMode(View::Mode::EditRule);
       return;
     case sf::Keyboard::Space:
       switch (m_model.status()) {
@@ -383,12 +444,34 @@ void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event) {
   }
 }
 
+void Controller::onEditRuleModeKeyPressed(const sf::Event::KeyEvent &event) {
+  switch (event.code) {
+    case sf::Keyboard::Escape:
+      onEditRuleModeExit();
+      return;
+    case sf::Keyboard::BackSpace: {
+      if (m_view.highlightedEdit() == View::Edit::BirthRule) {
+        auto rule{m_model.birthRule()};
+        rule.clear();
+        m_model.setBirthRule(rule);
+      } else if (m_view.highlightedEdit() == View::Edit::SurvivalRule) {
+        auto rule{m_model.survivalRule()};
+        rule.clear();
+        m_model.setSurvivalRule(rule);
+      }
+    }
+    default:
+      return;
+  }
+  return;
+}
+
 void Controller::onMouseButtonPressedOnCell(const Cell &cell) {
   if (m_model.status() != Model::Status::Stopped &&
       m_model.status() != Model::Status::ReadyToRun) {
     return;
   }
-  auto& cells{m_model.aliveCells()};
+  auto &cells{m_model.aliveCells()};
   auto match{cells.find(cell)};
   if (match != cells.end()) {
     m_model.removeCell(cell);
@@ -396,4 +479,14 @@ void Controller::onMouseButtonPressedOnCell(const Cell &cell) {
     m_model.insertCell(cell);
   }
   return;
+}
+
+void Controller::onEditRuleModeExit() {
+  m_view.setMode(View::Mode::Main);
+  if (m_model.survivalRule().empty()) {
+    m_model.setSurvivalRule({1});
+  }
+  if (m_model.birthRule().empty()) {
+    m_model.setBirthRule({1});
+  }
 }

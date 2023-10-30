@@ -103,7 +103,7 @@ std::set<Cell> loadPattern(const std::string &name) {
   return map(pattern);
 }
 
-void savePattern(const std::string &name, const std::set<Cell>& pattern) {
+void savePattern(const std::string &name, const std::set<Cell> &pattern) {
   if (pattern.empty()) {
     return;
   }
@@ -132,8 +132,6 @@ void savePattern(const std::string &name, const std::set<Cell>& pattern) {
     }
     auto columnsSkipped{col - prevCol};
     auto rowsSkipped{row - prevRow};
-    auto next{it};
-    std::advance(next, 1);
     if (rowsSkipped > 0 || columnsSkipped > 1) {
       if (consecutiveCells > 0) {
         if (consecutiveCells > 1) {
