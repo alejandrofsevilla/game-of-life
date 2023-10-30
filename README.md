@@ -22,7 +22,7 @@ Conway's Game is a cellular automata invented by the British mathematician John 
 - **Reset [R].**\
   Reset active pattern to its initial configuration.
 - **Rule [U].**\
-  Edit automata rules using [Golly notation](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#Notation_for_rules). Examples of life-like rules can be found at [https://conwaylife.com/wiki/List_of_Life-like_rules](https://conwaylife.com/wiki/List_of_Life-like_rules)
+  Edit automata rules using [Golly notation](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#Notation_for_rules). Examples of life-like rules can be found at [https://conwaylife.com/wiki/List_of_Life-like_rules](https://conwaylife.com/wiki/List_of_Life-like_rules).
 - **Clear Grid [G].**
 - **Change Grid Size [Up/Down].**\
   Maximum grid size currently set to 960x490 cells.
