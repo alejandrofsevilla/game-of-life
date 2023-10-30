@@ -421,13 +421,13 @@ void View::drawBottomRightMenu() {
   drawTextBox(std::to_string(m_model.aliveCells().size()), position,
               f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_populationButtonWidth;
-  drawTextBox("Population", position, f_populationButtonWidth,
+  drawTextBox("Population:", position, f_populationButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_displayBoxWidth;
   drawTextBox(std::to_string(m_model.generation()), position, f_displayBoxWidth,
               TextBoxStyle::Display);
   position.x -= f_generationButtonWidth;
-  drawTextBox("Generation", position, f_generationButtonWidth,
+  drawTextBox("Generation:", position, f_generationButtonWidth,
               TextBoxStyle::Simple);
   position.x -= f_ruleEditBoxWidth;
   std::string rule("B");
