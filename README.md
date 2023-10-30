@@ -1,7 +1,7 @@
 # ![LinuxWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Linux.yml/badge.svg) ![WindowsWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Windows.yml/badge.svg)
 # Game of Life
 
-Desktop application using [SFML](https://www.sfml-dev.org/) to visualize [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton).
+GUI application using [SFML](https://www.sfml-dev.org/) to visualize [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton).
 
 ![v1 0 2](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/10e39bde-3700-42b9-80a7-d921e26b1065)
 
@@ -29,7 +29,7 @@ There are in total 2^18 possible life-like rules that can be studied.
 - **Reset [R].**\
   Reset active pattern to its initial configuration.
 - **Rule [U].**\
-  Edit automata rules using [Golly notation](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#Notation_for_rules). Examples of life-like rules can be found at [https://conwaylife.com/wiki/List_of_Life-like_rules](https://conwaylife.com/wiki/List_of_Life-like_rules).
+  Edit automata rules using [Golly notation](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#Notation_for_rules). The default value corresponds to that of the Conway´s Game Of Life, denoted B3/S23. A list other of life-like rules can be found at [https://conwaylife.com/wiki/List_of_Life-like_rules](https://conwaylife.com/wiki/List_of_Life-like_rules).
 - **Clear Grid [G].**
 - **Change Grid Size [Up/Down].**\
   Maximum grid size currently set to 960x490 cells.
