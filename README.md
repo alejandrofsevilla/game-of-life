@@ -12,6 +12,13 @@ Conway's Game is a cellular automata invented by the British mathematician John 
 - Any live cell with more than three living neighbors dies (overpopulation).
 - Any dead cell with exactly three living neighbors becomes a living cell (reproduction).
 
+Other Cellular automata are considered Life-like, when they present a similar behaviour to Conway's Game of Life and meet the following criteria:
+- The array of cells of the automaton has two dimensions.
+- Each cell of the automaton has two states.
+- The neighborhood of each cell is the [Moore neighborhood](https://en.wikipedia.org/wiki/Moore_neighborhood).
+- In each time step of the automaton, the new state of a cell can be expressed as a function of the number of adjacent cells that are in the alive state and of the cell's own state.
+  
+There are in total 2^18 possible life-like rules that can be studied.
 ## Features
 
 - **Add/Remove Cells [Mouse Left].**
