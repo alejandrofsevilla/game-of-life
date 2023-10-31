@@ -20,15 +20,18 @@ const auto f_clickedButtonTextColor{sf::Color::White};
 const auto f_highlightedButtonFilledColor{sf::Color::White};
 const auto f_highlightedButtonOutlineColor{sf::Color::White};
 const auto f_highlightedButtonTextColor{sf::Color::Black};
-const auto f_unclickedButtonFillColor{sf::Color{40, 40, 40}};
-const auto f_unclickedButtonOutlineColor{sf::Color::Black};
-const auto f_unclickedButtonTextColor{sf::Color::White};
+const auto f_buttonFillColor{sf::Color{40, 40, 40}};
+const auto f_buttonOutlineColor{sf::Color::Black};
+const auto f_buttonTextColor{sf::Color::White};
 const auto f_displayTextBoxFillColor{sf::Color::Black};
 const auto f_displayTextBoxOutlineColor{sf::Color::White};
 const auto f_displayTextBoxTextFillColor{sf::Color::White};
 const auto f_hiddenTextBoxFillColor{sf::Color::Black};
 const auto f_hiddenTextBoxOutlineColor{sf::Color::Black};
 const auto f_hiddenTextBoxTextColor{sf::Color{80, 80, 80}};
+const auto f_hiddenButtonFillColor{sf::Color{30, 30, 30}};
+const auto f_hiddenButtonOutlineColor{sf::Color::Black};
+const auto f_hiddenButtonTextColor{sf::Color{80, 80, 80}};
 constexpr auto f_fontPath{"../resources/futura.ttf"};
 constexpr auto f_frameHorizontalThickness{50.f};
 constexpr auto f_frameVerticalThickness{0.f};
@@ -40,31 +43,19 @@ constexpr auto f_minZoomLevel{1};
 constexpr auto f_maxZoomLevel{10};
 constexpr auto f_zoomSensibility{1};
 constexpr auto f_textBoxTextVerticalPosition{12.f};
-constexpr auto f_startButtonWidth{180.f};
-constexpr auto f_resetButtonWidth{130.f};
-constexpr auto f_clearButtonWidth{130.f};
-constexpr auto f_generatePopButtonWidth{160.f};
-constexpr auto f_addRemoveCellButtonWidth{280.f};
-constexpr auto f_dragViewButtonWidth{220.f};
-constexpr auto f_displayBoxWidth{100.f};
-constexpr auto f_generationButtonWidth{130.f};
-constexpr auto f_populationButtonWidth{130.f};
+constexpr auto f_defaultButtonWidth{162.f};
+constexpr auto f_addRemoveCellTextWidth{290.f};
+constexpr auto f_dragViewTextWidth{240.f};
+constexpr auto f_zoomTextWidth{235.f};
+constexpr auto f_displayBoxWidth{125.f};
 constexpr auto f_plusMinusButtonWidth{50.f};
-constexpr auto f_speedButtonWidth{190.f};
-constexpr auto f_zoomButtonWidth{210.f};
-constexpr auto f_sizeButtonWidth{210.f};
-constexpr auto f_quitButtonWidth{120.f};
-constexpr auto f_loadButtonWidth{140.f};
+constexpr auto f_defaultEditTextWidth{200.f};
 constexpr auto f_saveFileButtonWidth{140.f};
-constexpr auto f_saveButtonWidth{140.f};
-constexpr auto f_saveMenuInfoButtonWidth{180.f};
-constexpr auto f_backButtonWidth{140.f};
-constexpr auto f_pageUpDownButtonWidth{350.f};
-constexpr auto f_scrollUpDownButtonWidth{280.f};
-constexpr auto f_ruleEditBoxWidth{240.f};
-constexpr auto f_ruleSimpleBoxWidth{120.f};
-constexpr auto f_editRuleMenuParenthesisWidth{20.f};
-constexpr auto f_editRuleMenuInfoButtonWidth{120.f};
+constexpr auto f_saveMenuInfoTextWidth{180.f};
+constexpr auto f_pageUpDownTextWidth{350.f};
+constexpr auto f_scrollUpDownTextWidth{280.f};
+constexpr auto f_ruleEditBoxWidth{220.f};
+constexpr auto f_editRuleMenuInfoTextWidth{120.f};
 
 inline std::string toString(const std::set<int> &values) {
   std::stringstream s;
@@ -173,25 +164,23 @@ void View::drawMainScreen() {
   drawCells();
   drawGrid();
   drawFrame();
-  drawBottomLeftMenu();
   drawBottomRightMenu();
   drawTopLeftMenu();
-  drawTopRightMenu();
 }
 
 void View::drawLoadFileScreen() {
   sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
                         f_textBoxOutlineThickness};
-  if (drawTextBox("Back [Esc]", position, f_backButtonWidth,
+  if (drawTextBox("Back [Esc]", position, f_defaultButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
-  position.x += f_backButtonWidth;
-  drawTextBox("Scroll Up/Down [Mouse Wheel]", position,
-              f_scrollUpDownButtonWidth, TextBoxStyle::Simple);
-  position.x += f_scrollUpDownButtonWidth;
-  drawTextBox("Page Up/Down [PageUp/PageDown]", position,
-              f_pageUpDownButtonWidth, TextBoxStyle::Simple);
+  position.x += f_defaultButtonWidth;
+  drawTextBox("Scroll Up/Down [Mouse Wheel]", position, f_scrollUpDownTextWidth,
+              TextBoxStyle::Text);
+  position.x += f_scrollUpDownTextWidth;
+  drawTextBox("Page Up/Down [PageUp/PageDown]", position, f_pageUpDownTextWidth,
+              TextBoxStyle::Text);
 
   auto &windowSize{m_window.getView().getSize()};
   auto maxNumberOfItems{static_cast<int>(
@@ -203,7 +192,7 @@ void View::drawLoadFileScreen() {
     position.y = screenMiddleHeight;
     drawTextBox("No files found in patterns directory.", position,
                 windowSize.x - 2 * f_frameVerticalThickness,
-                TextBoxStyle::Simple);
+                TextBoxStyle::Text);
     return;
   }
   auto itemsSize{static_cast<int>(items.size())};
@@ -225,12 +214,12 @@ void View::drawLoadFileScreen() {
 void View::drawSaveFileScreen() {
   sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
                         f_textBoxOutlineThickness};
-  if (drawTextBox("Back [Esc]", position, f_backButtonWidth,
+  if (drawTextBox("Back [Esc]", position, f_defaultButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
-  position.x += f_backButtonWidth;
-  if (drawTextBox("Save [Enter]", position, f_saveButtonWidth,
+  position.x += f_defaultButtonWidth;
+  if (drawTextBox("Save [Enter]", position, f_defaultButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::SaveFile;
   }
@@ -243,24 +232,22 @@ void View::drawSaveFileScreen() {
               TextBoxStyle::Display);
 
   position.y -= f_textBoxHeight;
-  drawTextBox("Enter pattern name...", position, f_saveMenuInfoButtonWidth,
-              TextBoxStyle::Simple);
+  drawTextBox("Enter pattern name...", position, f_saveMenuInfoTextWidth,
+              TextBoxStyle::Text);
 }
 
 void View::drawEditRuleScreen() {
   sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
                         f_textBoxOutlineThickness};
-  if (drawTextBox("Back [Esc]", position, f_backButtonWidth,
+  if (drawTextBox("Back [Esc]", position, f_defaultButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
-  position.x += f_backButtonWidth;
   auto &windowSize{m_window.getView().getSize()};
   auto screenMiddleHeight{windowSize.y * .5f};
   position.x = f_frameVerticalThickness + f_textBoxOutlineThickness;
   position.y = screenMiddleHeight;
-  auto buttonWidth{(windowSize.x - f_editRuleMenuParenthesisWidth) / 2 -
-                   f_textBoxOutlineThickness};
+  auto buttonWidth{(windowSize.x) / 2 - f_textBoxOutlineThickness};
   std::string rule{"B"};
   rule.append(toString(m_model.birthRule()));
   auto style{m_highlightedEdit == Edit::BirthRule ? TextBoxStyle::Display
@@ -272,10 +259,7 @@ void View::drawEditRuleScreen() {
       m_highlightedEdit = Edit::BirthRule;
     }
   }
-  position.x += buttonWidth;
-  drawTextBox("/", position, f_editRuleMenuParenthesisWidth,
-              TextBoxStyle::Simple);
-  position.x += f_editRuleMenuParenthesisWidth;
+  position.x += buttonWidth + 2 * f_textBoxOutlineThickness;
   rule = "S";
   rule.append(toString(m_model.survivalRule()));
   style = m_highlightedEdit == Edit::SurvivalRule ? TextBoxStyle::Display
@@ -289,8 +273,8 @@ void View::drawEditRuleScreen() {
   }
   position.x = f_textBoxOutlineThickness;
   position.y -= f_textBoxHeight;
-  drawTextBox("Click to edit...", position, f_editRuleMenuInfoButtonWidth,
-              TextBoxStyle::Simple);
+  drawTextBox("Click to edit...", position, f_editRuleMenuInfoTextWidth,
+              TextBoxStyle::Text);
 }
 
 void View::drawFrame() {
@@ -349,69 +333,6 @@ void View::drawCells() {
   }
 }
 
-void View::drawBottomLeftMenu() {
-  sf::Vector2f position{f_frameVerticalThickness + f_textBoxOutlineThickness,
-                        static_cast<float>(m_window.getView().getSize().y) -
-                            f_frameHorizontalThickness +
-                            f_textBoxOutlineThickness};
-  auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Hidden
-                                                        : TextBoxStyle::Button};
-  switch (m_model.status()) {
-    case Model::Status::Stopped:
-    case Model::Status::ReadyToRun:
-      if (drawTextBox("Start [space]", position, f_startButtonWidth, style)) {
-        m_highlightedButton = Button::Run;
-      }
-      break;
-    case Model::Status::Running:
-      if (drawTextBox("Pause [space]", position, f_startButtonWidth, style)) {
-        m_highlightedButton = Button::Pause;
-      }
-      break;
-    case Model::Status::Paused:
-      if (drawTextBox("Continue [Space]", position, f_startButtonWidth,
-                      style)) {
-        m_highlightedButton = Button::Run;
-      }
-      break;
-    default:
-      break;
-  }
-  position.x += f_startButtonWidth;
-  style = (m_model.status() == Model::Status::ReadyToRun ||
-           m_model.status() == Model::Status::Stopped)
-              ? TextBoxStyle::Hidden
-              : TextBoxStyle::Button;
-  if (drawTextBox("Reset [R]", position, f_resetButtonWidth, style)) {
-    m_highlightedButton = Button::Reset;
-  }
-  position.x += f_resetButtonWidth;
-  style = (m_model.aliveCells().empty() && m_model.deadCells().empty())
-              ? TextBoxStyle::Hidden
-              : TextBoxStyle::Button;
-  if (drawTextBox("Clear [C]", position, f_clearButtonWidth, style)) {
-    m_highlightedButton = Button::Clear;
-  }
-  position.x += f_clearButtonWidth;
-  style = (m_model.status() == Model::Status::ReadyToRun ||
-           m_model.status() == Model::Status::Stopped)
-              ? TextBoxStyle::Button
-              : TextBoxStyle::Hidden;
-  if (drawTextBox("Populate [P]", position, f_generatePopButtonWidth, style)) {
-    m_highlightedButton = Button::GeneratePopulation;
-  }
-  style = (m_model.status() == Model::Status::ReadyToRun ||
-           m_model.status() == Model::Status::Stopped)
-              ? TextBoxStyle::Simple
-              : TextBoxStyle::Hidden;
-  position.x += f_generatePopButtonWidth;
-  drawTextBox("Add/RemoveCell [Mouse 1]", position, f_addRemoveCellButtonWidth,
-              style);
-  position.x += f_addRemoveCellButtonWidth;
-  drawTextBox("Drag View [Mouse 2]", position, f_dragViewButtonWidth,
-              TextBoxStyle::Simple);
-}
-
 void View::drawBottomRightMenu() {
   sf::Vector2f position{
       m_window.getView().getSize().x - f_frameVerticalThickness,
@@ -420,15 +341,16 @@ void View::drawBottomRightMenu() {
   position.x -= f_displayBoxWidth;
   drawTextBox(std::to_string(m_model.aliveCells().size()), position,
               f_displayBoxWidth, TextBoxStyle::Display);
-  position.x -= f_populationButtonWidth;
-  drawTextBox("Population:", position, f_populationButtonWidth,
-              TextBoxStyle::Simple);
+  position.x -= f_defaultEditTextWidth;
+  drawTextBox("Population:", position, f_defaultEditTextWidth,
+              TextBoxStyle::Text);
   position.x -= f_displayBoxWidth;
   drawTextBox(std::to_string(m_model.generation()), position, f_displayBoxWidth,
               TextBoxStyle::Display);
-  position.x -= f_generationButtonWidth;
-  drawTextBox("Generation:", position, f_generationButtonWidth,
-              TextBoxStyle::Simple);
+  position.x -= f_defaultEditTextWidth;
+  drawTextBox("Generation:", position, f_defaultEditTextWidth,
+              TextBoxStyle::Text);
+
   position.x -= f_ruleEditBoxWidth;
   std::string rule("B");
   rule.append(toString(m_model.birthRule()));
@@ -436,42 +358,17 @@ void View::drawBottomRightMenu() {
   rule.append(toString(m_model.survivalRule()));
   auto style{(m_model.status() != Model::Status::Stopped &&
               m_model.status() != Model::Status::ReadyToRun)
-                 ? TextBoxStyle::Hidden
+                 ? TextBoxStyle::Display
                  : TextBoxStyle::Button};
   if (drawTextBox(rule, position, f_ruleEditBoxWidth, style)) {
     m_highlightedButton = Button::EditRule;
   }
-  position.x -= f_ruleSimpleBoxWidth;
+  position.x -= f_defaultEditTextWidth;
   style = (m_model.status() != Model::Status::Stopped &&
            m_model.status() != Model::Status::ReadyToRun)
-              ? TextBoxStyle::Hidden
-              : TextBoxStyle::Simple;
-  drawTextBox("Rule [U]:", position, f_ruleSimpleBoxWidth, style);
-}
-
-void View::drawTopLeftMenu() {
-  sf::Vector2f position{f_frameVerticalThickness, f_textBoxOutlineThickness};
-  if (drawTextBox("Quit [Esc]", position, f_quitButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::Quit;
-  }
-  position.x += f_quitButtonWidth;
-  if (drawTextBox("Load File [L]", position, f_loadButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::LoadFileMenu;
-  }
-  position.x += f_loadButtonWidth;
-  auto style{m_model.initialPattern().empty() ? TextBoxStyle::Hidden
-                                              : TextBoxStyle::Button};
-  if (drawTextBox("Save File [S]", position, f_saveFileButtonWidth, style)) {
-    m_highlightedButton = Button::SaveFileMenu;
-  }
-}
-
-void View::drawTopRightMenu() {
-  sf::Vector2f position{
-      m_window.getView().getSize().x - f_frameVerticalThickness,
-      f_textBoxOutlineThickness};
+              ? TextBoxStyle::HiddenText
+              : TextBoxStyle::Text;
+  drawTextBox("Rule [U]:", position, f_defaultEditTextWidth, style);
   position.x -= f_displayBoxWidth;
   drawTextBox(std::to_string(m_model.speed()) + "/" +
                   std::to_string(m_model.maxSpeed()),
@@ -486,33 +383,17 @@ void View::drawTopRightMenu() {
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::SlowDown;
   }
-  position.x -= f_speedButtonWidth;
-  drawTextBox("Speed [Left/Right]:", position, f_speedButtonWidth,
-              TextBoxStyle::Simple);
-  position.x -= f_displayBoxWidth;
-  drawTextBox(
-      std::to_string(m_zoomLevel) + "/" + std::to_string(f_maxZoomLevel),
-      position, f_displayBoxWidth, TextBoxStyle::Display);
-  position.x -= f_plusMinusButtonWidth;
-  if (drawTextBox("+", position, f_plusMinusButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::ZoomIn;
-  }
-  position.x -= f_plusMinusButtonWidth;
-  if (drawTextBox("-", position, f_plusMinusButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::ZoomOut;
-  }
-  position.x -= f_zoomButtonWidth;
-  drawTextBox("Zoom [Mouse Wheel]:", position, f_zoomButtonWidth,
-              TextBoxStyle::Simple);
+  position.x -= f_defaultEditTextWidth;
+  drawTextBox("Speed [Left/Right]:", position, f_defaultEditTextWidth,
+              TextBoxStyle::Text);
   position.x -= f_displayBoxWidth;
   drawTextBox(
       std::to_string(m_model.size()) + "/" + std::to_string(m_model.maxSize()),
       position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
-  auto style{m_model.status() == Model::Status::Stopped ? TextBoxStyle::Button
-                                                        : TextBoxStyle::Hidden};
+  style = m_model.status() == Model::Status::Stopped
+              ? TextBoxStyle::Button
+              : TextBoxStyle::HiddenButton;
   if (drawTextBox("+", position, f_plusMinusButtonWidth, style)) {
     m_highlightedButton = Button::IncreaseSize;
   }
@@ -520,10 +401,90 @@ void View::drawTopRightMenu() {
   if (drawTextBox("-", position, f_plusMinusButtonWidth, style)) {
     m_highlightedButton = Button::ReduceSize;
   }
-  position.x -= f_sizeButtonWidth;
-  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Simple
-                                                     : TextBoxStyle::Hidden;
-  drawTextBox("Grid Size [Up/Down]:", position, f_sizeButtonWidth, style);
+  position.x -= f_defaultEditTextWidth;
+  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Text
+                                                     : TextBoxStyle::HiddenText;
+  drawTextBox("Grid Size [Up/Down]:", position, f_defaultEditTextWidth, style);
+}
+
+void View::drawTopLeftMenu() {
+  sf::Vector2f position{f_frameVerticalThickness, f_textBoxOutlineThickness};
+  if (drawTextBox("Quit [Esc]", position, f_defaultButtonWidth,
+                  TextBoxStyle::Button)) {
+    m_highlightedButton = Button::Quit;
+  }
+  position.x += f_defaultButtonWidth;
+  if (drawTextBox("Load File [L]", position, f_defaultButtonWidth,
+                  TextBoxStyle::Button)) {
+    m_highlightedButton = Button::LoadFileMenu;
+  }
+  position.x += f_defaultButtonWidth;
+  auto style{m_model.initialPattern().empty() ? TextBoxStyle::HiddenButton
+                                              : TextBoxStyle::Button};
+  if (drawTextBox("Save File [S]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::SaveFileMenu;
+  }
+  position.x += f_defaultButtonWidth;
+  style = m_model.status() == Model::Status::Stopped
+              ? TextBoxStyle::HiddenButton
+              : TextBoxStyle::Button;
+  switch (m_model.status()) {
+    case Model::Status::Stopped:
+    case Model::Status::ReadyToRun:
+      if (drawTextBox("Start [space]", position, f_defaultButtonWidth, style)) {
+        m_highlightedButton = Button::Run;
+      }
+      break;
+    case Model::Status::Running:
+      if (drawTextBox("Pause [space]", position, f_defaultButtonWidth, style)) {
+        m_highlightedButton = Button::Pause;
+      }
+      break;
+    case Model::Status::Paused:
+      if (drawTextBox("Continue [Space]", position, f_defaultButtonWidth,
+                      style)) {
+        m_highlightedButton = Button::Run;
+      }
+      break;
+    default:
+      break;
+  }
+  position.x += f_defaultButtonWidth;
+  style = (m_model.status() == Model::Status::ReadyToRun ||
+           m_model.status() == Model::Status::Stopped)
+              ? TextBoxStyle::HiddenButton
+              : TextBoxStyle::Button;
+  if (drawTextBox("Reset [R]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::Reset;
+  }
+  position.x += f_defaultButtonWidth;
+  style = (m_model.aliveCells().empty() && m_model.deadCells().empty())
+              ? TextBoxStyle::HiddenButton
+              : TextBoxStyle::Button;
+  if (drawTextBox("Clear [C]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::Clear;
+  }
+  position.x += f_defaultButtonWidth;
+  style = (m_model.status() == Model::Status::ReadyToRun ||
+           m_model.status() == Model::Status::Stopped)
+              ? TextBoxStyle::Button
+              : TextBoxStyle::HiddenButton;
+  if (drawTextBox("Populate [P]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::GeneratePopulation;
+  }
+  style = (m_model.status() == Model::Status::ReadyToRun ||
+           m_model.status() == Model::Status::Stopped)
+              ? TextBoxStyle::Text
+              : TextBoxStyle::HiddenText;
+  position.x += f_defaultButtonWidth;
+  drawTextBox("Add/Remove Cell [Mouse 1]", position, f_addRemoveCellTextWidth,
+              style);
+  position.x += f_addRemoveCellTextWidth;
+  drawTextBox("Drag View [Mouse 2]", position, f_dragViewTextWidth,
+              TextBoxStyle::Text);
+  position.x += f_zoomTextWidth;
+  drawTextBox("Zoom [Mouse Wheel]", position, f_zoomTextWidth,
+              TextBoxStyle::Text);
 }
 
 void View::drawCells(const std::set<Cell> &cells, const sf::Color &color) {
@@ -574,9 +535,9 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
           text.setFillColor(f_highlightedButtonTextColor);
         }
       } else {
-        rect.setFillColor(f_unclickedButtonFillColor);
-        rect.setOutlineColor(f_unclickedButtonOutlineColor);
-        text.setFillColor(f_unclickedButtonTextColor);
+        rect.setFillColor(f_buttonFillColor);
+        rect.setOutlineColor(f_buttonOutlineColor);
+        text.setFillColor(f_buttonTextColor);
       }
       break;
     case TextBoxStyle::Display:
@@ -584,12 +545,17 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
       rect.setOutlineColor(f_displayTextBoxOutlineColor);
       text.setFillColor(f_displayTextBoxTextFillColor);
       break;
-    case TextBoxStyle::Hidden:
+    case TextBoxStyle::HiddenText:
       rect.setFillColor(f_hiddenTextBoxFillColor);
       rect.setOutlineColor(f_hiddenTextBoxOutlineColor);
       text.setFillColor(f_hiddenTextBoxTextColor);
       break;
-    case TextBoxStyle::Simple:
+    case TextBoxStyle::HiddenButton:
+      rect.setFillColor(f_hiddenButtonFillColor);
+      rect.setOutlineColor(f_hiddenButtonOutlineColor);
+      text.setFillColor(f_hiddenButtonTextColor);
+      break;
+    case TextBoxStyle::Text:
     default:
       rect.setFillColor(f_simpleTextBoxFillColor);
       rect.setOutlineColor(f_simpleTextBoxOutlineColor);

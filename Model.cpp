@@ -15,6 +15,8 @@ constexpr auto f_minSpeed{1};
 constexpr auto f_defaultSize{5};
 constexpr auto f_maxSize{5};
 constexpr auto f_minSize{1};
+constexpr auto f_minRuleValue{1};
+constexpr auto f_maxRuleValue{8};
 constexpr std::initializer_list<int> f_conwaysBirthRule{3};
 constexpr std::initializer_list<int> f_conwaysSurvivalRule{2, 3};
 
@@ -157,10 +159,19 @@ void Model::insertPattern(const std::set<Cell>& pattern) {
   }
 }
 
-void Model::setBirthRule(const std::set<int>& rule) { m_birthRule = rule; }
+void Model::setBirthRule(const std::set<int>& rule) {
+  m_birthRule.clear();
+  for (auto val : rule) {
+    m_birthRule.insert(std::max(std::min(val, f_maxRuleValue), f_minRuleValue));
+  }
+}
 
 void Model::setSurvivalRule(const std::set<int>& rule) {
-  m_survivalRule = rule;
+  m_survivalRule.clear();
+  for (auto val : rule) {
+    m_survivalRule.insert(
+        std::max(std::min(val, f_maxRuleValue), f_minRuleValue));
+  }
 }
 
 void Model::generatePopulation(double density) {

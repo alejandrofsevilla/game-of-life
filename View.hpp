@@ -58,7 +58,7 @@ class View {
   const std::string &fileNameToSave() const;
 
  private:
-  enum class TextBoxStyle { Simple, Display, Button, Hidden };
+  enum class TextBoxStyle { Text, Display, Button, HiddenText, HiddenButton };
 
   void drawMainScreen();
   void drawLoadFileScreen();
@@ -69,10 +69,8 @@ class View {
   void drawBackground();
   void drawGrid();
   void drawCells();
-  void drawBottomLeftMenu();
   void drawBottomRightMenu();
   void drawTopLeftMenu();
-  void drawTopRightMenu();
   void drawCells(const std::set<Cell> &cells, const sf::Color &color);
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);

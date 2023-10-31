@@ -255,7 +255,7 @@ void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
       if (!std::isalnum(character)) {
         return;
       }
-      auto value{std::atoi(&character)};
+      auto value{std::stoi(&character)};
       if (value == 0) {
         return;
       }
@@ -483,9 +483,6 @@ void Controller::onMouseButtonPressedOnCell(const Cell &cell) {
 
 void Controller::onEditRuleModeExit() {
   m_view.setMode(View::Mode::Main);
-  if (m_model.survivalRule().empty()) {
-    m_model.setSurvivalRule({1});
-  }
   if (m_model.birthRule().empty()) {
     m_model.setBirthRule({1});
   }

@@ -164,7 +164,6 @@ void savePattern(const std::string &name, const std::set<Cell> &pattern) {
     if (consecutiveCells > 1) {
       ostrm << consecutiveCells;
     }
-    consecutiveCells = 0;
     ostrm << f_aliveCellSymbol;
   }
   ostrm << f_endOfPatternSymbol << std::endl;
