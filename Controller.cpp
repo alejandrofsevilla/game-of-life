@@ -165,7 +165,7 @@ void Controller::onEditRuleModeMouseButtonPressed(
   }
   switch (highlightedButton) {
     case View::Button::Back:
-      onEditRuleModeExit();
+      m_view.setMode(View::Mode::Main);
       return;
     default:
       return;
@@ -255,10 +255,7 @@ void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
       if (!std::isalnum(character)) {
         return;
       }
-      auto value{std::stoi(&character)};
-      if (value == 0) {
-        return;
-      }
+      auto value{static_cast<size_t>(std::stoi(&character))};
       if (m_view.highlightedEdit() == View::Edit::BirthRule) {
         auto rule{m_model.birthRule()};
         rule.insert(value);
@@ -447,7 +444,7 @@ void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event) {
 void Controller::onEditRuleModeKeyPressed(const sf::Event::KeyEvent &event) {
   switch (event.code) {
     case sf::Keyboard::Escape:
-      onEditRuleModeExit();
+      m_view.setMode(View::Mode::Main);
       return;
     case sf::Keyboard::BackSpace: {
       if (m_view.highlightedEdit() == View::Edit::BirthRule) {
@@ -479,11 +476,4 @@ void Controller::onMouseButtonPressedOnCell(const Cell &cell) {
     m_model.insertCell(cell);
   }
   return;
-}
-
-void Controller::onEditRuleModeExit() {
-  m_view.setMode(View::Mode::Main);
-  if (m_model.birthRule().empty()) {
-    m_model.setBirthRule({1});
-  }
 }

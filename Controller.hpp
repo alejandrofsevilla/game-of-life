@@ -35,7 +35,6 @@ class Controller {
   void onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event);
   void onEditRuleModeKeyPressed(const sf::Event::KeyEvent &event);
   void onMouseButtonPressedOnCell(const Cell &cell);
-  void onEditRuleModeExit();
 
   View &m_view;
   Model &m_model;

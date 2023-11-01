@@ -5,30 +5,32 @@
 #include <map>
 #include <random>
 
-namespace {
-constexpr auto f_underpopulationThreshold{2};
-constexpr auto f_overpopulationThreshold{3};
-constexpr auto f_reproductionValue{3};
-constexpr auto f_defaultSpeed{10};
-constexpr auto f_maxSpeed{10};
-constexpr auto f_minSpeed{1};
-constexpr auto f_defaultSize{5};
-constexpr auto f_maxSize{5};
-constexpr auto f_minSize{1};
-constexpr auto f_minRuleValue{1};
-constexpr auto f_maxRuleValue{8};
-constexpr std::initializer_list<int> f_conwaysBirthRule{3};
-constexpr std::initializer_list<int> f_conwaysSurvivalRule{2, 3};
+#include "Cell.hpp"
 
-inline int generateRandomValue(int min, int max) {
+namespace {
+constexpr size_t f_underpopulationThreshold{2};
+constexpr size_t f_overpopulationThreshold{3};
+constexpr size_t f_reproductionValue{3};
+constexpr size_t f_defaultSpeed{10};
+constexpr size_t f_maxSpeed{10};
+constexpr size_t f_minSpeed{1};
+constexpr size_t f_defaultSize{5};
+constexpr size_t f_maxSize{5};
+constexpr size_t f_minSize{1};
+constexpr size_t f_minRuleValue{0};
+constexpr size_t f_maxRuleValue{8};
+constexpr std::initializer_list<size_t> f_conwaysBirthRule{3};
+constexpr std::initializer_list<size_t> f_conwaysSurvivalRule{2, 3};
+
+inline size_t generateRandomValue(size_t min, size_t max) {
   std::random_device rd;
   std::mt19937 gen{rd()};
-  std::uniform_int_distribution<int> distr{min, max};
+  std::uniform_int_distribution<size_t> distr{min, max};
   return distr(gen);
 }
 }  // namespace
 
-Model::Model(int maxWidth, int maxHeight)
+Model::Model(size_t maxWidth, size_t maxHeight)
     : m_maxWidth{maxWidth},
       m_maxHeight{maxHeight},
       m_status{Status::Stopped},
@@ -38,26 +40,28 @@ Model::Model(int maxWidth, int maxHeight)
       m_speed{f_defaultSpeed},
       m_generation{},
       m_initialPattern{},
+      m_survivalRule{f_conwaysSurvivalRule},
+      m_birthRule{f_conwaysBirthRule},
       m_aliveCells{},
       m_deadCells{},
-      m_survivalRule{f_conwaysSurvivalRule},
-      m_birthRule{f_conwaysBirthRule} {}
+      m_cellStatus{static_cast<size_t>(m_width),
+                   {static_cast<size_t>(m_height), Cell::Status::Empty}} {}
 
 Model::Status Model::status() const { return m_status; }
 
-int Model::speed() const { return m_speed; }
+size_t Model::speed() const { return m_speed; }
 
-int Model::maxSpeed() const { return f_maxSpeed; }
+size_t Model::maxSpeed() const { return f_maxSpeed; }
 
-int Model::size() const { return m_size; }
+size_t Model::size() const { return m_size; }
 
-int Model::maxSize() const { return f_maxSize; }
+size_t Model::maxSize() const { return f_maxSize; }
 
-int Model::width() const { return m_width; }
+size_t Model::width() const { return m_width; }
 
-int Model::height() const { return m_height; }
+size_t Model::height() const { return m_height; }
 
-int Model::generation() const { return m_generation; }
+size_t Model::generation() const { return m_generation; }
 
 const std::set<Cell>& Model::aliveCells() const { return m_aliveCells; }
 
@@ -65,9 +69,9 @@ const std::set<Cell>& Model::deadCells() const { return m_deadCells; }
 
 const std::set<Cell>& Model::initialPattern() const { return m_initialPattern; }
 
-const std::set<int>& Model::survivalRule() const { return m_survivalRule; }
+const std::set<size_t>& Model::survivalRule() const { return m_survivalRule; }
 
-const std::set<int>& Model::birthRule() const { return m_birthRule; }
+const std::set<size_t>& Model::birthRule() const { return m_birthRule; }
 
 void Model::run() {
   switch (m_status) {
@@ -85,6 +89,9 @@ void Model::run() {
 void Model::pause() { m_status = Model::Status::Paused; }
 
 void Model::reset() {
+  std::fill(m_cellStatus.begin(), m_cellStatus.end(),
+            std::vector<Cell::Status>{static_cast<std::size_t>(m_height),
+                                      Cell::Status::Empty});
   m_aliveCells = m_initialPattern;
   m_deadCells.clear();
   m_generation = 0;
@@ -92,6 +99,9 @@ void Model::reset() {
 }
 
 void Model::clear() {
+  std::fill(m_cellStatus.begin(), m_cellStatus.end(),
+            std::vector<Cell::Status>{static_cast<std::size_t>(m_height),
+                                      Cell::Status::Empty});
   m_aliveCells.clear();
   m_deadCells.clear();
   m_initialPattern.clear();
@@ -103,22 +113,13 @@ void Model::speedUp() { m_speed = std::min(f_maxSpeed, m_speed + 1); }
 
 void Model::slowDown() { m_speed = std::max(f_minSpeed, m_speed - 1); }
 
-void Model::increaseSize() {
-  m_size = std::min(f_maxSize, m_size + 1);
-  m_width = calculateWidth();
-  m_height = calculateHeight();
-}
+void Model::increaseSize() { setSize(m_size + 1); }
 
-void Model::reduceSize() {
-  m_size = std::max(f_minSize, m_size - 1);
-  m_width = calculateWidth();
-  m_height = calculateHeight();
-}
+void Model::reduceSize() { setSize(m_size - 1); }
 
 void Model::insertCell(const Cell& cell) {
-  if (cell.x > m_width || cell.y > m_height) {
-    return;
-  }
+  m_cellStatus[static_cast<std::size_t>(cell.x)]
+              [static_cast<std::size_t>(cell.y)] = Cell::Status::Alive;
   m_aliveCells.insert(cell);
   m_deadCells.erase(cell);
   m_initialPattern.insert(cell);
@@ -126,9 +127,8 @@ void Model::insertCell(const Cell& cell) {
 }
 
 void Model::removeCell(const Cell& cell) {
-  if (cell.x > m_width || cell.y > m_height) {
-    return;
-  }
+  m_cellStatus[static_cast<std::size_t>(cell.x)]
+              [static_cast<std::size_t>(cell.y)] = Cell::Status::Empty;
   m_aliveCells.erase(cell);
   m_deadCells.erase(cell);
   m_initialPattern.erase(cell);
@@ -136,14 +136,20 @@ void Model::removeCell(const Cell& cell) {
 }
 
 void Model::insertPattern(const std::set<Cell>& pattern) {
+  auto mostLeftElement{
+      std::min_element(pattern.cbegin(), pattern.cend(),
+                       [](const auto& a, const auto& b) { return a.x < b.x; })};
+  auto mostTopElement{
+      std::min_element(pattern.cbegin(), pattern.cend(),
+                       [](const auto& a, const auto& b) { return a.y < b.y; })};
   auto mostRightElement{
       std::max_element(pattern.cbegin(), pattern.cend(),
                        [](const auto& a, const auto& b) { return a.x < b.x; })};
   auto mostBottomElement{
       std::max_element(pattern.cbegin(), pattern.cend(),
                        [](const auto& a, const auto& b) { return a.y < b.y; })};
-  auto width{mostRightElement->x};
-  auto height{mostBottomElement->y};
+  auto width{static_cast<size_t>(mostRightElement->x - mostLeftElement->x)};
+  auto height{static_cast<size_t>(mostBottomElement->y - mostTopElement->y)};
   while (width > m_width || height > m_height) {
     increaseSize();
     if (m_size >= f_maxSize) {
@@ -151,22 +157,22 @@ void Model::insertPattern(const std::set<Cell>& pattern) {
     }
   }
   for (auto cell : pattern) {
-    cell.x += (m_width - width) / 2;
-    cell.y += (m_height - height) / 2;
+    cell.x += static_cast<int>(m_width - width) / 2;
+    cell.y += static_cast<int>(m_height - height) / 2;
     m_aliveCells.insert(cell);
     m_initialPattern.insert(cell);
     updateStatus();
   }
 }
 
-void Model::setBirthRule(const std::set<int>& rule) {
+void Model::setBirthRule(const std::set<size_t>& rule) {
   m_birthRule.clear();
   for (auto val : rule) {
     m_birthRule.insert(std::max(std::min(val, f_maxRuleValue), f_minRuleValue));
   }
 }
 
-void Model::setSurvivalRule(const std::set<int>& rule) {
+void Model::setSurvivalRule(const std::set<size_t>& rule) {
   m_survivalRule.clear();
   for (auto val : rule) {
     m_survivalRule.insert(
@@ -175,8 +181,8 @@ void Model::setSurvivalRule(const std::set<int>& rule) {
 }
 
 void Model::generatePopulation(double density) {
-  auto population{m_width * m_height * density};
-  for (int i = 0; i < population; i++) {
+  auto population{static_cast<double>(m_width * m_height) * density};
+  for (size_t i = 0; i < static_cast<size_t>(population); i++) {
     auto pos{generateRandomValue(0, m_width * m_height)};
     Cell cell{pos % m_width, pos / m_width};
     insertCell(cell);
@@ -185,49 +191,51 @@ void Model::generatePopulation(double density) {
 }
 
 void Model::update() {
-  // see: https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
-  auto updatedAliveCells{m_aliveCells};
-  auto isUpdated{false};
-  Cell neighbour;
-  std::map<Cell, int> deadCellsWithAliveNeighboursCount;
-  for (const auto& cell : m_aliveCells) {
-    auto aliveNeighboursCount{0};
-    for (auto x = cell.x - 1; x <= cell.x + 1; x++) {
-      if (x < 0 || x >= m_width) {
-        continue;
-      }
-      neighbour.x = x;
-      for (auto y = cell.y - 1; y <= cell.y + 1; y++) {
-        if (y < 0 || y >= m_height || (x == cell.x && y == cell.y)) {
+  std::vector<Cell> bornCells;
+  std::vector<Cell> dyingCells;
+  bool isUpdated{false};
+  for (std::size_t col = 0; col < static_cast<std::size_t>(m_width); col++) {
+    for (std::size_t row = 0; row < static_cast<std::size_t>(m_height); row++) {
+      auto numberOfAliveNeighbours{0};
+      for (std::size_t x = col - 1; x <= col + 1; x++) {
+        if (x >= static_cast<std::size_t>(m_width)) {
           continue;
         }
-        neighbour.y = y;
-        if (m_aliveCells.find(neighbour) == m_aliveCells.end()) {
-          deadCellsWithAliveNeighboursCount[neighbour]++;
-        } else {
-          aliveNeighboursCount++;
+        for (std::size_t y = row - 1; y <= row + 1; y++) {
+          if (y >= static_cast<std::size_t>(m_height) ||
+              (x == col && y == row)) {
+            continue;
+          }
+          if (m_cellStatus[x][y] == Cell::Status::Alive) {
+            numberOfAliveNeighbours++;
+          }
         }
       }
-    }
-    if (m_survivalRule.count(aliveNeighboursCount) == 0) {
-      m_deadCells.insert(updatedAliveCells.extract(cell));
-      isUpdated = true;
+      Cell cell{col, row};
+      auto status{m_cellStatus[col][row]};
+      if (status == Cell::Status::Alive &&
+          m_survivalRule.count(numberOfAliveNeighbours) == 0) {
+        dyingCells.push_back(cell);
+        isUpdated = true;
+      } else if (m_birthRule.count(numberOfAliveNeighbours) != 0) {
+        bornCells.push_back(cell);
+        isUpdated = true;
+      }
     }
   }
-  for (const auto& value : deadCellsWithAliveNeighboursCount) {
-    if (m_birthRule.count(value.second) > 0) {
-      m_deadCells.erase(value.first);
-      updatedAliveCells.insert(value.first);
-    }
-    isUpdated = true;
+  for (const auto& cell : bornCells) {
+    m_cellStatus[cell.x][cell.y] = Cell::Status::Alive;
+    m_aliveCells.insert(cell);
+    m_deadCells.erase(cell);
+  }
+  for (const auto& cell : dyingCells) {
+    m_cellStatus[cell.x][cell.y] = Cell::Status::Dead;
+    m_deadCells.insert(m_aliveCells.extract(cell));
   }
   if (!isUpdated) {
     m_status = Status::Paused;
-    updateStatus();
-  } else {
-    m_aliveCells = std::move(updatedAliveCells);
-    m_generation++;
   }
+  m_generation++;
 }
 
 void Model::updateStatus() {
@@ -238,10 +246,19 @@ void Model::updateStatus() {
   }
 }
 
-int Model::calculateWidth() {
-  return m_maxWidth / std::max(1, 2 * (f_maxSize - m_size));
+void Model::setSize(size_t size) {
+  m_size = std::max(f_minSize, std::min(f_maxSize, size));
+  m_width = calculateWidth();
+  m_height = calculateHeight();
+  m_cellStatus.resize(m_width);
+  std::for_each(m_cellStatus.begin(), m_cellStatus.end(),
+                [this](auto& row) { row.resize(m_height); });
 }
 
-int Model::calculateHeight() {
-  return m_maxHeight / std::max(1, 2 * (f_maxSize - m_size));
+size_t Model::calculateWidth() {
+  return m_maxWidth / std::max(size_t{1}, 2 * (f_maxSize - m_size));
+}
+
+size_t Model::calculateHeight() {
+  return m_maxHeight / std::max(size_t{1}, 2 * (f_maxSize - m_size));
 }

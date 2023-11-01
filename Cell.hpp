@@ -1,9 +1,13 @@
 #ifndef GAME_OF_LIFE_CELL_HPP
 #define GAME_OF_LIFE_CELL_HPP
 
+#include <cstddef>
+
 struct Cell {
-  int x{0};
-  int y{0};
+  enum class Status { Empty, Alive, Dead };
+
+  size_t x{0};
+  size_t y{0};
 
   bool operator==(const Cell &other) const {
     return x == other.x && y == other.y;

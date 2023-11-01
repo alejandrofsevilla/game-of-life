@@ -57,7 +57,7 @@ constexpr auto f_scrollUpDownTextWidth{280.f};
 constexpr auto f_ruleEditBoxWidth{220.f};
 constexpr auto f_editRuleMenuInfoTextWidth{120.f};
 
-inline std::string toString(const std::set<int> &values) {
+inline std::string toString(const std::set<size_t> &values) {
   std::stringstream s;
   for (const auto &val : values) {
     s << val;
@@ -306,13 +306,13 @@ void View::drawGrid() {
   sf::Vertex line[2];
   line[0].color = sf::Color::Black;
   line[1].color = sf::Color::Black;
-  for (auto x = 0; x < m_model.width(); x++) {
+  for (size_t x = 0; x < m_model.width(); x++) {
     auto pos{static_cast<float>(x) * cellSize.x + m_viewOffset.x};
     line[0].position = sf::Vector2f(pos, 0);
     line[1].position = sf::Vector2f(pos, windowSize.y);
     m_window.draw(line, 2, sf::LinesStrip);
   }
-  for (auto y = 0; y < m_model.height(); y++) {
+  for (size_t y = 0; y < m_model.height(); y++) {
     auto pos{static_cast<float>(y) * cellSize.y + m_viewOffset.y};
     line[0].position = sf::Vector2f(0, pos);
     line[1].position = sf::Vector2f(windowSize.x, pos);
@@ -350,25 +350,6 @@ void View::drawBottomRightMenu() {
   position.x -= f_defaultEditTextWidth;
   drawTextBox("Generation:", position, f_defaultEditTextWidth,
               TextBoxStyle::Text);
-
-  position.x -= f_ruleEditBoxWidth;
-  std::string rule("B");
-  rule.append(toString(m_model.birthRule()));
-  rule.append("/S");
-  rule.append(toString(m_model.survivalRule()));
-  auto style{(m_model.status() != Model::Status::Stopped &&
-              m_model.status() != Model::Status::ReadyToRun)
-                 ? TextBoxStyle::Display
-                 : TextBoxStyle::Button};
-  if (drawTextBox(rule, position, f_ruleEditBoxWidth, style)) {
-    m_highlightedButton = Button::EditRule;
-  }
-  position.x -= f_defaultEditTextWidth;
-  style = (m_model.status() != Model::Status::Stopped &&
-           m_model.status() != Model::Status::ReadyToRun)
-              ? TextBoxStyle::HiddenText
-              : TextBoxStyle::Text;
-  drawTextBox("Rule [U]:", position, f_defaultEditTextWidth, style);
   position.x -= f_displayBoxWidth;
   drawTextBox(std::to_string(m_model.speed()) + "/" +
                   std::to_string(m_model.maxSpeed()),
@@ -391,9 +372,9 @@ void View::drawBottomRightMenu() {
       std::to_string(m_model.size()) + "/" + std::to_string(m_model.maxSize()),
       position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x -= f_plusMinusButtonWidth;
-  style = m_model.status() == Model::Status::Stopped
-              ? TextBoxStyle::Button
-              : TextBoxStyle::HiddenButton;
+  auto style{m_model.status() == Model::Status::Stopped
+                 ? TextBoxStyle::Button
+                 : TextBoxStyle::HiddenButton};
   if (drawTextBox("+", position, f_plusMinusButtonWidth, style)) {
     m_highlightedButton = Button::IncreaseSize;
   }
@@ -405,6 +386,24 @@ void View::drawBottomRightMenu() {
   style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Text
                                                      : TextBoxStyle::HiddenText;
   drawTextBox("Grid Size [Up/Down]:", position, f_defaultEditTextWidth, style);
+  position.x -= f_ruleEditBoxWidth;
+  std::string rule("B");
+  rule.append(toString(m_model.birthRule()));
+  rule.append("/S");
+  rule.append(toString(m_model.survivalRule()));
+  style = (m_model.status() != Model::Status::Stopped &&
+           m_model.status() != Model::Status::ReadyToRun)
+              ? TextBoxStyle::Display
+              : TextBoxStyle::Button;
+  if (drawTextBox(rule, position, f_ruleEditBoxWidth, style)) {
+    m_highlightedButton = Button::EditRule;
+  }
+  position.x -= f_defaultEditTextWidth;
+  style = (m_model.status() != Model::Status::Stopped &&
+           m_model.status() != Model::Status::ReadyToRun)
+              ? TextBoxStyle::HiddenText
+              : TextBoxStyle::Text;
+  drawTextBox("Rule [U]:", position, f_defaultEditTextWidth, style);
 }
 
 void View::drawTopLeftMenu() {
@@ -625,6 +624,6 @@ std::optional<Cell> View::cellAtCoord(sf::Vector2f coord) const {
     return {};
   }
   auto cellSize{calculateCellSize()};
-  return {{static_cast<int>((coord.x - m_viewOffset.x) / cellSize.x),
-           static_cast<int>((coord.y - m_viewOffset.y) / cellSize.y)}};
+  return {{static_cast<size_t>((coord.x - m_viewOffset.x) / cellSize.x),
+           static_cast<size_t>((coord.y - m_viewOffset.y) / cellSize.y)}};
 }

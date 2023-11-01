@@ -120,8 +120,8 @@ void savePattern(const std::string &name, const std::set<Cell> &pattern) {
   auto maxRow{mostBottomCell(pattern).y};
   ostrm << "x = " << maxCol - minCol;
   ostrm << ", y = " << maxRow - minRow << std::endl;
-  auto prevCol{0};
-  auto prevRow{0};
+  size_t prevCol{0};
+  size_t prevRow{0};
   auto consecutiveCells{0};
   for (auto it = pattern.cbegin(); it != pattern.cend(); it++) {
     auto col = it->x - minCol;
