@@ -52,8 +52,8 @@ constexpr auto f_plusMinusButtonWidth{50.f};
 constexpr auto f_defaultEditTextWidth{200.f};
 constexpr auto f_saveFileButtonWidth{140.f};
 constexpr auto f_saveMenuInfoTextWidth{180.f};
-constexpr auto f_pageUpDownTextWidth{350.f};
-constexpr auto f_scrollUpDownTextWidth{280.f};
+constexpr auto f_pageUpDownTextWidth{370.f};
+constexpr auto f_scrollUpDownTextWidth{330.f};
 constexpr auto f_ruleEditBoxWidth{220.f};
 constexpr auto f_editRuleMenuInfoTextWidth{120.f};
 
