@@ -7,31 +7,32 @@
 #include "RleHelper.hpp"
 
 namespace {
-const auto f_frameColor{sf::Color::Black};
+const auto f_frameColor{sf::Color{35, 35, 35}};
 const auto f_livingCellColor{sf::Color::White};
-const auto f_deadCellColor{sf::Color{80, 80, 80}};
-const auto f_backgroundColor{sf::Color{40, 40, 40}};
-const auto f_simpleTextBoxFillColor{sf::Color::Black};
-const auto f_simpleTextBoxOutlineColor{sf::Color::Black};
+const auto f_gridColor{sf::Color::Black};
+const auto f_deadCellColor{sf::Color{60, 60, 60}};
+const auto f_backgroundColor{sf::Color{35, 35, 35}};
+const auto f_simpleTextBoxFillColor{sf::Color{35, 35, 35}};
+const auto f_simpleTextBoxOutlineColor{sf::Color{35, 35, 35}};
 const auto f_simpleTextBoxTextColor{sf::Color::White};
-const auto f_clickedButtonFillColor{sf::Color::Black};
-const auto f_clickedButtonOutlineColor{sf::Color::White};
+const auto f_clickedButtonFillColor{sf::Color{15, 15, 15}};
+const auto f_clickedButtonOutlineColor{sf::Color{35, 35, 35}};
 const auto f_clickedButtonTextColor{sf::Color::White};
 const auto f_highlightedButtonFilledColor{sf::Color::White};
 const auto f_highlightedButtonOutlineColor{sf::Color::White};
-const auto f_highlightedButtonTextColor{sf::Color::Black};
-const auto f_buttonFillColor{sf::Color{40, 40, 40}};
-const auto f_buttonOutlineColor{sf::Color::Black};
+const auto f_highlightedButtonTextColor{sf::Color{35, 35, 35}};
+const auto f_buttonFillColor{sf::Color{60, 60, 60}};
+const auto f_buttonOutlineColor{sf::Color{35, 35, 35}};
 const auto f_buttonTextColor{sf::Color::White};
 const auto f_displayTextBoxFillColor{sf::Color::Black};
-const auto f_displayTextBoxOutlineColor{sf::Color::White};
+const auto f_displayTextBoxOutlineColor{sf::Color{35, 35, 35}};
 const auto f_displayTextBoxTextFillColor{sf::Color::White};
-const auto f_hiddenTextBoxFillColor{sf::Color::Black};
-const auto f_hiddenTextBoxOutlineColor{sf::Color::Black};
-const auto f_hiddenTextBoxTextColor{sf::Color{80, 80, 80}};
-const auto f_hiddenButtonFillColor{sf::Color{30, 30, 30}};
-const auto f_hiddenButtonOutlineColor{sf::Color::Black};
-const auto f_hiddenButtonTextColor{sf::Color{80, 80, 80}};
+const auto f_hiddenTextBoxFillColor{sf::Color{35, 35, 35}};
+const auto f_hiddenTextBoxOutlineColor{sf::Color{35, 35, 35}};
+const auto f_hiddenTextBoxTextColor{sf::Color{100, 100, 100}};
+const auto f_hiddenButtonFillColor{sf::Color{45, 45, 45}};
+const auto f_hiddenButtonOutlineColor{sf::Color{35, 35, 35}};
+const auto f_hiddenButtonTextColor{sf::Color{110, 110, 110}};
 constexpr auto f_fontPath{"../resources/futura.ttf"};
 constexpr auto f_frameHorizontalThickness{50.f};
 constexpr auto f_frameVerticalThickness{0.f};
@@ -85,6 +86,7 @@ void View::update() {
   m_window.clear();
   m_highlightedButton = Button::None;
   m_highlightedLoadFileMenuItem.reset();
+  drawBackground();
   switch (m_mode) {
     case Mode::EditRule:
       drawEditRuleScreen();
@@ -160,7 +162,6 @@ std::optional<Cell> View::highlightedCell() const {
 const std::string &View::fileNameToSave() const { return m_fileNameToSave; }
 
 void View::drawMainScreen() {
-  drawBackground();
   drawCells();
   drawGrid();
   drawFrame();
@@ -304,8 +305,8 @@ void View::drawGrid() {
   auto &windowSize{m_window.getView().getSize()};
   auto cellSize{calculateCellSize()};
   sf::Vertex line[2];
-  line[0].color = sf::Color::Black;
-  line[1].color = sf::Color::Black;
+  line[0].color = f_gridColor;
+  line[1].color = f_gridColor;
   for (size_t x = 0; x < m_model.width(); x++) {
     auto pos{static_cast<float>(x) * cellSize.x + m_viewOffset.x};
     line[0].position = sf::Vector2f(pos, 0);
