@@ -3,7 +3,7 @@
 
 GUI application using [SFML](https://www.sfml-dev.org/) to visualize [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton).
 
-![v1.0.3](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/767216e1-c4e8-4bff-9992-f64fc80cbec0)
+![ezgif-1-d1b209c3b4](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/2e5f192e-7960-47eb-9464-c5d7a7ac0bca)
 
 ## About the Game of Life
 Conway's Game is a cellular automata invented by the British mathematician John Horton Conway in 1970. It is a zero-player game that evolves based on its initial state. Cells in a grid live, die, or multiply based on the following rules:
