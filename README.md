@@ -1,7 +1,7 @@
 # ![LinuxWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Linux.yml/badge.svg) ![WindowsWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Windows.yml/badge.svg)
 # Game of Life
 
-GUI application using [SFML](https://www.sfml-dev.org/) to visualize [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton).
+Visualization of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton) using [SFML](https://www.sfml-dev.org/).
 
 ![ezgif-1-d1b209c3b4](https://github.com/alejandrofsevilla/game-of-life/assets/110661590/2e5f192e-7960-47eb-9464-c5d7a7ac0bca)
 
@@ -31,10 +31,9 @@ There are in total 2^18 possible life-like rules that can be studied.
 - **Rule [U].**\
   Edit automata rules using [Golly notation](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#Notation_for_rules). The default value corresponds to that of the Conway´s Game Of Life, denoted B3/S23. A list other of life-like rules can be found at [https://conwaylife.com/wiki/List_of_Life-like_rules](https://conwaylife.com/wiki/List_of_Life-like_rules).
 - **Clear Grid [G].**
-- **Change Grid Size [Up/Down].**\
-  Maximum grid size currently set to 960x490 cells.
-- **Control Zoom [Mouse Wheel].**
-- **Control Update Speed [Left/Right].**
+- **Set Grid Size [Up/Down].**\
+- **Set Zoom Level [Mouse Wheel].**
+- **Set Update Speed [Left/Right].**
 - **Drag View [Mouse Right].**
 
 ## Build and Install
