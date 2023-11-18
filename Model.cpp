@@ -1,8 +1,6 @@
 #include "Model.hpp"
 
 #include <algorithm>
-#include <initializer_list>
-#include <map>
 #include <random>
 
 #include "Cell.hpp"
@@ -93,6 +91,9 @@ void Model::reset() {
             std::vector<Cell::Status>{static_cast<std::size_t>(m_height),
                                       Cell::Status::Empty});
   m_aliveCells = m_initialPattern;
+  for (const auto& cell : m_aliveCells) {
+    m_cellStatus[cell.x][cell.y] = Cell::Status::Alive;
+  }
   m_deadCells.clear();
   m_generation = 0;
   updateStatus();
@@ -157,8 +158,8 @@ void Model::insertPattern(const std::set<Cell>& pattern) {
     }
   }
   for (auto cell : pattern) {
-    cell.x += static_cast<int>(m_width - width) / 2;
-    cell.y += static_cast<int>(m_height - height) / 2;
+    cell.x += (m_width - width) / 2;
+    cell.y += (m_height - height) / 2;
     m_aliveCells.insert(cell);
     m_initialPattern.insert(cell);
     updateStatus();

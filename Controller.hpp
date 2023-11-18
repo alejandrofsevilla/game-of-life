@@ -15,25 +15,26 @@ class Controller {
 
  private:
   void onMouseButtonPressed(const sf::Event::MouseButtonEvent &event);
-  void onMainModeMouseButtonPressed(const sf::Event::MouseButtonEvent &event);
-  void onLoadFileModeMouseButtonPressed(
+  void onMouseButtonPressedInMainScreen(
       const sf::Event::MouseButtonEvent &event);
-  void onSaveFileModeMouseButtonPressed(
+  void onMouseButtonPressedInLoadFileScreen(
       const sf::Event::MouseButtonEvent &event);
-  void onEditRuleModeMouseButtonPressed(
+  void onMouseButtonPressedInSaveFileScreen(
+      const sf::Event::MouseButtonEvent &event);
+  void onMouseButtonPressedInEditRuleScreen(
       const sf::Event::MouseButtonEvent &event);
   void onMouseWheelScrolled(const sf::Event::MouseWheelScrollEvent &event);
   void onMainModeMouseWheelScrolled(
       const sf::Event::MouseWheelScrollEvent &event);
-  void onLoadFileModeMouseWheelScrolled(
+  void onMouseWheelScrolledInLoadFileScreen(
       const sf::Event::MouseWheelScrollEvent &event);
   void onMouseMoved(const sf::Event::MouseMoveEvent &event);
   void onKeyPressed(const sf::Event::KeyEvent &event);
   void onTextEnteredEvent(const sf::Event::TextEvent &event);
-  void onMainModeKeyPressed(const sf::Event::KeyEvent &event);
-  void onLoadFileModeKeyPressed(const sf::Event::KeyEvent &event);
-  void onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event);
-  void onEditRuleModeKeyPressed(const sf::Event::KeyEvent &event);
+  void onKeyPressedInMainScreen(const sf::Event::KeyEvent &event);
+  void onKeyPressedInLoadFileScreen(const sf::Event::KeyEvent &event);
+  void onKeyPressedInSaveFileScreen(const sf::Event::KeyEvent &event);
+  void onKeyPressedInEditRuleScreen(const sf::Event::KeyEvent &event);
   void onMouseButtonPressedOnCell(const Cell &cell);
 
   View &m_view;

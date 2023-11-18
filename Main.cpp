@@ -14,8 +14,8 @@ constexpr auto f_defaultModelUpdatePeriod{std::chrono::milliseconds{300}};
 }  // namespace
 
 int main() {
-  auto desktopMode(sf::VideoMode::getDesktopMode());
-  sf::RenderWindow window{desktopMode, f_windowTitle, f_windowStyle};
+  sf::RenderWindow window{sf::VideoMode::getDesktopMode(), f_windowTitle,
+                          f_windowStyle};
   window.setVerticalSyncEnabled(true);
   Model model{f_modelMaxWidth, f_modelMaxHeight};
   View view{window, model};

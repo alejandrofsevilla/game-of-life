@@ -5,19 +5,18 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <optional>
-#include <string>
 
 #include "Model.hpp"
 
 class View {
  public:
-  enum class Mode { Main, LoadFile, SaveFile, EditRule };
+  enum class Screen { Main, LoadFile, SaveFile, EditRule };
 
   enum class Button {
     Quit,
-    LoadFileMenu,
-    SaveFileMenu,
+    LoadFile,
     SaveFile,
+    Save,
     ZoomOut,
     ZoomIn,
     SpeedUp,
@@ -46,11 +45,11 @@ class View {
   void pageDown();
   void pageUp();
   void closeWindow();
-  void setMode(View::Mode mode);
   void dragView(sf::Vector2i offset);
+  void setScreen(View::Screen mode);
   void setFileNameToSave(const std::string &name);
 
-  Mode mode() const;
+  Screen activeScreen() const;
   Button highlightedButton() const;
   Edit highlightedEdit() const;
   std::optional<std::string> highlightedLoadFileMenuItem() const;
@@ -69,20 +68,21 @@ class View {
   void drawBackground();
   void drawGrid();
   void drawCells();
-  void drawBottomRightMenu();
-  void drawTopLeftMenu();
+  void drawBottomMenu();
+  void drawTopMenu();
   void drawCells(const std::set<Cell> &cells, const sf::Color &color);
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);
   void applyViewOffset(const sf::Vector2f &offset);
   void applyZoomLevel(int zoomLevel);
+  void updateWindowView();
 
   sf::Vector2f calculateCellSize() const;
   sf::Vector2f calculateCellPosition(const Cell &cell) const;
   std::optional<Cell> cellAtCoord(sf::Vector2f coord) const;
 
   Model &m_model;
-  View::Mode m_mode;
+  View::Screen m_screen;
   sf::RenderWindow &m_window;
   sf::Vector2f m_viewOffset;
   sf::Font m_font;

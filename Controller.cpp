@@ -39,7 +39,7 @@ void Controller::onEvent(const sf::Event &event) {
   }
 }
 
-void Controller::onMainModeMouseButtonPressed(
+void Controller::onMouseButtonPressedInMainScreen(
     const sf::Event::MouseButtonEvent &event) {
   if (event.button != sf::Mouse::Button::Left) {
     return;
@@ -57,11 +57,11 @@ void Controller::onMainModeMouseButtonPressed(
     case View::Button::Quit:
       m_view.closeWindow();
       return;
-    case View::Button::LoadFileMenu:
-      m_view.setMode(View::Mode::LoadFile);
+    case View::Button::LoadFile:
+      m_view.setScreen(View::Screen::LoadFile);
       return;
-    case View::Button::SaveFileMenu:
-      m_view.setMode(View::Mode::SaveFile);
+    case View::Button::SaveFile:
+      m_view.setScreen(View::Screen::SaveFile);
       return;
     case View::Button::ZoomOut:
       m_view.zoomOut();
@@ -97,14 +97,14 @@ void Controller::onMainModeMouseButtonPressed(
       m_model.reduceSize();
       return;
     case View::Button::EditRule:
-      m_view.setMode(View::Mode::EditRule);
+      m_view.setScreen(View::Screen::EditRule);
       return;
     default:
       return;
   }
 }
 
-void Controller::onLoadFileModeMouseButtonPressed(
+void Controller::onMouseButtonPressedInLoadFileScreen(
     const sf::Event::MouseButtonEvent &event) {
   if (event.button != sf::Mouse::Button::Left) {
     return;
@@ -114,14 +114,14 @@ void Controller::onLoadFileModeMouseButtonPressed(
     m_model.clear();
     m_model.insertPattern(
         rle::loadPattern(highlightedLoadFileMenuItem.value()));
-    m_view.setMode(View::Mode::Main);
+    m_view.setScreen(View::Screen::Main);
     return;
   }
   auto highlightedButton{m_view.highlightedButton()};
   if (highlightedButton != View::Button::None) {
     switch (highlightedButton) {
       case View::Button::Back:
-        m_view.setMode(View::Mode::Main);
+        m_view.setScreen(View::Screen::Main);
         return;
       default:
         return;
@@ -129,7 +129,7 @@ void Controller::onLoadFileModeMouseButtonPressed(
   }
 }
 
-void Controller::onSaveFileModeMouseButtonPressed(
+void Controller::onMouseButtonPressedInSaveFileScreen(
     const sf::Event::MouseButtonEvent &event) {
   if (event.button != sf::Mouse::Button::Left) {
     return;
@@ -140,21 +140,21 @@ void Controller::onSaveFileModeMouseButtonPressed(
   }
   switch (highlightedButton) {
     case View::Button::Back:
-      m_view.setMode(View::Mode::Main);
+      m_view.setScreen(View::Screen::Main);
       return;
-    case View::Button::SaveFile:
+    case View::Button::Save:
       if (m_view.fileNameToSave().empty()) {
         return;
       }
       rle::savePattern(m_view.fileNameToSave(), m_model.initialPattern());
-      m_view.setMode(View::Mode::Main);
+      m_view.setScreen(View::Screen::Main);
       return;
     default:
       return;
   }
 }
 
-void Controller::onEditRuleModeMouseButtonPressed(
+void Controller::onMouseButtonPressedInEditRuleScreen(
     const sf::Event::MouseButtonEvent &event) {
   if (event.button != sf::Mouse::Button::Left) {
     return;
@@ -165,7 +165,7 @@ void Controller::onEditRuleModeMouseButtonPressed(
   }
   switch (highlightedButton) {
     case View::Button::Back:
-      m_view.setMode(View::Mode::Main);
+      m_view.setScreen(View::Screen::Main);
       return;
     default:
       return;
@@ -174,18 +174,18 @@ void Controller::onEditRuleModeMouseButtonPressed(
 
 void Controller::onMouseButtonPressed(
     const sf::Event::MouseButtonEvent &event) {
-  switch (m_view.mode()) {
-    case View::Mode::Main:
-      onMainModeMouseButtonPressed(event);
+  switch (m_view.activeScreen()) {
+    case View::Screen::Main:
+      onMouseButtonPressedInMainScreen(event);
       return;
-    case View::Mode::LoadFile:
-      onLoadFileModeMouseButtonPressed(event);
+    case View::Screen::LoadFile:
+      onMouseButtonPressedInLoadFileScreen(event);
       return;
-    case View::Mode::SaveFile:
-      onSaveFileModeMouseButtonPressed(event);
+    case View::Screen::SaveFile:
+      onMouseButtonPressedInSaveFileScreen(event);
       return;
-    case View::Mode::EditRule:
-      onEditRuleModeMouseButtonPressed(event);
+    case View::Screen::EditRule:
+      onMouseButtonPressedInEditRuleScreen(event);
       return;
     default:
       return;
@@ -194,12 +194,12 @@ void Controller::onMouseButtonPressed(
 
 void Controller::onMouseWheelScrolled(
     const sf::Event::MouseWheelScrollEvent &event) {
-  switch (m_view.mode()) {
-    case View::Mode::Main:
+  switch (m_view.activeScreen()) {
+    case View::Screen::Main:
       onMainModeMouseWheelScrolled(event);
       return;
-    case View::Mode::LoadFile:
-      onLoadFileModeMouseWheelScrolled(event);
+    case View::Screen::LoadFile:
+      onMouseWheelScrolledInLoadFileScreen(event);
       return;
     default:
       return;
@@ -215,7 +215,7 @@ void Controller::onMainModeMouseWheelScrolled(
   }
 }
 
-void Controller::onLoadFileModeMouseWheelScrolled(
+void Controller::onMouseWheelScrolledInLoadFileScreen(
     const sf::Event::MouseWheelScrollEvent &event) {
   if (event.delta > 0) {
     m_view.scrollUp();
@@ -232,13 +232,13 @@ void Controller::onMouseMoved(const sf::Event::MouseMoveEvent &event) {
 }
 
 void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
-  switch (m_view.mode()) {
-    case View::Mode::SaveFile: {
+  switch (m_view.activeScreen()) {
+    case View::Screen::SaveFile: {
       if (!m_isSaveFileMenuReady) {
         m_isSaveFileMenuReady = true;
         return;
       }
-      if (m_view.mode() != View::Mode::SaveFile) {
+      if (m_view.activeScreen() != View::Screen::SaveFile) {
         return;
       }
       auto character{static_cast<char>(event.unicode)};
@@ -250,7 +250,7 @@ void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
       m_view.setFileNameToSave(name);
       return;
     }
-    case View::Mode::EditRule: {
+    case View::Screen::EditRule: {
       auto character{static_cast<char>(event.unicode)};
       if (!std::isalnum(character)) {
         return;
@@ -273,25 +273,25 @@ void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
 }
 
 void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
-  switch (m_view.mode()) {
-    case View::Mode::LoadFile:
-      onLoadFileModeKeyPressed(event);
+  switch (m_view.activeScreen()) {
+    case View::Screen::LoadFile:
+      onKeyPressedInLoadFileScreen(event);
       return;
-    case View::Mode::SaveFile:
-      onSaveFileModeKeyPressed(event);
+    case View::Screen::SaveFile:
+      onKeyPressedInSaveFileScreen(event);
       return;
-    case View::Mode::EditRule:
-      onEditRuleModeKeyPressed(event);
+    case View::Screen::EditRule:
+      onKeyPressedInEditRuleScreen(event);
       break;
-    case View::Mode::Main:
-      onMainModeKeyPressed(event);
+    case View::Screen::Main:
+      onKeyPressedInMainScreen(event);
       break;
     default:
       return;
   }
 }
 
-void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
+void Controller::onKeyPressedInMainScreen(const sf::Event::KeyEvent &event) {
   switch (event.code) {
     case sf::Keyboard::Up:
       if (m_model.status() != Model::Status::Stopped) {
@@ -325,14 +325,14 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
       m_model.clear();
       return;
     case sf::Keyboard::L:
-      m_view.setMode(View::Mode::LoadFile);
+      m_view.setScreen(View::Screen::LoadFile);
       return;
     case sf::Keyboard::S:
       if (m_model.initialPattern().empty()) {
         return;
       }
       m_isSaveFileMenuReady = false;
-      m_view.setMode(View::Mode::SaveFile);
+      m_view.setScreen(View::Screen::SaveFile);
       return;
     case sf::Keyboard::P:
       if (m_model.status() != Model::Status::Stopped &&
@@ -349,7 +349,7 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
           m_model.status() != Model::Status::ReadyToRun) {
         return;
       }
-      m_view.setMode(View::Mode::EditRule);
+      m_view.setScreen(View::Screen::EditRule);
       return;
     case sf::Keyboard::Space:
       switch (m_model.status()) {
@@ -368,10 +368,11 @@ void Controller::onMainModeKeyPressed(const sf::Event::KeyEvent &event) {
   }
 }
 
-void Controller::onLoadFileModeKeyPressed(const sf::Event::KeyEvent &event) {
+void Controller::onKeyPressedInLoadFileScreen(
+    const sf::Event::KeyEvent &event) {
   switch (event.code) {
     case sf::Keyboard::Escape:
-      m_view.setMode(View::Mode::Main);
+      m_view.setScreen(View::Screen::Main);
       return;
     case sf::Keyboard::PageUp:
       m_view.pageUp();
@@ -385,17 +386,18 @@ void Controller::onLoadFileModeKeyPressed(const sf::Event::KeyEvent &event) {
   return;
 }
 
-void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event) {
+void Controller::onKeyPressedInSaveFileScreen(
+    const sf::Event::KeyEvent &event) {
   switch (event.code) {
     case sf::Keyboard::Escape:
-      m_view.setMode(View::Mode::Main);
+      m_view.setScreen(View::Screen::Main);
       return;
     case sf::Keyboard::Return:
       if (m_view.fileNameToSave().empty()) {
         return;
       }
       rle::savePattern(m_view.fileNameToSave(), m_model.initialPattern());
-      m_view.setMode(View::Mode::Main);
+      m_view.setScreen(View::Screen::Main);
       return;
     case sf::Keyboard::Space: {
       auto name{m_view.fileNameToSave()};
@@ -441,10 +443,11 @@ void Controller::onSaveFileModeKeyPressed(const sf::Event::KeyEvent &event) {
   }
 }
 
-void Controller::onEditRuleModeKeyPressed(const sf::Event::KeyEvent &event) {
+void Controller::onKeyPressedInEditRuleScreen(
+    const sf::Event::KeyEvent &event) {
   switch (event.code) {
     case sf::Keyboard::Escape:
-      m_view.setMode(View::Mode::Main);
+      m_view.setScreen(View::Screen::Main);
       return;
     case sf::Keyboard::BackSpace: {
       if (m_view.highlightedEdit() == View::Edit::BirthRule) {
