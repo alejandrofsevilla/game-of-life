@@ -278,10 +278,10 @@ void View::drawFrame() {
   sf::RectangleShape rect{{f_defaultScreenWidth, f_frameHorizontalThickness}};
   rect.setFillColor(f_frameColor);
   m_window.draw(rect);
-  rect.setSize({ f_defaultScreenWidth, f_frameHorizontalThickness});
+  rect.setSize({f_defaultScreenWidth, f_frameHorizontalThickness});
   rect.setPosition(0, f_defaultScreenHeight - f_frameHorizontalThickness);
   m_window.draw(rect);
-  rect.setSize({f_frameVerticalThickness, f_defaultScreenHeight });
+  rect.setSize({f_frameVerticalThickness, f_defaultScreenHeight});
   rect.setPosition(0, 0);
   m_window.draw(rect);
   rect.setPosition(f_defaultScreenWidth - f_frameVerticalThickness, 0);
@@ -591,12 +591,12 @@ void View::applyZoomLevel(int zoomLevel) {
 void View::updateWindowView() {
   auto view{m_window.getView()};
   auto windowSize{m_window.getSize()};
-  auto ratio{static_cast<float>(windowSize.x)
-    /static_cast<float>(windowSize.y)};
-  auto defaultRatio{static_cast<float>(f_defaultScreenWidth)
-    /static_cast<float>(f_defaultScreenHeight)};
-  auto width{f_defaultScreenWidth*std::max(1.f, ratio / defaultRatio)};
-  auto height{f_defaultScreenHeight/std::min(1.f, ratio / defaultRatio)};
+  auto ratio{static_cast<float>(windowSize.x) /
+             static_cast<float>(windowSize.y)};
+  auto defaultRatio{static_cast<float>(f_defaultScreenWidth) /
+                    static_cast<float>(f_defaultScreenHeight)};
+  auto width{f_defaultScreenWidth * std::max(1.f, ratio / defaultRatio)};
+  auto height{f_defaultScreenHeight / std::min(1.f, ratio / defaultRatio)};
   view.setSize({width, height});
   m_window.setView(view);
 }
