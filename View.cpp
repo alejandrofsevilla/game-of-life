@@ -135,13 +135,13 @@ void View::dragView(sf::Vector2i offset) {
                    m_viewOffset.y + static_cast<float>(offset.y)});
 }
 
-void View::setScreen(View::Screen mode) { m_screen = mode; }
+void View::setScreen(View::Screen screen) { m_screen = screen; }
 
 void View::setFileNameToSave(const std::string &name) {
   m_fileNameToSave = name;
 }
 
-View::Screen View::activeScreen() const { return m_screen; }
+View::Screen View::screen() const { return m_screen; }
 
 std::optional<std::string> View::highlightedLoadFileMenuItem() const {
   return m_highlightedLoadFileMenuItem;
@@ -275,17 +275,16 @@ void View::drawEditRuleScreen() {
 }
 
 void View::drawFrame() {
-  sf::Vector2f windowSize{m_window.getView().getSize()};
-  sf::RectangleShape rect{{windowSize.x, f_frameHorizontalThickness}};
+  sf::RectangleShape rect{{f_defaultScreenWidth, f_frameHorizontalThickness}};
   rect.setFillColor(f_frameColor);
   m_window.draw(rect);
-  rect.setSize({windowSize.x, f_frameHorizontalThickness});
-  rect.setPosition(0, windowSize.y - f_frameHorizontalThickness);
+  rect.setSize({ f_defaultScreenWidth, f_frameHorizontalThickness});
+  rect.setPosition(0, f_defaultScreenHeight - f_frameHorizontalThickness);
   m_window.draw(rect);
-  rect.setSize({f_frameVerticalThickness, windowSize.y});
+  rect.setSize({f_frameVerticalThickness, f_defaultScreenHeight });
   rect.setPosition(0, 0);
   m_window.draw(rect);
-  rect.setPosition(windowSize.x - f_frameVerticalThickness, 0);
+  rect.setPosition(f_defaultScreenWidth - f_frameVerticalThickness, 0);
   m_window.draw(rect);
 }
 
@@ -591,8 +590,14 @@ void View::applyZoomLevel(int zoomLevel) {
 
 void View::updateWindowView() {
   auto view{m_window.getView()};
-  view.setSize({f_defaultScreenWidth, f_defaultScreenHeight});
-  view.setCenter({f_defaultScreenWidth * .5, f_defaultScreenHeight * .5});
+  auto windowSize{m_window.getSize()};
+  auto ratio{static_cast<float>(windowSize.x)
+    /static_cast<float>(windowSize.y)};
+  auto defaultRatio{static_cast<float>(f_defaultScreenWidth)
+    /static_cast<float>(f_defaultScreenHeight)};
+  auto width{f_defaultScreenWidth*std::max(1.f, ratio / defaultRatio)};
+  auto height{f_defaultScreenHeight/std::min(1.f, ratio / defaultRatio)};
+  view.setSize({width, height});
   m_window.setView(view);
 }
 

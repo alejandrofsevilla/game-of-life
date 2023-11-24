@@ -174,7 +174,7 @@ void Controller::onMouseButtonPressedInEditRuleScreen(
 
 void Controller::onMouseButtonPressed(
     const sf::Event::MouseButtonEvent &event) {
-  switch (m_view.activeScreen()) {
+  switch (m_view.screen()) {
     case View::Screen::Main:
       onMouseButtonPressedInMainScreen(event);
       return;
@@ -194,7 +194,7 @@ void Controller::onMouseButtonPressed(
 
 void Controller::onMouseWheelScrolled(
     const sf::Event::MouseWheelScrollEvent &event) {
-  switch (m_view.activeScreen()) {
+  switch (m_view.screen()) {
     case View::Screen::Main:
       onMainModeMouseWheelScrolled(event);
       return;
@@ -232,13 +232,13 @@ void Controller::onMouseMoved(const sf::Event::MouseMoveEvent &event) {
 }
 
 void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
-  switch (m_view.activeScreen()) {
+  switch (m_view.screen()) {
     case View::Screen::SaveFile: {
       if (!m_isSaveFileMenuReady) {
         m_isSaveFileMenuReady = true;
         return;
       }
-      if (m_view.activeScreen() != View::Screen::SaveFile) {
+      if (m_view.screen() != View::Screen::SaveFile) {
         return;
       }
       auto character{static_cast<char>(event.unicode)};
@@ -273,7 +273,7 @@ void Controller::onTextEnteredEvent(const sf::Event::TextEvent &event) {
 }
 
 void Controller::onKeyPressed(const sf::Event::KeyEvent &event) {
-  switch (m_view.activeScreen()) {
+  switch (m_view.screen()) {
     case View::Screen::LoadFile:
       onKeyPressedInLoadFileScreen(event);
       return;

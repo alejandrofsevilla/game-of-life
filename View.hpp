@@ -46,10 +46,10 @@ class View {
   void pageUp();
   void closeWindow();
   void dragView(sf::Vector2i offset);
-  void setScreen(View::Screen mode);
+  void setScreen(View::Screen screen);
   void setFileNameToSave(const std::string &name);
 
-  Screen activeScreen() const;
+  Screen screen() const;
   Button highlightedButton() const;
   Edit highlightedEdit() const;
   std::optional<std::string> highlightedLoadFileMenuItem() const;
@@ -62,7 +62,6 @@ class View {
   void drawMainScreen();
   void drawLoadFileScreen();
   void drawSaveFileScreen();
-  void drawEditSurvivalRuleScreen();
   void drawEditRuleScreen();
   void drawFrame();
   void drawBackground();
