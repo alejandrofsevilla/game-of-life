@@ -276,7 +276,6 @@ void View::drawEditRuleScreen() {
 
 void View::drawFrame() {
   auto &viewSize{m_window.getView().getSize()};
-  auto &winSize{m_window.getSize()};
   auto thickness{std::max((viewSize.x - f_defaultScreenWidth) * .5f,
                           (viewSize.y - f_defaultScreenHeight) * .5f)};
   sf::RectangleShape rect{{f_defaultScreenWidth, f_defaultScreenHeight}};
