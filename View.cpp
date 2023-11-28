@@ -275,22 +275,18 @@ void View::drawEditRuleScreen() {
 }
 
 void View::drawFrame() {
-  sf::RectangleShape rect{{f_defaultScreenWidth, f_frameHorizontalThickness}};
-  rect.setFillColor(f_frameColor);
-  m_window.draw(rect);
-  rect.setSize({f_defaultScreenWidth, f_frameHorizontalThickness});
-  rect.setPosition(0, f_defaultScreenHeight - f_frameHorizontalThickness);
-  m_window.draw(rect);
-  rect.setSize({f_frameVerticalThickness, f_defaultScreenHeight});
-  rect.setPosition(0, 0);
-  m_window.draw(rect);
-  rect.setPosition(f_defaultScreenWidth - f_frameVerticalThickness, 0);
+  auto& viewSize{ m_window.getView().getSize() };
+  auto& winSize{ m_window.getSize() };
+  auto thickness{ std::max((viewSize.x-f_defaultScreenWidth) * .5f, (viewSize.y-f_defaultScreenHeight) * .5f)};
+  sf::RectangleShape rect{ {f_defaultScreenWidth, f_defaultScreenHeight} };
+  rect.setOutlineThickness(thickness);
+  rect.setOutlineColor(sf::Color::Black);
+  rect.setFillColor(sf::Color::Transparent);
   m_window.draw(rect);
 }
 
 void View::drawBackground() {
   sf::RectangleShape background{{f_defaultScreenWidth, f_defaultScreenHeight}};
-  background.setPosition(0, 0);
   background.setFillColor(f_backgroundColor);
   m_window.draw(background);
 }
@@ -328,6 +324,10 @@ void View::drawCells() {
 }
 
 void View::drawBottomMenu() {
+  sf::RectangleShape rect{ {f_defaultScreenWidth,f_frameHorizontalThickness} };
+  rect.setFillColor(f_frameColor);
+  rect.setPosition(0, f_defaultScreenHeight-f_frameHorizontalThickness);
+  m_window.draw(rect);
   sf::Vector2f position{f_frameVerticalThickness,
                         static_cast<float>(f_defaultScreenHeight) -
                             f_frameHorizontalThickness +
@@ -399,7 +399,10 @@ void View::drawBottomMenu() {
 }
 
 void View::drawTopMenu() {
-  sf::Vector2f position{f_frameVerticalThickness, f_textBoxOutlineThickness};
+  sf::RectangleShape rect{ {f_defaultScreenWidth,f_frameHorizontalThickness} };
+  rect.setFillColor(f_frameColor);
+  m_window.draw(rect);
+  sf::Vector2f position{ f_frameVerticalThickness, f_textBoxOutlineThickness };
   if (drawTextBox("Quit [Esc]", position, f_defaultButtonWidth,
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Quit;
