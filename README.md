@@ -31,7 +31,7 @@ There are in total 2^18 possible life-like rules that can be studied.
 - **Rule [U].**\
   Edit automata rules using [Golly notation](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#Notation_for_rules). The default value corresponds to that of the Conway´s Game Of Life, denoted B3/S23. A list other of life-like rules can be found at [https://conwaylife.com/wiki/List_of_Life-like_rules](https://conwaylife.com/wiki/List_of_Life-like_rules).
 - **Clear Grid [G].**
-- **Set Grid Size [Up/Down].**\
+- **Set Grid Size [Up/Down].**
 - **Set Zoom Level [Mouse Wheel].**
 - **Set Update Speed [Left/Right].**
 - **Drag View [Mouse Right].**
