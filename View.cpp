@@ -2,7 +2,10 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <cmath>
+#include <future>
 #include <sstream>
+#include <thread>
 
 #include "RleHelper.hpp"
 
@@ -59,12 +62,23 @@ constexpr auto f_editRuleMenuInfoTextWidth{120.f};
 constexpr auto f_defaultScreenWidth{1920};
 constexpr auto f_defaultScreenHeight{1080};
 
-inline std::string toString(const std::set<size_t> &values) {
+inline std::string toString(const std::set<std::size_t> &values) {
   std::stringstream s;
   for (const auto &val : values) {
     s << val;
   }
   return s.str();
+}
+
+inline sf::Color toCellColor(Cell::Status status) {
+  switch (status) {
+    case Cell::Status::Alive:
+      return f_livingCellColor;
+    case Cell::Status::Dead:
+      return f_deadCellColor;
+    default:
+      return f_backgroundColor;
+  }
 }
 }  // namespace
 
@@ -73,6 +87,7 @@ View::View(sf::RenderWindow &window, Model &model)
       m_screen{Screen::Main},
       m_window{window},
       m_viewOffset{f_frameVerticalThickness, f_frameHorizontalThickness},
+      m_cellsVertexArray{sf::Quads, 4 * model.width() * model.height()},
       m_font{},
       m_highlightedButton{Button::None},
       m_highlightedEdit{Edit::None},
@@ -82,6 +97,27 @@ View::View(sf::RenderWindow &window, Model &model)
       m_fileNameToSave{} {
   m_font.loadFromFile(f_fontPath);
 }
+
+void View::setFileNameToSave(const std::string &name) {
+  m_fileNameToSave = name;
+}
+
+View::Screen View::screen() const { return m_screen; }
+
+std::optional<std::string> View::highlightedLoadFileMenuItem() const {
+  return m_highlightedLoadFileMenuItem;
+}
+
+View::Button View::highlightedButton() const { return m_highlightedButton; }
+
+View::Edit View::highlightedEdit() const { return m_highlightedEdit; }
+
+std::optional<Cell> View::highlightedCell() const {
+  return cellAtCoord(
+      m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)));
+}
+
+const std::string &View::fileNameToSave() const { return m_fileNameToSave; }
 
 void View::update() {
   m_window.clear();
@@ -136,27 +172,6 @@ void View::dragView(sf::Vector2i offset) {
 }
 
 void View::setScreen(View::Screen screen) { m_screen = screen; }
-
-void View::setFileNameToSave(const std::string &name) {
-  m_fileNameToSave = name;
-}
-
-View::Screen View::screen() const { return m_screen; }
-
-std::optional<std::string> View::highlightedLoadFileMenuItem() const {
-  return m_highlightedLoadFileMenuItem;
-}
-
-View::Button View::highlightedButton() const { return m_highlightedButton; }
-
-View::Edit View::highlightedEdit() const { return m_highlightedEdit; }
-
-std::optional<Cell> View::highlightedCell() const {
-  return cellAtCoord(
-      m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)));
-}
-
-const std::string &View::fileNameToSave() const { return m_fileNameToSave; }
 
 void View::drawMainScreen() {
   m_fileNameToSave.clear();
@@ -275,7 +290,7 @@ void View::drawEditRuleScreen() {
 }
 
 void View::drawFrame() {
-  auto &viewSize{m_window.getView().getSize()};
+  auto viewSize{m_window.getView().getSize()};
   auto thickness{std::max((viewSize.x - f_defaultScreenWidth) * .5f,
                           (viewSize.y - f_defaultScreenHeight) * .5f)};
   sf::RectangleShape rect{{f_defaultScreenWidth, f_defaultScreenHeight}};
@@ -293,34 +308,65 @@ void View::drawBackground() {
 
 void View::drawGrid() {
   auto cellSize{calculateCellSize()};
-  sf::Vertex line[2];
-  line[0].color = f_gridColor;
-  line[1].color = f_gridColor;
-  for (size_t x = 0; x < m_model.width(); x++) {
+  sf::VertexArray lines{sf::Lines, 2 * (m_model.width() + m_model.height())};
+  std::size_t index{0};
+  for (std::size_t x = 0; x < m_model.width(); x++) {
     auto pos{static_cast<float>(x) * cellSize.x + m_viewOffset.x};
-    line[0].position = sf::Vector2f(pos, 0);
-    line[1].position = sf::Vector2f(pos, f_defaultScreenHeight);
-    m_window.draw(line, 2, sf::LinesStrip);
+    lines[index].position = sf::Vector2f(pos, 0);
+    lines[index++].color = f_gridColor;
+    lines[index].position = sf::Vector2f(pos, f_defaultScreenHeight);
+    lines[index++].color = f_gridColor;
   }
-  for (size_t y = 0; y < m_model.height(); y++) {
+  for (std::size_t y = 0; y < m_model.height(); y++) {
     auto pos{static_cast<float>(y) * cellSize.y + m_viewOffset.y};
-    line[0].position = sf::Vector2f(0, pos);
-    line[1].position = sf::Vector2f(f_defaultScreenWidth, pos);
-    m_window.draw(line, 2, sf::Lines);
+    lines[index].position = sf::Vector2f(0, pos);
+    lines[index++].color = f_gridColor;
+    lines[index].position = sf::Vector2f(f_defaultScreenWidth, pos);
+    lines[index++].color = f_gridColor;
+  }
+  m_window.draw(lines);
+}
+
+void View::updateCellVertexArray(std::size_t minCol, std::size_t maxCol) {
+  auto size{calculateCellSize()};
+  sf::Color cellColor;
+  sf::Vector2f cellPosition;
+  std::size_t id{4 * minCol * m_model.height()};
+  for (std::size_t col = minCol; col < maxCol; col++) {
+    for (std::size_t row = 0; row < m_model.height(); row++) {
+      cellColor = toCellColor(m_model.cellStatus(col, row));
+      cellPosition = calculateCellPosition(col, row);
+      m_cellsVertexArray[id].position = cellPosition;
+      m_cellsVertexArray[id++].color = cellColor;
+      m_cellsVertexArray[id].position = cellPosition + sf::Vector2f{size.x, 0};
+      m_cellsVertexArray[id++].color = cellColor;
+      m_cellsVertexArray[id].position =
+          cellPosition + sf::Vector2f{size.x, size.y};
+      m_cellsVertexArray[id++].color = cellColor;
+      m_cellsVertexArray[id].position = cellPosition + sf::Vector2f{0, size.y};
+      m_cellsVertexArray[id++].color = cellColor;
+    }
   }
 }
 
 void View::drawCells() {
-  auto size{calculateCellSize()};
-  auto &aliveCells{m_model.aliveCells()};
-  sf::RectangleShape rect{size};
-  if (!aliveCells.empty()) {
-    drawCells(aliveCells, f_livingCellColor);
+  auto size{ 4 * m_model.width() * m_model.height() };
+  if (m_cellsVertexArray.getVertexCount() != size) {
+    m_cellsVertexArray.resize(size);
   }
-  auto &deadCells{m_model.deadCells()};
-  if (!deadCells.empty()) {
-    drawCells(deadCells, f_deadCellColor);
+  auto numOfThreads{ std::thread::hardware_concurrency() };
+  auto numColPerThread{ static_cast<std::size_t>(
+      std::ceil(static_cast<double>(m_model.width()) / numOfThreads)) };
+  {
+    std::vector<std::future<void>> tasks;
+    for (std::size_t i = 0; i < numOfThreads; i++) {
+      auto begin{std::min(i * numColPerThread, m_model.width())};
+      auto end{std::min((i + 1) * numColPerThread, m_model.width())};
+      tasks.emplace_back(
+          std::async(&View::updateCellVertexArray, this, begin, end));
+    }
   }
+  m_window.draw(m_cellsVertexArray);
 }
 
 void View::drawBottomMenu() {
@@ -393,8 +439,8 @@ void View::drawBottomMenu() {
   position.x += f_displayBoxWidth;
   drawTextBox("Population:", position, f_defaultTextWidth, TextBoxStyle::Text);
   position.x += f_defaultTextWidth;
-  drawTextBox(std::to_string(m_model.aliveCells().size()), position,
-              f_displayBoxWidth, TextBoxStyle::Display);
+  drawTextBox(std::to_string(m_model.population()), position, f_displayBoxWidth,
+              TextBoxStyle::Display);
   position.x += f_displayBoxWidth;
 }
 
@@ -452,9 +498,9 @@ void View::drawTopMenu() {
     m_highlightedButton = Button::Reset;
   }
   position.x += f_defaultButtonWidth;
-  style = (m_model.aliveCells().empty() && m_model.deadCells().empty())
-              ? TextBoxStyle::HiddenButton
-              : TextBoxStyle::Button;
+  style = (m_model.status() != Model::Status::Running)
+              ? TextBoxStyle::Button
+              : TextBoxStyle::HiddenButton;
   if (drawTextBox("Clear [C]", position, f_defaultButtonWidth, style)) {
     m_highlightedButton = Button::Clear;
   }
@@ -479,27 +525,6 @@ void View::drawTopMenu() {
   position.x += f_zoomTextWidth;
   drawTextBox("Zoom [Mouse Wheel]", position, f_zoomTextWidth,
               TextBoxStyle::Text);
-}
-
-void View::drawCells(const std::set<Cell> &cells, const sf::Color &color) {
-  auto size{calculateCellSize()};
-  sf::RectangleShape rect{size};
-  rect.setFillColor(color);
-  rect.setPosition(calculateCellPosition(*cells.begin()));
-  auto lastItem{std::next(cells.cend(), -1)};
-  for (auto it = cells.begin(); it != cells.end(); it++) {
-    if (it == lastItem || it->y != std::next(it, 1)->y ||
-        it->x != std::next(it, 1)->x - 1) {
-      m_window.draw(rect);
-      if (it != lastItem) {
-        rect.setPosition(calculateCellPosition(*std::next(it, 1)));
-        rect.setSize(size);
-      }
-    } else {
-      auto currentSize{rect.getSize()};
-      rect.setSize({currentSize.x + size.x, currentSize.y});
-    }
-  }
 }
 
 bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
@@ -585,9 +610,9 @@ void View::applyZoomLevel(int zoomLevel) {
   m_zoomLevel = std::min(f_maxZoomLevel, std::max(f_minZoomLevel, zoomLevel));
   auto cellSize{calculateCellSize()};
   applyViewOffset(
-      {-(static_cast<float>(cellAtCentre.value().x) + .5f) * cellSize.x +
+      {-(static_cast<float>(cellAtCentre.value().col) + .5f) * cellSize.x +
            static_cast<float>(f_defaultScreenWidth) * .5f,
-       -(static_cast<float>(cellAtCentre.value().y) + 0.5f) * cellSize.y +
+       -(static_cast<float>(cellAtCentre.value().row) + 0.5f) * cellSize.y +
            static_cast<float>(f_defaultScreenHeight) * .5f});
 }
 
@@ -615,10 +640,11 @@ sf::Vector2f View::calculateCellSize() const {
               static_cast<float>(m_model.height())};
 }
 
-sf::Vector2f View::calculateCellPosition(const Cell &cell) const {
+sf::Vector2f View::calculateCellPosition(std::size_t row,
+                                         std::size_t column) const {
   auto size{calculateCellSize()};
-  return {static_cast<float>(cell.x) * size.x + m_viewOffset.x,
-          static_cast<float>(cell.y) * size.y + m_viewOffset.y};
+  return {static_cast<float>(row) * size.x + m_viewOffset.x,
+          static_cast<float>(column) * size.y + m_viewOffset.y};
 }
 
 std::optional<Cell> View::cellAtCoord(sf::Vector2f coord) const {
@@ -629,6 +655,6 @@ std::optional<Cell> View::cellAtCoord(sf::Vector2f coord) const {
     return {};
   }
   auto cellSize{calculateCellSize()};
-  return {{static_cast<size_t>((coord.x - m_viewOffset.x) / cellSize.x),
-           static_cast<size_t>((coord.y - m_viewOffset.y) / cellSize.y)}};
+  return {{static_cast<std::size_t>((coord.x - m_viewOffset.x) / cellSize.x),
+           static_cast<std::size_t>((coord.y - m_viewOffset.y) / cellSize.y)}};
 }

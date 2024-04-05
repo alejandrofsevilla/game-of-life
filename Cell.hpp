@@ -1,25 +1,23 @@
 #ifndef GAME_OF_LIFE_CELL_HPP
 #define GAME_OF_LIFE_CELL_HPP
 
-#include <cstddef>
-
 struct Cell {
   enum class Status { Empty, Alive, Dead };
 
-  size_t x{0};
-  size_t y{0};
+  std::size_t col{0};
+  std::size_t row{0};
 
   bool operator==(const Cell &other) const {
-    return x == other.x && y == other.y;
+    return col == other.col && row == other.row;
   }
   bool operator<(const Cell &other) const {
-    if (y < other.y) {
+    if (row < other.row) {
       return true;
     }
-    if (y > other.y) {
+    if (row > other.row) {
       return false;
     }
-    if (x < other.x) {
+    if (col < other.col) {
       return true;
     }
     return false;

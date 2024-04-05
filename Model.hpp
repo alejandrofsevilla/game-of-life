@@ -10,21 +10,21 @@ class Model {
  public:
   enum class Status { ReadyToRun, Running, Paused, Stopped };
 
-  Model(size_t maxWidth, size_t maxHeight);
+  Model(std::size_t maxWidth, std::size_t maxHeight);
 
   Status status() const;
-  size_t speed() const;
-  size_t maxSpeed() const;
-  size_t size() const;
-  size_t maxSize() const;
-  size_t width() const;
-  size_t height() const;
-  size_t generation() const;
-  const std::set<Cell>& aliveCells() const;
-  const std::set<Cell>& deadCells() const;
+  std::size_t speed() const;
+  std::size_t maxSpeed() const;
+  std::size_t size() const;
+  std::size_t maxSize() const;
+  std::size_t width() const;
+  std::size_t height() const;
+  std::size_t generation() const;
+  std::size_t population() const;
   const std::set<Cell>& initialPattern() const;
-  const std::set<size_t>& survivalRule() const;
-  const std::set<size_t>& birthRule() const;
+  const std::set<std::size_t>& survivalRule() const;
+  const std::set<std::size_t>& birthRule() const;
+  const Cell::Status& cellStatus(std::size_t col, std::size_t row) const;
 
   void update();
   void run();
@@ -39,31 +39,33 @@ class Model {
   void insertCell(const Cell& cell);
   void removeCell(const Cell& cell);
   void insertPattern(const std::set<Cell>& pattern);
-  void setSurvivalRule(const std::set<size_t>& rule);
-  void setBirthRule(const std::set<size_t>& rule);
+  void setSurvivalRule(const std::set<std::size_t>& rule);
+  void setBirthRule(const std::set<std::size_t>& rule);
 
  private:
   void updateStatus();
-  void setSize(size_t size);
+  void setSize(std::size_t size);
 
-  size_t calculateWidth();
-  size_t calculateHeight();
+  std::size_t updateSection(std::size_t minCol, std::size_t maxCol);
 
-  const size_t m_maxWidth;
-  const size_t m_maxHeight;
+  std::size_t calculateWidth();
+  std::size_t calculateHeight();
+
+  const std::size_t m_maxWidth;
+  const std::size_t m_maxHeight;
 
   Status m_status;
-  size_t m_size;
-  size_t m_width;
-  size_t m_height;
-  size_t m_speed;
-  size_t m_generation;
+  std::size_t m_size;
+  std::size_t m_width;
+  std::size_t m_height;
+  std::size_t m_speed;
+  std::size_t m_generation;
+  std::size_t m_population;
   std::set<Cell> m_initialPattern;
-  std::set<size_t> m_survivalRule;
-  std::set<size_t> m_birthRule;
-  std::set<Cell> m_aliveCells;
-  std::set<Cell> m_deadCells;
+  std::set<std::size_t> m_survivalRule;
+  std::set<std::size_t> m_birthRule;
   std::vector<std::vector<Cell::Status>> m_cellStatus;
+  std::vector<std::vector<Cell::Status>> m_updatedCellStatus;
 };
 
 #endif
