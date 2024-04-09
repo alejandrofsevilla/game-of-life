@@ -46,7 +46,7 @@ void Controller::onMouseButtonPressedInMainScreen(
   }
   auto cell{m_view.highlightedCell()};
   if (cell) {
-    onMouseButtonPressedOnCell({cell->x, cell->y});
+    onMouseButtonPressedOnCell({cell->col, cell->row});
     return;
   }
   auto highlightedButton{m_view.highlightedButton()};
@@ -319,7 +319,7 @@ void Controller::onKeyPressedInMainScreen(const sf::Event::KeyEvent &event) {
       m_model.reset();
       return;
     case sf::Keyboard::C:
-      if (m_model.aliveCells().empty() && m_model.deadCells().empty()) {
+      if (m_model.status() == Model::Status::Running) {
         return;
       }
       m_model.clear();
@@ -459,11 +459,11 @@ void Controller::onKeyPressedInEditRuleScreen(
         rule.clear();
         m_model.setSurvivalRule(rule);
       }
+      return;
     }
     default:
       return;
   }
-  return;
 }
 
 void Controller::onMouseButtonPressedOnCell(const Cell &cell) {
@@ -471,9 +471,7 @@ void Controller::onMouseButtonPressedOnCell(const Cell &cell) {
       m_model.status() != Model::Status::ReadyToRun) {
     return;
   }
-  auto &cells{m_model.aliveCells()};
-  auto match{cells.find(cell)};
-  if (match != cells.end()) {
+  if (m_model.cellStatus(cell.col, cell.row) == Cell::Status::Alive) {
     m_model.removeCell(cell);
   } else {
     m_model.insertCell(cell);

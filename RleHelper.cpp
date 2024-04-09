@@ -27,17 +27,17 @@ std::set<Cell> map(const std::string &pattern) {
       if (match[2] == f_aliveCellSymbol) {
         for (auto i = 0; i < consecutiveCells; i++) {
           result.insert(cell);
-          cell.x++;
+          cell.col++;
         }
       } else {
-        cell.x += consecutiveCells;
+        cell.col += consecutiveCells;
       }
     }
     it = match.suffix().first;
     auto rowsSkipped{std::max(1, std::atoi(match[3].str().c_str()))};
     if (match[4] == f_nextRowSymbol) {
-      cell.y += rowsSkipped;
-      cell.x = 0;
+      cell.row += rowsSkipped;
+      cell.col = 0;
     } else if (*it == f_endOfPatternSymbol) {
       it++;
     }
@@ -48,25 +48,25 @@ std::set<Cell> map(const std::string &pattern) {
 Cell mostLeftCell(const std::set<Cell> &pattern) {
   return *std::min_element(
       pattern.cbegin(), pattern.cend(),
-      [](const auto &a, const auto &b) { return a.x < b.x; });
+      [](const auto &a, const auto &b) { return a.col < b.col; });
 }
 
 Cell mostRightCell(const std::set<Cell> &pattern) {
   return *std::max_element(
       pattern.cbegin(), pattern.cend(),
-      [](const auto &a, const auto &b) { return a.x < b.x; });
+      [](const auto &a, const auto &b) { return a.col < b.col; });
 }
 
 Cell mostTopCell(const std::set<Cell> &pattern) {
   return *std::min_element(
       pattern.cbegin(), pattern.cend(),
-      [](const auto &a, const auto &b) { return a.y < b.y; });
+      [](const auto &a, const auto &b) { return a.row < b.row; });
 }
 
 Cell mostBottomCell(const std::set<Cell> &pattern) {
   return *std::max_element(
       pattern.cbegin(), pattern.cend(),
-      [](const auto &a, const auto &b) { return a.y < b.y; });
+      [](const auto &a, const auto &b) { return a.row < b.row; });
 }
 }  // namespace
 
@@ -114,18 +114,18 @@ void savePattern(const std::string &name, const std::set<Cell> &pattern) {
   std::ofstream ostrm;
   ostrm.open(f_patternsFolder + name + f_rleFileExtension);
   ostrm << "#N " << name << std::endl;
-  auto minCol{mostLeftCell(pattern).x};
-  auto minRow{mostTopCell(pattern).y};
-  auto maxCol{mostRightCell(pattern).x};
-  auto maxRow{mostBottomCell(pattern).y};
+  auto minCol{mostLeftCell(pattern).col};
+  auto minRow{mostTopCell(pattern).row};
+  auto maxCol{mostRightCell(pattern).col};
+  auto maxRow{mostBottomCell(pattern).row};
   ostrm << "x = " << maxCol - minCol;
   ostrm << ", y = " << maxRow - minRow << std::endl;
   size_t prevCol{0};
   size_t prevRow{0};
   auto consecutiveCells{0};
   for (auto it = pattern.cbegin(); it != pattern.cend(); it++) {
-    auto col = it->x - minCol;
-    auto row = it->y - minRow;
+    auto col = it->col - minCol;
+    auto row = it->row - minRow;
     if (it == pattern.cbegin()) {
       prevCol = col - 1;
       prevRow = row - 1;

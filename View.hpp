@@ -37,6 +37,13 @@ class View {
 
   View(sf::RenderWindow &window, Model &model);
 
+  Screen screen() const;
+  Button highlightedButton() const;
+  Edit highlightedEdit() const;
+  std::optional<std::string> highlightedLoadFileMenuItem() const;
+  std::optional<Cell> highlightedCell() const;
+  const std::string &fileNameToSave() const;
+
   void update();
   void zoomIn();
   void zoomOut();
@@ -48,13 +55,6 @@ class View {
   void dragView(sf::Vector2i offset);
   void setScreen(View::Screen screen);
   void setFileNameToSave(const std::string &name);
-
-  Screen screen() const;
-  Button highlightedButton() const;
-  Edit highlightedEdit() const;
-  std::optional<std::string> highlightedLoadFileMenuItem() const;
-  std::optional<Cell> highlightedCell() const;
-  const std::string &fileNameToSave() const;
 
  private:
   enum class TextBoxStyle { Text, Display, Button, HiddenText, HiddenButton };
@@ -69,7 +69,7 @@ class View {
   void drawCells();
   void drawBottomMenu();
   void drawTopMenu();
-  void drawCells(const std::set<Cell> &cells, const sf::Color &color);
+  void updateCellVertexArray(std::size_t minCol, std::size_t maxCol);
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);
   void applyViewOffset(const sf::Vector2f &offset);
@@ -77,13 +77,14 @@ class View {
   void updateWindowView();
 
   sf::Vector2f calculateCellSize() const;
-  sf::Vector2f calculateCellPosition(const Cell &cell) const;
+  sf::Vector2f calculateCellPosition(std::size_t row, std::size_t column) const;
   std::optional<Cell> cellAtCoord(sf::Vector2f coord) const;
 
   Model &m_model;
   View::Screen m_screen;
   sf::RenderWindow &m_window;
   sf::Vector2f m_viewOffset;
+  sf::VertexArray m_cellsVertexArray;
   sf::Font m_font;
   Button m_highlightedButton;
   Edit m_highlightedEdit;
