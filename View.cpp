@@ -72,29 +72,23 @@ inline std::string toString(const std::set<std::size_t> &values) {
 
 inline sf::Color toCellColor(Cell::Status status) {
   switch (status) {
-    case Cell::Status::Alive:
-      return f_livingCellColor;
-    case Cell::Status::Dead:
-      return f_deadCellColor;
-    default:
-      return f_backgroundColor;
+  case Cell::Status::Alive:
+    return f_livingCellColor;
+  case Cell::Status::Dead:
+    return f_deadCellColor;
+  default:
+    return f_backgroundColor;
   }
 }
-}  // namespace
+} // namespace
 
 View::View(sf::RenderWindow &window, Model &model)
-    : m_model{model},
-      m_screen{Screen::Main},
-      m_window{window},
+    : m_model{model}, m_screen{Screen::Main}, m_window{window},
       m_viewOffset{f_frameVerticalThickness, f_frameHorizontalThickness},
       m_cellsVertexArray{sf::Quads, 4 * model.width() * model.height()},
-      m_font{},
-      m_highlightedButton{Button::None},
-      m_highlightedEdit{Edit::None},
-      m_highlightedLoadFileMenuItem{},
-      m_zoomLevel{f_defaultZoomLevel},
-      m_scrollPos{},
-      m_fileNameToSave{} {
+      m_font{}, m_highlightedButton{Button::None},
+      m_highlightedEdit{Edit::None}, m_highlightedLoadFileMenuItem{},
+      m_zoomLevel{f_defaultZoomLevel}, m_scrollPos{}, m_fileNameToSave{} {
   m_font.loadFromFile(f_fontPath);
 }
 
@@ -124,19 +118,19 @@ void View::update() {
   m_highlightedButton = Button::None;
   drawBackground();
   switch (m_screen) {
-    case Screen::EditRule:
-      drawEditRuleScreen();
-      break;
-    case Screen::SaveFile:
-      drawSaveFileScreen();
-      break;
-    case Screen::LoadFile:
-      drawLoadFileScreen();
-      break;
-    case Screen::Main:
-    default:
-      drawMainScreen();
-      break;
+  case Screen::EditRule:
+    drawEditRuleScreen();
+    break;
+  case Screen::SaveFile:
+    drawSaveFileScreen();
+    break;
+  case Screen::LoadFile:
+    drawLoadFileScreen();
+    break;
+  case Screen::Main:
+  default:
+    drawMainScreen();
+    break;
   }
   updateWindowView();
   m_window.display();
@@ -350,13 +344,13 @@ void View::updateCellVertexArray(std::size_t minCol, std::size_t maxCol) {
 }
 
 void View::drawCells() {
-  auto size{ 4 * m_model.width() * m_model.height() };
+  auto size{4 * m_model.width() * m_model.height()};
   if (m_cellsVertexArray.getVertexCount() != size) {
     m_cellsVertexArray.resize(size);
   }
-  auto numOfThreads{ std::thread::hardware_concurrency() };
-  auto numColPerThread{ static_cast<std::size_t>(
-      std::ceil(static_cast<double>(m_model.width()) / numOfThreads)) };
+  auto numOfThreads{std::thread::hardware_concurrency()};
+  auto numColPerThread{static_cast<std::size_t>(
+      std::ceil(static_cast<double>(m_model.width()) / numOfThreads))};
   {
     std::vector<std::future<void>> tasks;
     for (std::size_t i = 0; i < numOfThreads; i++) {
@@ -382,7 +376,7 @@ void View::drawBottomMenu() {
               m_model.status() != Model::Status::ReadyToRun)
                  ? TextBoxStyle::HiddenText
                  : TextBoxStyle::Text};
-  drawTextBox("Rule [U]:", position, f_defaultTextWidth, style);
+  drawTextBox("Rule", position, f_defaultTextWidth, style);
   position.x += f_ruleEditBoxWidth;
   std::string rule("B");
   rule.append(toString(m_model.birthRule()));
@@ -398,7 +392,7 @@ void View::drawBottomMenu() {
   position.x += f_ruleEditBoxWidth;
   style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Text
                                                      : TextBoxStyle::HiddenText;
-  drawTextBox("Grid Size [Up/Down]:", position, f_defaultTextWidth, style);
+  drawTextBox("Grid Size", position, f_defaultTextWidth, style);
   position.x += f_defaultTextWidth;
   style = m_model.status() == Model::Status::Stopped
               ? TextBoxStyle::Button
@@ -411,12 +405,11 @@ void View::drawBottomMenu() {
     m_highlightedButton = Button::IncreaseSize;
   }
   position.x += f_plusMinusButtonWidth;
-  drawTextBox(
-      std::to_string(m_model.size()) + "/" + std::to_string(m_model.maxSize()),
-      position, f_displayBoxWidth, TextBoxStyle::Display);
+  drawTextBox(std::to_string(m_model.size()) + "/" +
+                  std::to_string(m_model.maxSize()),
+              position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x += f_displayBoxWidth;
-  drawTextBox("Speed [Left/Right]:", position, f_defaultTextWidth,
-              TextBoxStyle::Text);
+  drawTextBox("Speed", position, f_defaultTextWidth, TextBoxStyle::Text);
   position.x += f_defaultTextWidth;
   if (drawTextBox("-", position, f_plusMinusButtonWidth,
                   TextBoxStyle::Button)) {
@@ -432,12 +425,12 @@ void View::drawBottomMenu() {
                   std::to_string(m_model.maxSpeed()),
               position, f_displayBoxWidth, TextBoxStyle::Display);
   position.x += f_displayBoxWidth;
-  drawTextBox("Generation:", position, f_defaultTextWidth, TextBoxStyle::Text);
+  drawTextBox("Generation", position, f_defaultTextWidth, TextBoxStyle::Text);
   position.x += f_defaultTextWidth;
   drawTextBox(std::to_string(m_model.generation()), position, f_displayBoxWidth,
               TextBoxStyle::Display);
   position.x += f_displayBoxWidth;
-  drawTextBox("Population:", position, f_defaultTextWidth, TextBoxStyle::Text);
+  drawTextBox("Population", position, f_defaultTextWidth, TextBoxStyle::Text);
   position.x += f_defaultTextWidth;
   drawTextBox(std::to_string(m_model.population()), position, f_displayBoxWidth,
               TextBoxStyle::Display);
@@ -469,25 +462,25 @@ void View::drawTopMenu() {
               ? TextBoxStyle::HiddenButton
               : TextBoxStyle::Button;
   switch (m_model.status()) {
-    case Model::Status::Stopped:
-    case Model::Status::ReadyToRun:
-      if (drawTextBox("Start [space]", position, f_defaultButtonWidth, style)) {
-        m_highlightedButton = Button::Run;
-      }
-      break;
-    case Model::Status::Running:
-      if (drawTextBox("Pause [space]", position, f_defaultButtonWidth, style)) {
-        m_highlightedButton = Button::Pause;
-      }
-      break;
-    case Model::Status::Paused:
-      if (drawTextBox("Continue [Space]", position, f_defaultButtonWidth,
-                      style)) {
-        m_highlightedButton = Button::Run;
-      }
-      break;
-    default:
-      break;
+  case Model::Status::Stopped:
+  case Model::Status::ReadyToRun:
+    if (drawTextBox("Start [space]", position, f_defaultButtonWidth, style)) {
+      m_highlightedButton = Button::Run;
+    }
+    break;
+  case Model::Status::Running:
+    if (drawTextBox("Pause [space]", position, f_defaultButtonWidth, style)) {
+      m_highlightedButton = Button::Pause;
+    }
+    break;
+  case Model::Status::Paused:
+    if (drawTextBox("Continue [Space]", position, f_defaultButtonWidth,
+                    style)) {
+      m_highlightedButton = Button::Run;
+    }
+    break;
+  default:
+    break;
   }
   position.x += f_defaultButtonWidth;
   style = (m_model.status() == Model::Status::ReadyToRun ||
@@ -540,46 +533,46 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
                    position.y + f_textBoxTextVerticalPosition);
 
   switch (style) {
-    case TextBoxStyle::Button:
-      if (rect.getGlobalBounds().contains(
-              m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)))) {
-        highlighted = true;
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-          rect.setFillColor(f_clickedButtonFillColor);
-          rect.setOutlineColor(f_clickedButtonOutlineColor);
-          text.setFillColor(f_clickedButtonTextColor);
-        } else {
-          rect.setFillColor(f_highlightedButtonFilledColor);
-          rect.setOutlineColor(f_highlightedButtonOutlineColor);
-          text.setFillColor(f_highlightedButtonTextColor);
-        }
+  case TextBoxStyle::Button:
+    if (rect.getGlobalBounds().contains(
+            m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)))) {
+      highlighted = true;
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        rect.setFillColor(f_clickedButtonFillColor);
+        rect.setOutlineColor(f_clickedButtonOutlineColor);
+        text.setFillColor(f_clickedButtonTextColor);
       } else {
-        rect.setFillColor(f_buttonFillColor);
-        rect.setOutlineColor(f_buttonOutlineColor);
-        text.setFillColor(f_buttonTextColor);
+        rect.setFillColor(f_highlightedButtonFilledColor);
+        rect.setOutlineColor(f_highlightedButtonOutlineColor);
+        text.setFillColor(f_highlightedButtonTextColor);
       }
-      break;
-    case TextBoxStyle::Display:
-      rect.setFillColor(f_displayTextBoxFillColor);
-      rect.setOutlineColor(f_displayTextBoxOutlineColor);
-      text.setFillColor(f_displayTextBoxTextFillColor);
-      break;
-    case TextBoxStyle::HiddenText:
-      rect.setFillColor(f_hiddenTextBoxFillColor);
-      rect.setOutlineColor(f_hiddenTextBoxOutlineColor);
-      text.setFillColor(f_hiddenTextBoxTextColor);
-      break;
-    case TextBoxStyle::HiddenButton:
-      rect.setFillColor(f_hiddenButtonFillColor);
-      rect.setOutlineColor(f_hiddenButtonOutlineColor);
-      text.setFillColor(f_hiddenButtonTextColor);
-      break;
-    case TextBoxStyle::Text:
-    default:
-      rect.setFillColor(f_simpleTextBoxFillColor);
-      rect.setOutlineColor(f_simpleTextBoxOutlineColor);
-      text.setFillColor(f_simpleTextBoxTextColor);
-      break;
+    } else {
+      rect.setFillColor(f_buttonFillColor);
+      rect.setOutlineColor(f_buttonOutlineColor);
+      text.setFillColor(f_buttonTextColor);
+    }
+    break;
+  case TextBoxStyle::Display:
+    rect.setFillColor(f_displayTextBoxFillColor);
+    rect.setOutlineColor(f_displayTextBoxOutlineColor);
+    text.setFillColor(f_displayTextBoxTextFillColor);
+    break;
+  case TextBoxStyle::HiddenText:
+    rect.setFillColor(f_hiddenTextBoxFillColor);
+    rect.setOutlineColor(f_hiddenTextBoxOutlineColor);
+    text.setFillColor(f_hiddenTextBoxTextColor);
+    break;
+  case TextBoxStyle::HiddenButton:
+    rect.setFillColor(f_hiddenButtonFillColor);
+    rect.setOutlineColor(f_hiddenButtonOutlineColor);
+    text.setFillColor(f_hiddenButtonTextColor);
+    break;
+  case TextBoxStyle::Text:
+  default:
+    rect.setFillColor(f_simpleTextBoxFillColor);
+    rect.setOutlineColor(f_simpleTextBoxOutlineColor);
+    text.setFillColor(f_simpleTextBoxTextColor);
+    break;
   }
   m_window.draw(rect);
   m_window.draw(text);
