@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22.0)
 
-set(SFML_VERSION "2.6.0")
+set(SFML_VERSION "2.6.1")
 set(BIN_PATH_NAME "bin")
 set(RESOURCES_PATH_NAME "resources")
 set(CMAKE_INSTALL_PREFIX "install")
