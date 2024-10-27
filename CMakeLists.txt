@@ -51,3 +51,7 @@ endif()
 install(TARGETS ${PROJECT_NAME} DESTINATION ${BIN_PATH_NAME})
 install(DIRECTORY ${RESOURCES_PATH_NAME} DESTINATION .)
 
+include(InstallRequiredSystemLibraries)
+set(CPACK_GENERATOR "ZIP")
+set(CPACK_SOURCE_GENERATOR "ZIP")
+include(CPack)
