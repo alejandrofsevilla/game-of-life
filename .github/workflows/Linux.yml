@@ -47,8 +47,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        tag_name: ${{runner.os}}-v${{github.run_number}}
-        release_name: ${{steps.pack.outputs.package_name}}-v${{github.run_number}}
+        tag_name: ${{runner.os}}-r${{github.run_number}}
+        release_name: ${{runner.os}} release ${{github.run_number}}
 
     - name: Update release asset
       if: github.ref == 'refs/heads/main'
@@ -58,5 +58,5 @@ jobs:
       with:
         upload_url: ${{steps.create-release.outputs.upload_url}}
         asset_path: ${{github.workspace}}/${{steps.pack.outputs.package_name}}.zip
-        asset_name: ${{steps.pack.outputs.package_name}}-v${{github.run_number}}.zip
+        asset_name: ${{steps.pack.outputs.package_name}}.zip
         asset_content_type: application/zip
