@@ -7,6 +7,7 @@ env:
 
 jobs:
   build:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
@@ -32,5 +33,30 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Install
-      run: cmake --install ${{github.workspace}}/build
+    - name: Pack
+      if: github.ref == 'refs/heads/main'
+      id: pack
+      shell: bash
+      run: cpack -C Release --config '${{github.workspace}}/build/CPackConfig.cmake';
+           echo "package_name=$(grep CPACK_PACKAGE_FILE_NAME '${{github.workspace}}'/build/CPackConfig.cmake | cut -d "\"" -f2)" >> $GITHUB_OUTPUT
+
+    - name: Create release
+      if: github.ref == 'refs/heads/main'
+      id: create-release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        tag_name: ${{runner.os}}-v${{github.run_number}}
+        release_name: ${{steps.pack.outputs.package_name}}-v${{github.run_number}}
+
+    - name: Update release asset
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        upload_url: ${{steps.create-release.outputs.upload_url}}
+        asset_path: ${{github.workspace}}/${{steps.pack.outputs.package_name}}.zip
+        asset_name: ${{steps.pack.outputs.package_name}}-v${{github.run_number}}.zip
+        asset_content_type: application/zip
