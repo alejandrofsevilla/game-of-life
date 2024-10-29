@@ -21,7 +21,7 @@ There are in total 2^18 possible life-like rules that can be studied.
 ## Requirements
 * C++17 compiler.
 * CMake 3.22.0.
-* [SFML 2.6.0 requirements](https://www.sfml-dev.org/tutorials/2.6/start-cmake.php#requirements). 
+* [SFML 2.6.1 requirements](https://www.sfml-dev.org/tutorials/2.6/start-cmake.php#requirements). 
 ## Features
 - **Add/Remove Cells [Mouse Left].**
 - **Load/Save Patterns [L/S].**\
