@@ -29,7 +29,7 @@ There are in total 2^18 possible life-like rules that can be studied.
 - **Populate [P].**\
   Fill the grid with a random pattern of living cells.
 - **Rule.**\
-  Set birth/death rules in [Golly/RLE format](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#:~:text=%5B4%5D-,A%20selection%20of%20Life%2Dlike%20rules,-%5Bedit%5D) .
+  Set birth/survival rules in [Golly/RLE format](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#:~:text=%5B4%5D-,A%20selection%20of%20Life%2Dlike%20rules,-%5Bedit%5D) .
 - **Reset [R].**\
   Reset active pattern to its initial configuration.
 - **Clear Grid [G].**
