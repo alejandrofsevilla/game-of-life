@@ -51,7 +51,7 @@ constexpr auto f_defaultButtonWidth{162.f};
 constexpr auto f_addRemoveCellTextWidth{290.f};
 constexpr auto f_dragViewTextWidth{240.f};
 constexpr auto f_zoomTextWidth{235.f};
-constexpr auto f_displayBoxWidth{125.f};
+constexpr auto f_displayBoxWidth{131.f};
 constexpr auto f_plusMinusButtonWidth{50.f};
 constexpr auto f_defaultTextWidth{195.f};
 constexpr auto f_saveMenuInfoTextWidth{180.f};
@@ -377,7 +377,7 @@ void View::drawBottomMenu() {
                  ? TextBoxStyle::HiddenText
                  : TextBoxStyle::Text};
   drawTextBox("Rule", position, f_defaultTextWidth, style);
-  position.x += f_ruleEditBoxWidth;
+  position.x += f_defaultTextWidth;
   std::string rule("B");
   rule.append(toString(m_model.birthRule()));
   rule.append("/S");
