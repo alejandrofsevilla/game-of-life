@@ -42,7 +42,7 @@ constexpr auto f_frameVerticalThickness{0.f};
 constexpr auto f_fontSize{18};
 constexpr auto f_textBoxOutlineThickness{1.f};
 constexpr auto f_textBoxHeight{f_frameHorizontalThickness};
-constexpr auto f_defaultZoomLevel{1};
+constexpr auto f_defaultZoomLevel{5};
 constexpr auto f_minZoomLevel{1};
 constexpr auto f_maxZoomLevel{10};
 constexpr auto f_zoomSensibility{1};
@@ -610,15 +610,9 @@ void View::applyZoomLevel(int zoomLevel) {
 }
 
 void View::updateWindowView() {
-  auto view{m_window.getView()};
-  auto windowSize{m_window.getSize()};
-  auto ratio{static_cast<float>(windowSize.x) /
-             static_cast<float>(windowSize.y)};
-  auto defaultRatio{static_cast<float>(f_defaultScreenWidth) /
-                    static_cast<float>(f_defaultScreenHeight)};
-  auto width{f_defaultScreenWidth * std::max(1.f, ratio / defaultRatio)};
-  auto height{f_defaultScreenHeight / std::min(1.f, ratio / defaultRatio)};
-  view.setSize({width, height});
+  auto view{ m_window.getView() };
+  view.setSize(f_defaultScreenWidth, f_defaultScreenHeight);
+  view.setCenter(f_defaultScreenWidth / 2.f, f_defaultScreenHeight / 2.f);
   m_window.setView(view);
 }
 
