@@ -1,7 +1,7 @@
 # ![MacOsWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/MacOs.yml/badge.svg) ![LinuxWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Linux.yml/badge.svg) ![WindowsWorkflow](https://github.com/alejandrofsevilla/game-of-life/actions/workflows/Windows.yml/badge.svg)
 # Game of Life
 
-Visualization of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton) using [SFML](https://www.sfml-dev.org/).
+Visualization of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton) using [SFML](https://www.sfml-dev.org/) library.
 
 ![Base Profile Screenshot 2024 10 21 - 23 24 49 33](https://github.com/user-attachments/assets/6b9d386e-eb8f-4a41-ad91-a64469da2ba1)
 
