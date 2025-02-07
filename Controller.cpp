@@ -298,12 +298,6 @@ void Controller::onKeyPressedInMainScreen(const sf::Event::KeyEvent &event) {
     }
     m_model.reset();
     return;
-  case sf::Keyboard::C:
-    if (m_model.status() == Model::Status::Running) {
-      return;
-    }
-    m_model.clear();
-    return;
   case sf::Keyboard::L:
     m_view.setScreen(View::Screen::LoadFile);
     return;
@@ -313,13 +307,6 @@ void Controller::onKeyPressedInMainScreen(const sf::Event::KeyEvent &event) {
     }
     m_isSaveFileMenuReady = false;
     m_view.setScreen(View::Screen::SaveFile);
-    return;
-  case sf::Keyboard::P:
-    if (m_model.status() != Model::Status::Stopped &&
-        m_model.status() != Model::Status::ReadyToRun) {
-      return;
-    }
-    m_model.generatePopulation(f_populationGenerationRate);
     return;
   case sf::Keyboard::Escape:
     m_view.closeWindow();

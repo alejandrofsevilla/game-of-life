@@ -1,4 +1,4 @@
-#include "View.hpp"
+﻿#include "View.hpp"
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Mouse.hpp>
@@ -47,12 +47,12 @@ constexpr auto f_minZoomLevel{1};
 constexpr auto f_maxZoomLevel{10};
 constexpr auto f_zoomSensibility{1};
 constexpr auto f_textBoxTextVerticalPosition{12.f};
-constexpr auto f_defaultButtonWidth{162.f};
+constexpr auto f_defaultButtonWidth{1920.f / 13};
 constexpr auto f_addRemoveCellTextWidth{290.f};
 constexpr auto f_dragViewTextWidth{240.f};
 constexpr auto f_zoomTextWidth{235.f};
 constexpr auto f_displayBoxWidth{131.f};
-constexpr auto f_plusMinusButtonWidth{50.f};
+constexpr auto f_plusMinusButtonWidth{f_defaultButtonWidth * .5f};
 constexpr auto f_defaultTextWidth{195.f};
 constexpr auto f_saveMenuInfoTextWidth{180.f};
 constexpr auto f_pageUpDownTextWidth{370.f};
@@ -84,7 +84,7 @@ inline sf::Color toCellColor(Cell::Status status) {
 
 View::View(sf::RenderWindow &window, Model &model)
     : m_model{model}, m_screen{Screen::Main}, m_window{window},
-      m_viewOffset{f_frameVerticalThickness, f_frameHorizontalThickness},
+      m_topLeftCellPos{f_frameVerticalThickness, f_frameHorizontalThickness},
       m_cellsVertexArray{sf::Quads, 4 * model.width() * model.height()},
       m_font{}, m_highlightedButton{Button::None},
       m_highlightedEdit{Edit::None}, m_highlightedLoadFileMenuItem{},
@@ -161,8 +161,8 @@ void View::pageUp() {
 void View::closeWindow() { m_window.close(); }
 
 void View::dragView(sf::Vector2i offset) {
-  applyViewOffset({m_viewOffset.x + static_cast<float>(offset.x),
-                   m_viewOffset.y + static_cast<float>(offset.y)});
+  applyViewOffset({m_topLeftCellPos.x + static_cast<float>(offset.x),
+                   m_topLeftCellPos.y + static_cast<float>(offset.y)});
 }
 
 void View::setScreen(View::Screen screen) { m_screen = screen; }
@@ -173,7 +173,6 @@ void View::drawMainScreen() {
   drawCells();
   drawGrid();
   drawFrame();
-  drawBottomMenu();
   drawTopMenu();
 }
 
@@ -305,14 +304,14 @@ void View::drawGrid() {
   sf::VertexArray lines{sf::Lines, 2 * (m_model.width() + m_model.height())};
   std::size_t index{0};
   for (std::size_t x = 0; x < m_model.width(); x++) {
-    auto pos{static_cast<float>(x) * cellSize.x + m_viewOffset.x};
+    auto pos{static_cast<float>(x) * cellSize.x + m_topLeftCellPos.x};
     lines[index].position = sf::Vector2f(pos, 0);
     lines[index++].color = f_gridColor;
     lines[index].position = sf::Vector2f(pos, f_defaultScreenHeight);
     lines[index++].color = f_gridColor;
   }
   for (std::size_t y = 0; y < m_model.height(); y++) {
-    auto pos{static_cast<float>(y) * cellSize.y + m_viewOffset.y};
+    auto pos{static_cast<float>(y) * cellSize.y + m_topLeftCellPos.y};
     lines[index].position = sf::Vector2f(0, pos);
     lines[index++].color = f_gridColor;
     lines[index].position = sf::Vector2f(f_defaultScreenWidth, pos);
@@ -363,80 +362,6 @@ void View::drawCells() {
   m_window.draw(m_cellsVertexArray);
 }
 
-void View::drawBottomMenu() {
-  sf::RectangleShape rect{{f_defaultScreenWidth, f_frameHorizontalThickness}};
-  rect.setFillColor(f_frameColor);
-  rect.setPosition(0, f_defaultScreenHeight - f_frameHorizontalThickness);
-  m_window.draw(rect);
-  sf::Vector2f position{f_frameVerticalThickness,
-                        static_cast<float>(f_defaultScreenHeight) -
-                            f_frameHorizontalThickness +
-                            f_textBoxOutlineThickness};
-  auto style{(m_model.status() != Model::Status::Stopped &&
-              m_model.status() != Model::Status::ReadyToRun)
-                 ? TextBoxStyle::HiddenText
-                 : TextBoxStyle::Text};
-  drawTextBox("Rule", position, f_defaultTextWidth, style);
-  position.x += f_defaultTextWidth;
-  std::string rule("B");
-  rule.append(toString(m_model.birthRule()));
-  rule.append("/S");
-  rule.append(toString(m_model.survivalRule()));
-  style = (m_model.status() != Model::Status::Stopped &&
-           m_model.status() != Model::Status::ReadyToRun)
-              ? TextBoxStyle::Display
-              : TextBoxStyle::Button;
-  if (drawTextBox(rule, position, f_ruleEditBoxWidth, style)) {
-    m_highlightedButton = Button::EditRule;
-  }
-  position.x += f_ruleEditBoxWidth;
-  style = m_model.status() == Model::Status::Stopped ? TextBoxStyle::Text
-                                                     : TextBoxStyle::HiddenText;
-  drawTextBox("Grid Size", position, f_defaultTextWidth, style);
-  position.x += f_defaultTextWidth;
-  style = m_model.status() == Model::Status::Stopped
-              ? TextBoxStyle::Button
-              : TextBoxStyle::HiddenButton;
-  if (drawTextBox("-", position, f_plusMinusButtonWidth, style)) {
-    m_highlightedButton = Button::ReduceSize;
-  }
-  position.x += f_plusMinusButtonWidth;
-  if (drawTextBox("+", position, f_plusMinusButtonWidth, style)) {
-    m_highlightedButton = Button::IncreaseSize;
-  }
-  position.x += f_plusMinusButtonWidth;
-  drawTextBox(std::to_string(m_model.size()) + "/" +
-                  std::to_string(m_model.maxSize()),
-              position, f_displayBoxWidth, TextBoxStyle::Display);
-  position.x += f_displayBoxWidth;
-  drawTextBox("Speed", position, f_defaultTextWidth, TextBoxStyle::Text);
-  position.x += f_defaultTextWidth;
-  if (drawTextBox("-", position, f_plusMinusButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::SlowDown;
-  }
-  position.x += f_plusMinusButtonWidth;
-  if (drawTextBox("+", position, f_plusMinusButtonWidth,
-                  TextBoxStyle::Button)) {
-    m_highlightedButton = Button::SpeedUp;
-  }
-  position.x += f_plusMinusButtonWidth;
-  drawTextBox(std::to_string(m_model.speed()) + "/" +
-                  std::to_string(m_model.maxSpeed()),
-              position, f_displayBoxWidth, TextBoxStyle::Display);
-  position.x += f_displayBoxWidth;
-  drawTextBox("Generation", position, f_defaultTextWidth, TextBoxStyle::Text);
-  position.x += f_defaultTextWidth;
-  drawTextBox(std::to_string(m_model.generation()), position, f_displayBoxWidth,
-              TextBoxStyle::Display);
-  position.x += f_displayBoxWidth;
-  drawTextBox("Population", position, f_defaultTextWidth, TextBoxStyle::Text);
-  position.x += f_defaultTextWidth;
-  drawTextBox(std::to_string(m_model.population()), position, f_displayBoxWidth,
-              TextBoxStyle::Display);
-  position.x += f_displayBoxWidth;
-}
-
 void View::drawTopMenu() {
   sf::RectangleShape rect{{f_defaultScreenWidth, f_frameHorizontalThickness}};
   rect.setFillColor(f_frameColor);
@@ -464,18 +389,17 @@ void View::drawTopMenu() {
   switch (m_model.status()) {
   case Model::Status::Stopped:
   case Model::Status::ReadyToRun:
-    if (drawTextBox("Start [space]", position, f_defaultButtonWidth, style)) {
+    if (drawTextBox("Start [_]", position, f_defaultButtonWidth, style)) {
       m_highlightedButton = Button::Run;
     }
     break;
   case Model::Status::Running:
-    if (drawTextBox("Pause [space]", position, f_defaultButtonWidth, style)) {
+    if (drawTextBox("Pause [_]", position, f_defaultButtonWidth, style)) {
       m_highlightedButton = Button::Pause;
     }
     break;
   case Model::Status::Paused:
-    if (drawTextBox("Continue [Space]", position, f_defaultButtonWidth,
-                    style)) {
+    if (drawTextBox("Continue [_]", position, f_defaultButtonWidth, style)) {
       m_highlightedButton = Button::Run;
     }
     break;
@@ -491,10 +415,30 @@ void View::drawTopMenu() {
     m_highlightedButton = Button::Reset;
   }
   position.x += f_defaultButtonWidth;
+  style =
+      (m_model.status() == Model::Status::ReadyToRun ||
+       m_model.status() == Model::Status::Stopped)
+          ? TextBoxStyle::HiddenButton
+          : (m_model.speed() == m_model.minSpeed() ? TextBoxStyle::HiddenButton
+                                                   : TextBoxStyle::Button);
+  if (drawTextBox(">", position, f_plusMinusButtonWidth, style)) {
+    m_highlightedButton = Button::SlowDown;
+  }
+  style =
+      (m_model.status() == Model::Status::ReadyToRun ||
+       m_model.status() == Model::Status::Stopped)
+          ? TextBoxStyle::HiddenButton
+          : (m_model.speed() == m_model.maxSpeed() ? TextBoxStyle::HiddenButton
+                                                   : TextBoxStyle::Button);
+  position.x += f_plusMinusButtonWidth;
+  if (drawTextBox(">>", position, f_plusMinusButtonWidth, style)) {
+    m_highlightedButton = Button::SpeedUp;
+  }
+  position.x += f_plusMinusButtonWidth;
   style = (m_model.status() != Model::Status::Running)
               ? TextBoxStyle::Button
               : TextBoxStyle::HiddenButton;
-  if (drawTextBox("Clear [C]", position, f_defaultButtonWidth, style)) {
+  if (drawTextBox("Clear", position, f_defaultButtonWidth, style)) {
     m_highlightedButton = Button::Clear;
   }
   position.x += f_defaultButtonWidth;
@@ -502,7 +446,7 @@ void View::drawTopMenu() {
            m_model.status() == Model::Status::Stopped)
               ? TextBoxStyle::Button
               : TextBoxStyle::HiddenButton;
-  if (drawTextBox("Populate [P]", position, f_defaultButtonWidth, style)) {
+  if (drawTextBox("Random", position, f_defaultButtonWidth, style)) {
     m_highlightedButton = Button::GeneratePopulation;
   }
   style = (m_model.status() == Model::Status::ReadyToRun ||
@@ -510,14 +454,28 @@ void View::drawTopMenu() {
               ? TextBoxStyle::Text
               : TextBoxStyle::HiddenText;
   position.x += f_defaultButtonWidth;
-  drawTextBox("Add/Remove Cell [Mouse 1]", position, f_addRemoveCellTextWidth,
-              style);
-  position.x += f_addRemoveCellTextWidth;
-  drawTextBox("Drag View [Mouse 2]", position, f_dragViewTextWidth,
-              TextBoxStyle::Text);
-  position.x += f_zoomTextWidth;
-  drawTextBox("Zoom [Mouse Wheel]", position, f_zoomTextWidth,
-              TextBoxStyle::Text);
+  std::string rule("RLE B");
+  rule.append(toString(m_model.birthRule()));
+  rule.append("/S");
+  rule.append(toString(m_model.survivalRule()));
+  style = (m_model.status() != Model::Status::Stopped &&
+           m_model.status() != Model::Status::ReadyToRun)
+              ? TextBoxStyle::Display
+              : TextBoxStyle::Button;
+  if (drawTextBox(rule, position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::EditRule;
+  }
+  position.x += f_defaultButtonWidth;
+  drawTextBox("Generation", position, f_defaultButtonWidth, TextBoxStyle::Text);
+  position.x += f_defaultButtonWidth;
+  drawTextBox(std::to_string(m_model.generation()), position,
+              f_defaultButtonWidth, TextBoxStyle::Display);
+  position.x += f_defaultButtonWidth;
+  drawTextBox("Population", position, f_defaultButtonWidth, TextBoxStyle::Text);
+  position.x += f_defaultButtonWidth;
+  drawTextBox(std::to_string(m_model.population()), position,
+              f_defaultButtonWidth, TextBoxStyle::Display);
+  position.x += f_defaultButtonWidth;
 }
 
 bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
@@ -529,9 +487,11 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
   rect.setOutlineThickness(f_textBoxOutlineThickness);
   sf::Text text{content, m_font};
   text.setCharacterSize(f_fontSize);
+  if (text.getLocalBounds().width > rect.getSize().x) {
+    text.setString("RLE...");
+  }
   text.setPosition(position.x + (width - text.getLocalBounds().width) * .5f,
                    position.y + f_textBoxTextVerticalPosition);
-
   switch (style) {
   case TextBoxStyle::Button:
     if (rect.getGlobalBounds().contains(
@@ -585,32 +545,31 @@ void View::applyViewOffset(const sf::Vector2f &position) {
                              cellSize.x * static_cast<float>(m_model.width()) -
                              f_frameVerticalThickness,
                          static_cast<float>(f_defaultScreenHeight) -
-                             cellSize.y * static_cast<float>(m_model.height()) -
-                             f_frameHorizontalThickness};
-  m_viewOffset.x = std::min(static_cast<float>(f_frameVerticalThickness),
-                            std::max(position.x, minOffset.x));
-  m_viewOffset.y =
+                             cellSize.y *
+                                 (static_cast<float>(m_model.height()) -
+                                  f_frameHorizontalThickness)};
+  m_topLeftCellPos.x = std::min(static_cast<float>(f_frameVerticalThickness),
+                                std::max(position.x, minOffset.x));
+  m_topLeftCellPos.y =
       std::min(f_frameHorizontalThickness, std::max(position.y, minOffset.y));
 }
 
 void View::applyZoomLevel(int zoomLevel) {
-  auto cellAtCentre{
-      cellAtCoord({f_defaultScreenWidth * .5f,
-                   f_frameHorizontalThickness +
-                       (f_defaultScreenHeight - f_frameHorizontalThickness -
-                        f_frameHorizontalThickness) *
-                           .5f})};
+  auto cellAtCentre{cellAtCoord(
+      {f_defaultScreenWidth * .5f,
+       f_frameHorizontalThickness +
+           (f_defaultScreenHeight - f_frameHorizontalThickness) * .5f})};
   m_zoomLevel = std::min(f_maxZoomLevel, std::max(f_minZoomLevel, zoomLevel));
   auto cellSize{calculateCellSize()};
   applyViewOffset(
       {-(static_cast<float>(cellAtCentre.value().col) + .5f) * cellSize.x +
            static_cast<float>(f_defaultScreenWidth) * .5f,
        -(static_cast<float>(cellAtCentre.value().row) + 0.5f) * cellSize.y +
-           static_cast<float>(f_defaultScreenHeight) * .5f});
+           static_cast<float>(f_defaultScreenHeight)});
 }
 
 void View::updateWindowView() {
-  auto view{ m_window.getView() };
+  auto view{m_window.getView()};
   view.setSize(f_defaultScreenWidth, f_defaultScreenHeight);
   view.setCenter(f_defaultScreenWidth / 2.f, f_defaultScreenHeight / 2.f);
   m_window.setView(view);
@@ -623,25 +582,26 @@ sf::Vector2f View::calculateCellSize() const {
               static_cast<float>(m_model.width()),
           static_cast<float>(m_zoomLevel) *
               (static_cast<float>(f_defaultScreenHeight) -
-               f_frameHorizontalThickness - f_frameHorizontalThickness) /
+               f_frameHorizontalThickness) /
               static_cast<float>(m_model.height())};
 }
 
 sf::Vector2f View::calculateCellPosition(std::size_t row,
                                          std::size_t column) const {
   auto size{calculateCellSize()};
-  return {static_cast<float>(row) * size.x + m_viewOffset.x,
-          static_cast<float>(column) * size.y + m_viewOffset.y};
+  return {static_cast<float>(row) * size.x + m_topLeftCellPos.x,
+          static_cast<float>(column) * size.y + m_topLeftCellPos.y};
 }
 
 std::optional<Cell> View::cellAtCoord(sf::Vector2f coord) const {
   if (coord.x < f_frameVerticalThickness ||
       coord.x > (f_defaultScreenWidth - f_frameVerticalThickness) ||
       coord.y < f_frameHorizontalThickness ||
-      coord.y > (f_defaultScreenHeight - f_frameHorizontalThickness)) {
+      coord.y > (f_defaultScreenHeight)) {
     return {};
   }
   auto cellSize{calculateCellSize()};
-  return {{static_cast<std::size_t>((coord.x - m_viewOffset.x) / cellSize.x),
-           static_cast<std::size_t>((coord.y - m_viewOffset.y) / cellSize.y)}};
+  return {
+      {static_cast<std::size_t>((coord.x - m_topLeftCellPos.x) / cellSize.x),
+       static_cast<std::size_t>((coord.y - m_topLeftCellPos.y) / cellSize.y)}};
 }

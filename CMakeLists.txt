@@ -36,9 +36,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
-  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror -Wconversion)
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror -Wconversion -O2)
 elseif(MSVC)
-  target_compile_options(${PROJECT_NAME} PRIVATE -W4)
+  target_compile_options(${PROJECT_NAME} PRIVATE -W4 -O2)
 endif()
 
 if(WIN32)

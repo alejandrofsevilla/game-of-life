@@ -9,7 +9,7 @@
 #include "Model.hpp"
 
 class View {
- public:
+public:
   enum class Screen { Main, LoadFile, SaveFile, EditRule };
 
   enum class Button {
@@ -56,7 +56,7 @@ class View {
   void setScreen(View::Screen screen);
   void setFileNameToSave(const std::string &name);
 
- private:
+private:
   enum class TextBoxStyle { Text, Display, Button, HiddenText, HiddenButton };
 
   void drawMainScreen();
@@ -67,7 +67,6 @@ class View {
   void drawBackground();
   void drawGrid();
   void drawCells();
-  void drawBottomMenu();
   void drawTopMenu();
   void updateCellVertexArray(std::size_t minCol, std::size_t maxCol);
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
@@ -83,7 +82,7 @@ class View {
   Model &m_model;
   View::Screen m_screen;
   sf::RenderWindow &m_window;
-  sf::Vector2f m_viewOffset;
+  sf::Vector2f m_topLeftCellPos;
   sf::VertexArray m_cellsVertexArray;
   sf::Font m_font;
   Button m_highlightedButton;
