@@ -3,7 +3,7 @@
 
 C++ implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton) using [SFML](https://www.sfml-dev.org/) library.
 
-![Base Profile Screenshot 2024 10 21 - 23 24 49 33](https://github.com/user-attachments/assets/6b9d386e-eb8f-4a41-ad91-a64469da2ba1)
+![ezgif-40b91a3a7c57d](https://github.com/user-attachments/assets/c7baf676-248f-42fa-8122-9eb45029753b)
 
 ## About the Game of Life
 Conway's Game is a cellular automata invented by the British mathematician John Horton Conway in 1970. It is a zero-player game that evolves based on its initial state. Cells in a grid live, die, or multiply based on the following rules:
@@ -22,17 +22,17 @@ There are in total 2^18 possible life-like rules that can be studied.
 * C++17 compiler.
 * CMake 3.22.0.
 * [SFML 2.6.1 requirements](https://www.sfml-dev.org/tutorials/2.6/start-cmake.php#requirements). 
-## Features
+## Controls
 - **Add/Remove Cells [Mouse Left].**
 - **Load/Save Patterns [L/S].**\
   Pattern files are stored in folder <em>/patterns</em> using [Run Length Encoded](https://conwaylife.com/wiki/Run_Length_Encoded) format. Example of pattern files can be found at [https://conwaylife.com/wiki](https://conwaylife.com/wiki).
-- **Populate [P].**\
+- **Random.**\
   Fill the grid with a random pattern of living cells.
-- **Rule.**\
+- **RLE.**\
   Set birth/survival rules in [Golly/RLE format](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#:~:text=%5B4%5D-,A%20selection%20of%20Life%2Dlike%20rules,-%5Bedit%5D) .
 - **Reset [R].**\
   Reset active pattern to its initial configuration.
-- **Clear Grid [G].**
+- **Clear [C].**
 - **Set Zoom Level [Mouse Wheel].**
 - **Drag View [Mouse Right].**
 ## Build and Install
