@@ -26,6 +26,9 @@ jobs:
                 libegl1-mesa-dev
                 libdrm-dev
                 libgbm-dev
+                libfreetype-dev
+                libfreetype6
+                libfreetype6-dev
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
