@@ -545,8 +545,9 @@ void View::applyViewOffset(const sf::Vector2f &position) {
                              cellSize.x * static_cast<float>(m_model.width()) -
                              f_frameVerticalThickness,
                          static_cast<float>(f_defaultScreenHeight) -
-                             cellSize.y * static_cast<float>(m_model.height()) -
-                             f_frameHorizontalThickness};
+                             cellSize.y *
+                                 (static_cast<float>(m_model.height()) -
+                                  f_frameHorizontalThickness)};
   m_topLeftCellPos.x = std::min(static_cast<float>(f_frameVerticalThickness),
                                 std::max(position.x, minOffset.x));
   m_topLeftCellPos.y =
