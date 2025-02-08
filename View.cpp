@@ -3,6 +3,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <cmath>
+#include <execution>
 #include <future>
 #include <sstream>
 #include <thread>
@@ -37,6 +38,8 @@ const auto f_hiddenButtonFillColor{sf::Color{45, 45, 45}};
 const auto f_hiddenButtonOutlineColor{sf::Color{35, 35, 35}};
 const auto f_hiddenButtonTextColor{sf::Color{110, 110, 110}};
 constexpr auto f_fontPath{"../resources/futura.ttf"};
+constexpr auto f_defaultScreenWidth{1920};
+constexpr auto f_defaultScreenHeight{1080};
 constexpr auto f_frameHorizontalThickness{50.f};
 constexpr auto f_frameVerticalThickness{0.f};
 constexpr auto f_fontSize{18};
@@ -47,7 +50,7 @@ constexpr auto f_minZoomLevel{1};
 constexpr auto f_maxZoomLevel{10};
 constexpr auto f_zoomSensibility{1};
 constexpr auto f_textBoxTextVerticalPosition{12.f};
-constexpr auto f_defaultButtonWidth{1920.f / 13};
+constexpr auto f_defaultButtonWidth{f_defaultScreenWidth / 13.f};
 constexpr auto f_addRemoveCellTextWidth{290.f};
 constexpr auto f_dragViewTextWidth{240.f};
 constexpr auto f_zoomTextWidth{235.f};
@@ -59,8 +62,6 @@ constexpr auto f_pageUpDownTextWidth{370.f};
 constexpr auto f_scrollUpDownTextWidth{330.f};
 constexpr auto f_ruleEditBoxWidth{220.f};
 constexpr auto f_editRuleMenuInfoTextWidth{120.f};
-constexpr auto f_defaultScreenWidth{1920};
-constexpr auto f_defaultScreenHeight{1080};
 
 inline std::string toString(const std::set<std::size_t> &values) {
   std::stringstream s;
@@ -170,7 +171,7 @@ void View::setScreen(View::Screen screen) { m_screen = screen; }
 void View::drawMainScreen() {
   m_fileNameToSave.clear();
   m_scrollPos = 0;
-  drawCells();
+  drawCells_();
   drawGrid();
   drawFrame();
   drawTopMenu();
@@ -283,7 +284,7 @@ void View::drawEditRuleScreen() {
 }
 
 void View::drawFrame() {
-  auto viewSize{m_window.getView().getSize()};
+  auto &viewSize{m_window.getView().getSize()};
   auto thickness{std::max((viewSize.x - f_defaultScreenWidth) * .5f,
                           (viewSize.y - f_defaultScreenHeight) * .5f)};
   sf::RectangleShape rect{{f_defaultScreenWidth, f_defaultScreenHeight}};
@@ -320,45 +321,29 @@ void View::drawGrid() {
   m_window.draw(lines);
 }
 
-void View::updateCellVertexArray(std::size_t minCol, std::size_t maxCol) {
-  auto size{calculateCellSize()};
-  sf::Color cellColor;
-  sf::Vector2f cellPosition;
-  std::size_t id{4 * minCol * m_model.height()};
-  for (std::size_t col = minCol; col < maxCol; col++) {
-    for (std::size_t row = 0; row < m_model.height(); row++) {
-      cellColor = toCellColor(m_model.cellStatus(col, row));
-      cellPosition = calculateCellPosition(col, row);
-      m_cellsVertexArray[id].position = cellPosition;
-      m_cellsVertexArray[id++].color = cellColor;
-      m_cellsVertexArray[id].position = cellPosition + sf::Vector2f{size.x, 0};
-      m_cellsVertexArray[id++].color = cellColor;
-      m_cellsVertexArray[id].position =
-          cellPosition + sf::Vector2f{size.x, size.y};
-      m_cellsVertexArray[id++].color = cellColor;
-      m_cellsVertexArray[id].position = cellPosition + sf::Vector2f{0, size.y};
-      m_cellsVertexArray[id++].color = cellColor;
-    }
-  }
-}
-
-void View::drawCells() {
+void View::drawCells_() {
   auto size{4 * m_model.width() * m_model.height()};
   if (m_cellsVertexArray.getVertexCount() != size) {
     m_cellsVertexArray.resize(size);
   }
-  auto numOfThreads{std::thread::hardware_concurrency()};
-  auto numColPerThread{static_cast<std::size_t>(
-      std::ceil(static_cast<double>(m_model.width()) / numOfThreads))};
-  {
-    std::vector<std::future<void>> tasks;
-    for (std::size_t i = 0; i < numOfThreads; i++) {
-      auto begin{std::min(i * numColPerThread, m_model.width())};
-      auto end{std::min((i + 1) * numColPerThread, m_model.width())};
-      tasks.emplace_back(
-          std::async(&View::updateCellVertexArray, this, begin, end));
-    }
-  }
+  auto cellSize{calculateCellSize()};
+  auto &cells{m_model.cells()};
+  std::for_each(cells.cbegin(), cells.cend(), [this, cellSize](auto &cell) {
+    auto cellColor = toCellColor(cell.status);
+    auto cellPosition = calculateCellPosition(cell.col, cell.row);
+    auto id{(cell.col + cell.row * m_model.width()) * 4};
+    m_cellsVertexArray[id].position = cellPosition;
+    m_cellsVertexArray[id++].color = cellColor;
+    m_cellsVertexArray[id].position =
+        cellPosition + sf::Vector2f{cellSize.x, 0};
+    m_cellsVertexArray[id++].color = cellColor;
+    m_cellsVertexArray[id].position =
+        cellPosition + sf::Vector2f{cellSize.x, cellSize.y};
+    m_cellsVertexArray[id++].color = cellColor;
+    m_cellsVertexArray[id].position =
+        cellPosition + sf::Vector2f{0, cellSize.y};
+    m_cellsVertexArray[id].color = cellColor;
+  });
   m_window.draw(m_cellsVertexArray);
 }
 
@@ -415,9 +400,23 @@ void View::drawTopMenu() {
     m_highlightedButton = Button::Reset;
   }
   position.x += f_defaultButtonWidth;
+  style = (m_model.status() != Model::Status::Running)
+              ? TextBoxStyle::Button
+              : TextBoxStyle::HiddenButton;
+  if (drawTextBox("Clear [C]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::Clear;
+  }
+  position.x += f_defaultButtonWidth;
+  style = (m_model.status() == Model::Status::ReadyToRun ||
+           m_model.status() == Model::Status::Stopped)
+              ? TextBoxStyle::Button
+              : TextBoxStyle::HiddenButton;
+  if (drawTextBox("Generate [G]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::GeneratePopulation;
+  }
+  position.x += f_defaultButtonWidth;
   style =
-      (m_model.status() == Model::Status::ReadyToRun ||
-       m_model.status() == Model::Status::Stopped)
+      (m_model.status() != Model::Status::Running)
           ? TextBoxStyle::HiddenButton
           : (m_model.speed() == m_model.minSpeed() ? TextBoxStyle::HiddenButton
                                                    : TextBoxStyle::Button);
@@ -425,8 +424,7 @@ void View::drawTopMenu() {
     m_highlightedButton = Button::SlowDown;
   }
   style =
-      (m_model.status() == Model::Status::ReadyToRun ||
-       m_model.status() == Model::Status::Stopped)
+      (m_model.status() != Model::Status::Running)
           ? TextBoxStyle::HiddenButton
           : (m_model.speed() == m_model.maxSpeed() ? TextBoxStyle::HiddenButton
                                                    : TextBoxStyle::Button);
@@ -435,25 +433,6 @@ void View::drawTopMenu() {
     m_highlightedButton = Button::SpeedUp;
   }
   position.x += f_plusMinusButtonWidth;
-  style = (m_model.status() != Model::Status::Running)
-              ? TextBoxStyle::Button
-              : TextBoxStyle::HiddenButton;
-  if (drawTextBox("Clear", position, f_defaultButtonWidth, style)) {
-    m_highlightedButton = Button::Clear;
-  }
-  position.x += f_defaultButtonWidth;
-  style = (m_model.status() == Model::Status::ReadyToRun ||
-           m_model.status() == Model::Status::Stopped)
-              ? TextBoxStyle::Button
-              : TextBoxStyle::HiddenButton;
-  if (drawTextBox("Random", position, f_defaultButtonWidth, style)) {
-    m_highlightedButton = Button::GeneratePopulation;
-  }
-  style = (m_model.status() == Model::Status::ReadyToRun ||
-           m_model.status() == Model::Status::Stopped)
-              ? TextBoxStyle::Text
-              : TextBoxStyle::HiddenText;
-  position.x += f_defaultButtonWidth;
   std::string rule("RLE B");
   rule.append(toString(m_model.birthRule()));
   rule.append("/S");
@@ -601,7 +580,7 @@ std::optional<Cell> View::cellAtCoord(sf::Vector2f coord) const {
     return {};
   }
   auto cellSize{calculateCellSize()};
-  return {
-      {static_cast<std::size_t>((coord.x - m_topLeftCellPos.x) / cellSize.x),
-       static_cast<std::size_t>((coord.y - m_topLeftCellPos.y) / cellSize.y)}};
+  return m_model.cell(
+      static_cast<std::size_t>((coord.x - m_topLeftCellPos.x) / cellSize.x),
+      static_cast<std::size_t>((coord.y - m_topLeftCellPos.y) / cellSize.y));
 }

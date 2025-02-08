@@ -6,6 +6,7 @@ struct Cell {
 
   std::size_t col{0};
   std::size_t row{0};
+  Status status{Status::Empty};
 
   bool operator==(const Cell &other) const {
     return col == other.col && row == other.row;

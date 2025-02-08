@@ -10,7 +10,7 @@ constexpr auto f_windowTitle{"Game Of Life"};
 constexpr auto f_windowStyle{sf::Style::Fullscreen};
 constexpr auto f_modelMaxWidth{960};
 constexpr auto f_modelMaxHeight{515};
-constexpr auto f_defaultModelUpdatePeriod{std::chrono::milliseconds{300}};
+constexpr auto f_defaultModelUpdatePeriod{std::chrono::milliseconds{100}};
 } // namespace
 
 int main() {

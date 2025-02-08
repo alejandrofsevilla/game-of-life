@@ -12,11 +12,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(game-of-life LANGUAGES CXX VERSION 1.0)
 
 include(FetchContent)
+
 FetchContent_Declare(SFML
   GIT_REPOSITORY https://github.com/SFML/SFML.git
   GIT_TAG ${SFML_VERSION})
 FetchContent_MakeAvailable(SFML)
-  
+
 add_executable(${PROJECT_NAME}
   Cell.hpp
   Controller.hpp
@@ -28,13 +29,12 @@ add_executable(${PROJECT_NAME}
   View.hpp
   View.cpp
   Main.cpp)
-
+ 
 target_link_libraries(${PROJECT_NAME} PRIVATE
   sfml-graphics
   sfml-window)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
-
 if (CMAKE_COMPILER_IS_GNUCXX)
   target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror -Wconversion -O2)
 elseif(MSVC)

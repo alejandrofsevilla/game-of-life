@@ -88,12 +88,6 @@ void Controller::onMouseButtonPressedInMainScreen(
   case View::Button::Clear:
     m_model.clear();
     return;
-  case View::Button::IncreaseSize:
-    m_model.increaseSize();
-    return;
-  case View::Button::ReduceSize:
-    m_model.reduceSize();
-    return;
   case View::Button::EditRule:
     m_view.setScreen(View::Screen::EditRule);
     return;
@@ -308,6 +302,17 @@ void Controller::onKeyPressedInMainScreen(const sf::Event::KeyEvent &event) {
     m_isSaveFileMenuReady = false;
     m_view.setScreen(View::Screen::SaveFile);
     return;
+  case sf::Keyboard::G:
+    if (m_model.status() == Model::Status::ReadyToRun ||
+        m_model.status() == Model::Status::Stopped) {
+      m_model.generatePopulation(f_populationGenerationRate);
+    }
+    return;
+  case sf::Keyboard::C:
+    if (m_model.status() != Model::Status::Running) {
+      m_model.clear();
+    }
+    return;
   case sf::Keyboard::Escape:
     m_view.closeWindow();
     return;
@@ -431,7 +436,7 @@ void Controller::onMouseButtonPressedOnCell(const Cell &cell) {
       m_model.status() != Model::Status::ReadyToRun) {
     return;
   }
-  if (m_model.cellStatus(cell.col, cell.row) == Cell::Status::Alive) {
+  if (cell.status == Cell::Status::Alive) {
     m_model.removeCell(cell);
   } else {
     m_model.insertCell(cell);

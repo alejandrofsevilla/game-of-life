@@ -66,9 +66,8 @@ private:
   void drawFrame();
   void drawBackground();
   void drawGrid();
-  void drawCells();
+  void drawCells_();
   void drawTopMenu();
-  void updateCellVertexArray(std::size_t minCol, std::size_t maxCol);
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);
   void applyViewOffset(const sf::Vector2f &offset);
