@@ -3,7 +3,7 @@
 
 C++ implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) and other [life-like cellular automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton) using [SFML](https://www.sfml-dev.org/) library.
 
-![ezgif-40b91a3a7c57d](https://github.com/user-attachments/assets/c7baf676-248f-42fa-8122-9eb45029753b)
+![ezgif-37711cef94aeec](https://github.com/user-attachments/assets/68ac79ff-80c8-4dfa-b364-44637a53d1f4)
 
 ## About the Game of Life
 Conway's Game is a cellular automata invented by the British mathematician John Horton Conway in 1970. It is a zero-player game that evolves based on its initial state. Cells in a grid live, die, or multiply based on the following rules:
