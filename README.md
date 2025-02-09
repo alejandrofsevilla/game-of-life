@@ -26,8 +26,8 @@ There are in total 2^18 possible life-like rules that can be studied.
 - **Add/Remove Cells [Mouse Left].**
 - **Load/Save Patterns [L/S].**\
   Pattern files are stored in folder <em>/patterns</em> using [Run Length Encoded](https://conwaylife.com/wiki/Run_Length_Encoded) format. Example of pattern files can be found at [https://conwaylife.com/wiki](https://conwaylife.com/wiki).
-- **Random.**\
-  Fill the grid with a random pattern of living cells.
+- **Generate [G].**\
+  Generate random pattern.
 - **RLE.**\
   Set birth/survival rules in [Golly/RLE format](https://en.wikipedia.org/wiki/Life-like_cellular_automaton#:~:text=%5B4%5D-,A%20selection%20of%20Life%2Dlike%20rules,-%5Bedit%5D) .
 - **Reset [R].**\
