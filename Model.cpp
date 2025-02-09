@@ -58,8 +58,10 @@ size_t Model::generation() const { return m_generation; }
 
 size_t Model::population() const { return m_population; }
 
-std::optional<Cell> Model::cell(std::size_t col, std::size_t row) const {
+#include <iostream>
+std::optional<Cell> Model::cellAt(std::size_t col, std::size_t row) const {
   auto index{toCellIndex(col, row)};
+  std::cout << int(m_cells.at(index).status) << std::endl;
   return (index < m_cells.size()) ? m_cells.at(index) : std::optional<Cell>{};
 }
 

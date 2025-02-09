@@ -44,7 +44,7 @@ void Controller::onMouseButtonPressedInMainScreen(
   }
   auto cell{m_view.highlightedCell()};
   if (cell) {
-    onMouseButtonPressedOnCell({cell->col, cell->row});
+    onMouseButtonPressedOnCell(cell.value());
     return;
   }
   auto highlightedButton{m_view.highlightedButton()};

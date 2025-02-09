@@ -21,7 +21,7 @@ public:
   std::size_t height() const;
   std::size_t generation() const;
   std::size_t population() const;
-  std::optional<Cell> cell(std::size_t col, std::size_t row) const;
+  std::optional<Cell> cellAt(std::size_t col, std::size_t row) const;
   const std::set<Cell> &initialPattern() const;
   const std::set<std::size_t> &survivalRule() const;
   const std::set<std::size_t> &birthRule() const;

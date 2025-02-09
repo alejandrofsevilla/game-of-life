@@ -70,6 +70,8 @@ private:
   void drawTopMenu();
   bool drawTextBox(const std::string &content, const sf::Vector2f &position,
                    float width, TextBoxStyle style);
+  bool drawDisplay(const std::string &content, const sf::Vector2f &position,
+                   float width, TextBoxStyle style);
   void applyViewOffset(const sf::Vector2f &offset);
   void applyZoomLevel(int zoomLevel);
   void updateWindowView();

@@ -11,32 +11,32 @@
 #include "RleHelper.hpp"
 
 namespace {
-const auto f_frameColor{sf::Color{35, 35, 35}};
+const auto f_frameColor{sf::Color{30, 30, 30}};
 const auto f_livingCellColor{sf::Color::White};
 const auto f_gridColor{sf::Color::Black};
 const auto f_deadCellColor{sf::Color{60, 60, 60}};
-const auto f_backgroundColor{sf::Color{35, 35, 35}};
-const auto f_simpleTextBoxFillColor{sf::Color{35, 35, 35}};
-const auto f_simpleTextBoxOutlineColor{sf::Color{35, 35, 35}};
+const auto f_backgroundColor{sf::Color{30, 30, 30}};
+const auto f_simpleTextBoxFillColor{sf::Color{45, 45, 45}};
+const auto f_simpleTextBoxOutlineColor{sf::Color{45, 45, 45}};
 const auto f_simpleTextBoxTextColor{sf::Color::White};
 const auto f_clickedButtonFillColor{sf::Color{15, 15, 15}};
-const auto f_clickedButtonOutlineColor{sf::Color{35, 35, 35}};
+const auto f_clickedButtonOutlineColor{sf::Color{45, 45, 45}};
 const auto f_clickedButtonTextColor{sf::Color::White};
 const auto f_highlightedButtonFilledColor{sf::Color::White};
 const auto f_highlightedButtonOutlineColor{sf::Color::White};
-const auto f_highlightedButtonTextColor{sf::Color{35, 35, 35}};
+const auto f_highlightedButtonTextColor{sf::Color{45, 45, 45}};
 const auto f_buttonFillColor{sf::Color{60, 60, 60}};
-const auto f_buttonOutlineColor{sf::Color{35, 35, 35}};
+const auto f_buttonOutlineColor{sf::Color{45, 45, 45}};
 const auto f_buttonTextColor{sf::Color::White};
 const auto f_displayTextBoxFillColor{sf::Color::Black};
-const auto f_displayTextBoxOutlineColor{sf::Color{35, 35, 35}};
+const auto f_displayTextBoxOutlineColor{sf::Color{45, 45, 45}};
 const auto f_displayTextBoxTextFillColor{sf::Color::White};
-const auto f_hiddenTextBoxFillColor{sf::Color{35, 35, 35}};
-const auto f_hiddenTextBoxOutlineColor{sf::Color{35, 35, 35}};
+const auto f_hiddenTextBoxFillColor{sf::Color{45, 45, 45}};
+const auto f_hiddenTextBoxOutlineColor{sf::Color{45, 45, 45}};
 const auto f_hiddenTextBoxTextColor{sf::Color{100, 100, 100}};
-const auto f_hiddenButtonFillColor{sf::Color{45, 45, 45}};
-const auto f_hiddenButtonOutlineColor{sf::Color{35, 35, 35}};
-const auto f_hiddenButtonTextColor{sf::Color{110, 110, 110}};
+const auto f_hiddenButtonFillColor{sf::Color{55, 55, 55}};
+const auto f_hiddenButtonOutlineColor{sf::Color{45, 45, 45}};
+const auto f_hiddenButtonTextColor{sf::Color{130, 130, 130}};
 constexpr auto f_fontPath{"../resources/futura.ttf"};
 constexpr auto f_defaultScreenWidth{1920};
 constexpr auto f_defaultScreenHeight{1080};
@@ -44,12 +44,13 @@ constexpr auto f_frameHorizontalThickness{50.f};
 constexpr auto f_frameVerticalThickness{0.f};
 constexpr auto f_fontSize{18};
 constexpr auto f_textBoxOutlineThickness{1.f};
+constexpr auto f_displayOutlineThickness{5.f};
 constexpr auto f_textBoxHeight{f_frameHorizontalThickness};
 constexpr auto f_defaultZoomLevel{5};
 constexpr auto f_minZoomLevel{1};
 constexpr auto f_maxZoomLevel{10};
 constexpr auto f_zoomSensibility{1};
-constexpr auto f_textBoxTextVerticalPosition{12.f};
+constexpr auto f_textBoxTextVerticalPosition{14.f};
 constexpr auto f_defaultButtonWidth{f_defaultScreenWidth / 13.f};
 constexpr auto f_addRemoveCellTextWidth{290.f};
 constexpr auto f_dragViewTextWidth{240.f};
@@ -250,9 +251,8 @@ void View::drawEditRuleScreen() {
                   TextBoxStyle::Button)) {
     m_highlightedButton = Button::Back;
   }
-  auto screenMiddleHeight{f_defaultScreenHeight * .5f};
   position.x = f_frameVerticalThickness + f_textBoxOutlineThickness;
-  position.y = screenMiddleHeight;
+  position.y = f_defaultScreenHeight * .5f;
   auto buttonWidth{f_defaultScreenWidth * .5f - f_textBoxOutlineThickness};
   std::string rule{"B"};
   rule.append(toString(m_model.birthRule()));
@@ -392,29 +392,6 @@ void View::drawTopMenu() {
     break;
   }
   position.x += f_defaultButtonWidth;
-  style = (m_model.status() == Model::Status::ReadyToRun ||
-           m_model.status() == Model::Status::Stopped)
-              ? TextBoxStyle::HiddenButton
-              : TextBoxStyle::Button;
-  if (drawTextBox("Reset [R]", position, f_defaultButtonWidth, style)) {
-    m_highlightedButton = Button::Reset;
-  }
-  position.x += f_defaultButtonWidth;
-  style = (m_model.status() != Model::Status::Running)
-              ? TextBoxStyle::Button
-              : TextBoxStyle::HiddenButton;
-  if (drawTextBox("Clear [C]", position, f_defaultButtonWidth, style)) {
-    m_highlightedButton = Button::Clear;
-  }
-  position.x += f_defaultButtonWidth;
-  style = (m_model.status() == Model::Status::ReadyToRun ||
-           m_model.status() == Model::Status::Stopped)
-              ? TextBoxStyle::Button
-              : TextBoxStyle::HiddenButton;
-  if (drawTextBox("Generate [G]", position, f_defaultButtonWidth, style)) {
-    m_highlightedButton = Button::GeneratePopulation;
-  }
-  position.x += f_defaultButtonWidth;
   style =
       (m_model.status() != Model::Status::Running)
           ? TextBoxStyle::HiddenButton
@@ -433,13 +410,36 @@ void View::drawTopMenu() {
     m_highlightedButton = Button::SpeedUp;
   }
   position.x += f_plusMinusButtonWidth;
+  style = (m_model.status() == Model::Status::ReadyToRun ||
+           m_model.status() == Model::Status::Stopped)
+              ? TextBoxStyle::HiddenButton
+              : TextBoxStyle::Button;
+  if (drawTextBox("Reset [R]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::Reset;
+  }
+  position.x += f_defaultButtonWidth;
+  style = (m_model.status() == Model::Status::Stopped)
+              ? TextBoxStyle::HiddenButton
+              : TextBoxStyle::Button;
+  if (drawTextBox("Clear [C]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::Clear;
+  }
+  position.x += f_defaultButtonWidth;
+  style = (m_model.status() == Model::Status::ReadyToRun ||
+           m_model.status() == Model::Status::Stopped)
+              ? TextBoxStyle::Button
+              : TextBoxStyle::HiddenButton;
+  if (drawTextBox("Generate [G]", position, f_defaultButtonWidth, style)) {
+    m_highlightedButton = Button::GeneratePopulation;
+  }
+  position.x += f_defaultButtonWidth;
   std::string rule("RLE B");
   rule.append(toString(m_model.birthRule()));
   rule.append("/S");
   rule.append(toString(m_model.survivalRule()));
   style = (m_model.status() != Model::Status::Stopped &&
            m_model.status() != Model::Status::ReadyToRun)
-              ? TextBoxStyle::Display
+              ? TextBoxStyle::HiddenButton
               : TextBoxStyle::Button;
   if (drawTextBox(rule, position, f_defaultButtonWidth, style)) {
     m_highlightedButton = Button::EditRule;
@@ -462,12 +462,16 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
   auto highlighted{false};
   sf::RectangleShape rect{{width - 2 * f_textBoxOutlineThickness,
                            f_textBoxHeight - 2 * f_textBoxOutlineThickness}};
-  rect.setPosition(position.x, position.y);
+  rect.setPosition(position.x + f_textBoxOutlineThickness,
+                   position.y + f_textBoxOutlineThickness);
   rect.setOutlineThickness(f_textBoxOutlineThickness);
   sf::Text text{content, m_font};
   text.setCharacterSize(f_fontSize);
-  if (text.getLocalBounds().width > rect.getSize().x) {
-    text.setString("RLE...");
+  auto c{content};
+  while (text.getLocalBounds().width > rect.getSize().x) {
+    c.erase(0, 1);
+    c.erase(c.size() - 1, 1);
+    text.setString("..." + c + "...");
   }
   text.setPosition(position.x + (width - text.getLocalBounds().width) * .5f,
                    position.y + f_textBoxTextVerticalPosition);
@@ -492,6 +496,11 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
     }
     break;
   case TextBoxStyle::Display:
+    rect.setPosition(position.x + f_displayOutlineThickness,
+                     position.y + f_displayOutlineThickness);
+    rect.setSize({width - 2 * f_displayOutlineThickness,
+                  f_textBoxHeight - 2 * f_displayOutlineThickness});
+    rect.setOutlineThickness(f_displayOutlineThickness);
     rect.setFillColor(f_displayTextBoxFillColor);
     rect.setOutlineColor(f_displayTextBoxOutlineColor);
     text.setFillColor(f_displayTextBoxTextFillColor);
@@ -516,6 +525,11 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
   m_window.draw(rect);
   m_window.draw(text);
   return highlighted;
+}
+
+bool View::drawDisplay(const std::string &content, const sf::Vector2f &position,
+                       float width, TextBoxStyle style) {
+  return false;
 }
 
 void View::applyViewOffset(const sf::Vector2f &position) {
@@ -580,7 +594,7 @@ std::optional<Cell> View::cellAtCoord(sf::Vector2f coord) const {
     return {};
   }
   auto cellSize{calculateCellSize()};
-  return m_model.cell(
+  return m_model.cellAt(
       static_cast<std::size_t>((coord.x - m_topLeftCellPos.x) / cellSize.x),
       static_cast<std::size_t>((coord.y - m_topLeftCellPos.y) / cellSize.y));
 }
