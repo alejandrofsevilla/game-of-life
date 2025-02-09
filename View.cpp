@@ -527,11 +527,6 @@ bool View::drawTextBox(const std::string &content, const sf::Vector2f &position,
   return highlighted;
 }
 
-bool View::drawDisplay(const std::string &content, const sf::Vector2f &position,
-                       float width, TextBoxStyle style) {
-  return false;
-}
-
 void View::applyViewOffset(const sf::Vector2f &position) {
   auto cellSize{calculateCellSize()};
   sf::Vector2f minOffset{static_cast<float>(f_defaultScreenWidth) -
