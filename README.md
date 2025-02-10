@@ -7,7 +7,7 @@ C++ implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conw
   <img src="https://github.com/user-attachments/assets/8a842857-9dba-4c2a-acf2-541b5b9ac206"  width="800" />
 </p>
 
-## About the Game of Life
+## About Game of Life
 Conway's Game is a cellular automata invented by the British mathematician John Horton Conway in 1970. It is a zero-player game that evolves based on its initial state. Cells in a grid live, die, or multiply based on the following rules:
 - Any live cell with fewer than two living neighbors dies (underpopulation).
 - Any live cell with two or three living neighbors lives on to the next generation.
